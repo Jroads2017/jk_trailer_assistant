@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JK Trailer Assistant Alpha 0.9 - Photo Test |  – Tablet Alpha 0.6</title>
+<title>JK Trailer Assistant Alpha 1.0 - Adaptive Photo OCR |  – Tablet Alpha 1.0</title>
 <style>
 :root{--navy:#061a34;--blue:#0b57d0;--light:#f5f8fc;--line:#d7e0ec;--green:#148a2f;--orange:#ff7a00;--red:#c62828;--text:#132033;--muted:#65758b}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#eef3f8}button,input,select,textarea{font:inherit}
@@ -83,7 +83,7 @@ function recordCompletedLearning(job){const u=usageData(),n=noteLearning();job.r
 function approveSuggestion(key){const n=noteLearning(),item=n[key];if(!item)return;const arr=customButtons();if(!arr.includes(item.label))arr.push(item.label);localStorage.setItem('jk_custom_buttons',JSON.stringify(arr));render()}
 function ignoreSuggestion(key){const arr=ignoredSuggestions();if(!arr.includes(key))arr.push(key);localStorage.setItem('jk_ignored_suggestions',JSON.stringify(arr));render()}
 function resetDraft(){state.draft={jobType:(state.job?.stage||null),location:null,system:null,brakeType:null,suspensionType:null,suspensionGroup:null,package:null,condition:null,repair:null,parts:{},lubricant:null,verification:{},verificationNotes:{},additionalParts:[],showAdditionalPart:false,repairScope:'Single',scopeQty:1,notes:'',techNo:(state.user?.role==='manager'?(state.job?.owner||''):state.user?.id||'')};state.step=1}
-function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button><button onclick="go('manager')">Manager View</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 0.6</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
+function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button><button onclick="go('manager')">Manager View</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.0</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
 function render(){const root=document.getElementById('root');if(!state.user){root.innerHTML=loginView();return} if(state.screen==='dashboard')root.innerHTML=appShell(dashboard(),'Dashboard');else if(state.screen==='jobs')root.innerHTML=appShell(jobList(),'Open Jobs');else if(state.screen==='workflow')root.innerHTML=appShell(workflow(),'Repair Documentation');else if(state.screen==='manager')root.innerHTML=appShell(managerView(),'Manager View – Estimate');}
 function loginView(){return `<div class="loginwrap"><div class="login"><h1>JK Trailer Assistant</h1><p class="muted">Employee login</p><div class="field"><label>Employee</label><select id="techsel"><option value="">Select technician</option>${TECHS.map(t=>`<option value="${t.id}">#${t.id} – ${t.name}</option>`).join('')}</select></div><div class="field"><label>3-digit code</label><input id="pin" maxlength="3" inputmode="numeric" /></div><button class="btn primary" onclick="login()">Sign In</button><p class="muted" style="margin-top:14px;font-size:12px">Prototype PINs: Manager Jesse 114, George 371, Alex 172, Allen 410, Max 924, Damien 710, Chaz 507, Jalen 351</p></div></div>`}
 function login(){const id=document.getElementById('techsel').value;const pin=document.getElementById('pin').value;const t=TECHS.find(x=>x.id===id&&x.pin===pin);if(!t)return alert('Incorrect employee or code');state.user=t;state.screen=t.role==='manager'?'manager':'dashboard';if(t.role==='manager'&&!state.job)state.job=jobs()[0];save()}
@@ -103,55 +103,150 @@ function cleanOCRLine(v){return (v||'').replace(/[|]/g,'I').replace(/\s+/g,' ').
 function firstMatch(text,patterns){for(const p of patterns){const m=text.match(p);if(m&&m[1])return cleanOCRLine(m[1])}return''}
 function parseKarmakText(raw){const text=raw.replace(/\r/g,'');const one=text.replace(/[ \t]+/g,' ');let ro=firstMatch(one,[/Repair\s*Order\s*\n?\s*([0-9]{4,10})/i,/\bRO\s*#?\s*[:\-]?\s*([0-9]{4,10})/i]);let unit=firstMatch(one,[/\bUnit\s*[:#]?\s*([A-Z0-9-]{2,20})/i,/Trailer\s*(?:Number|#)\s*[:\-]?\s*([A-Z0-9-]{2,20})/i]);let year=firstMatch(one,[/\bYear\s*[:#]?\s*((?:19|20)\d{2})/i]);let vin=firstMatch(one,[/\bVIN\s*[:#]?\s*([A-HJ-NPR-Z0-9]{15,20})/i]);let makeModel=firstMatch(one,[/Make\s*\/\s*Model\s*[:#]?\s*(.+?)(?=\s+(?:VIN|Meter|Type|In-Service|ECM|$))/i]);let type=firstMatch(one,[/\bType\s*[:#]?\s*(.+?)(?=\s+(?:ECM|VIN|Meter|$))/i]);let date=firstMatch(one,[/Creation\s*Date\s*\n?\s*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i]);let createdBy=firstMatch(one,[/Created\s*By\s*\n?\s*([A-Za-z0-9._-]+)/i]);let customer=firstMatch(text,[/Owning\s+Customer\s*\n\s*([^\n]+)/i,/Billing\s+Customer\s*\n\s*([^\n]+)/i]);if(!customer){const lines=text.split('\n').map(cleanOCRLine).filter(Boolean);const idx=lines.findIndex(x=>/Billing Customer/i.test(x));if(idx>=0&&lines[idx+1])customer=lines[idx+1]}let complaint='';const cm=text.match(/Complaint\s*:\s*([\s\S]*?)(?=\n\s*Cause\s*:|\n\s*Correction\s*:|\n\s*Supplier\b|$)/i);if(cm)complaint=cleanOCRLine(cm[1]);return{ro,unit,customer,year,makeModel,type,vin,date,createdBy,complaint}}
 function setPhotoField(id,value){if(value){const el=document.getElementById(id);if(el)el.value=value}}
-async function preparePhotoForOCR(file){
-  const bitmap=await createImageBitmap(file);
-  const maxWidth=1800;
+async function sourceToBlob(source){
+  if(source instanceof Blob)return source;
+  const response=await fetch(source,{cache:'no-store'});
+  if(!response.ok)throw new Error('Unable to load the selected photo.');
+  return await response.blob();
+}
+function clamp255(v){return Math.max(0,Math.min(255,v))}
+async function loadPhotoBitmap(source){
+  const blob=await sourceToBlob(source);
+  try{return await createImageBitmap(blob,{imageOrientation:'from-image'})}
+  catch{return await createImageBitmap(blob)}
+}
+function drawScaledBitmap(bitmap,maxWidth=2200){
   const scale=Math.min(1,maxWidth/bitmap.width);
   const canvas=document.createElement('canvas');
-  canvas.width=Math.round(bitmap.width*scale);
-  canvas.height=Math.round(bitmap.height*scale);
+  canvas.width=Math.max(1,Math.round(bitmap.width*scale));
+  canvas.height=Math.max(1,Math.round(bitmap.height*scale));
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
-  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
-  const d=img.data;
+  return canvas;
+}
+function photoStats(canvas){
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  const {data}=ctx.getImageData(0,0,canvas.width,canvas.height);
+  let sum=0,sum2=0,dark=0,light=0,n=0;
+  const stride=Math.max(4,Math.floor(data.length/180000/4)*4);
+  for(let i=0;i<data.length;i+=stride){
+    const g=.299*data[i]+.587*data[i+1]+.114*data[i+2];
+    sum+=g;sum2+=g*g;n++;if(g<55)dark++;if(g>235)light++;
+  }
+  const mean=sum/n,sd=Math.sqrt(Math.max(0,sum2/n-mean*mean));
+  return{mean,sd,darkPct:dark/n,lightPct:light/n};
+}
+function preprocessVariant(base,mode){
+  const out=document.createElement('canvas');out.width=base.width;out.height=base.height;
+  const ctx=out.getContext('2d',{willReadFrequently:true});ctx.drawImage(base,0,0);
+  const img=ctx.getImageData(0,0,out.width,out.height),d=img.data;
+  let sum=0,n=0;
+  for(let i=0;i<d.length;i+=4){sum+=.299*d[i]+.587*d[i+1]+.114*d[i+2];n++}
+  const mean=sum/n;
   for(let i=0;i<d.length;i+=4){
-    const gray=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
-    const boosted=Math.max(0,Math.min(255,(gray-128)*1.45+150));
-    d[i]=d[i+1]=d[i+2]=boosted;
+    const g=.299*d[i]+.587*d[i+1]+.114*d[i+2];let v=g;
+    if(mode==='balanced')v=(g-mean)*1.42+165;
+    if(mode==='shadow'){
+      const gamma=mean<150?.72:.88;
+      v=255*Math.pow(g/255,gamma);
+      v=(v-128)*1.35+150;
+    }
+    if(mode==='threshold'){
+      const t=Math.max(125,Math.min(205,mean*.93));
+      v=g>t?255:0;
+    }
+    d[i]=d[i+1]=d[i+2]=clamp255(v);d[i+3]=255;
   }
   ctx.putImageData(img,0,0);
-  return canvas;
+  if(mode!=='threshold'){
+    const copy=document.createElement('canvas');copy.width=out.width;copy.height=out.height;
+    const c=copy.getContext('2d');c.filter='contrast(1.12) saturate(0)';c.drawImage(out,0,0);
+    return copy;
+  }
+  return out;
+}
+function rotateCanvas(source,degrees){
+  if(!degrees)return source;
+  const rad=degrees*Math.PI/180,cos=Math.abs(Math.cos(rad)),sin=Math.abs(Math.sin(rad));
+  const out=document.createElement('canvas');out.width=Math.ceil(source.width*cos+source.height*sin);out.height=Math.ceil(source.width*sin+source.height*cos);
+  const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);ctx.translate(out.width/2,out.height/2);ctx.rotate(rad);ctx.drawImage(source,-source.width/2,-source.height/2);return out;
+}
+function normalizeVIN(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/[IOQ]/g,m=>({I:'1',O:'0',Q:'0'}[m]))}
+function validateKarmakData(data){
+  const confidence={};
+  confidence.ro=/^\d{4,10}$/.test(data.ro||'')?'high':data.ro?'low':'missing';
+  confidence.unit=/^[A-Z0-9-]{2,20}$/i.test(data.unit||'')?'high':data.unit?'low':'missing';
+  data.vin=normalizeVIN(data.vin);
+  confidence.vin=data.vin.length===17?'high':data.vin?'low':'missing';
+  confidence.year=/^(19|20)\d{2}$/.test(data.year||'')?'high':data.year?'low':'missing';
+  confidence.customer=(data.customer||'').length>=4?'high':data.customer?'low':'missing';
+  confidence.complaint=(data.complaint||'').length>=12?'high':data.complaint?'low':'missing';
+  return confidence;
+}
+function scoreKarmakData(data,raw,ocrConfidence=0){
+  const c=validateKarmakData(data);let score=0;
+  score+=c.ro==='high'?18:c.ro==='low'?5:0;
+  score+=c.unit==='high'?12:c.unit==='low'?4:0;
+  score+=c.vin==='high'?22:c.vin==='low'?4:0;
+  score+=c.year==='high'?8:c.year==='low'?2:0;
+  score+=c.customer==='high'?14:c.customer==='low'?3:0;
+  score+=c.complaint==='high'?18:c.complaint==='low'?4:0;
+  score+=Math.min(8,(raw||'').length/180);
+  score+=Math.min(8,(Number(ocrConfidence)||0)/12.5);
+  return{score,confidence:c};
+}
+function mergeKarmakData(candidates){
+  const fields=['ro','unit','customer','year','makeModel','type','vin','date','createdBy','complaint'];const merged={};
+  for(const f of fields){
+    const options=candidates.map(x=>({v:(x.data[f]||'').trim(),score:x.score})).filter(x=>x.v);
+    if(!options.length){merged[f]='';continue}
+    options.sort((a,b)=>b.score-a.score||b.v.length-a.v.length);merged[f]=options[0].v;
+  }
+  validateKarmakData(merged);return merged;
+}
+function markPhotoConfidence(id,level){
+  const el=document.getElementById(id);if(!el)return;
+  el.style.borderColor=level==='high'?'#2f9e44':level==='low'?'#f0a202':'#c62828';
+  el.title=level==='high'?'OCR value passed format checks':level==='low'?'Please verify this OCR value':'OCR did not find this field';
+}
+async function runOCRVariant(canvas,label,index,total,status,bar){
+  const result=await Tesseract.recognize(canvas,'eng',{
+    workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+    corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
+    langPath:'https://tessdata.projectnaptha.com/4.0.0',
+    logger:m=>{if(m.status){const local=Math.round((m.progress||0)*100);const pct=Math.round(((index+(m.progress||0))/total)*100);status.textContent=`${label}: ${m.status.replace(/_/g,' ')} ${local}%`;bar.style.width=pct+'%'}}
+  });
+  const raw=result.data.text||'',data=parseKarmakText(raw),rated=scoreKarmakData(data,raw,result.data.confidence);
+  return{label,raw,data,ocrConfidence:result.data.confidence||0,score:rated.score,confidence:rated.confidence};
 }
 async function readPhotoDetails(){
   const input=document.getElementById('jobPhoto'),file=input&&input.files&&input.files[0],source=file||photoTestSource;
   if(!source)return alert('Choose, take, or load the included test photo first.');
   const status=document.getElementById('photoStatus'),bar=document.getElementById('ocrBar'),btn=document.getElementById('readPhotoBtn');
-  if(typeof Tesseract==='undefined'){
-    status.className='extract-warning';
-    status.textContent='OCR did not load. Confirm the tablet has internet access, then reload this page.';
-    return;
-  }
-  btn.disabled=true;bar.style.width='0%';status.className='extract-warning';status.textContent='Preparing and sharpening photo…';
+  if(typeof Tesseract==='undefined'){status.className='extract-warning';status.textContent='OCR did not load. Confirm the tablet has internet access, then reload this page.';return}
+  btn.disabled=true;bar.style.width='0%';status.className='extract-warning';status.textContent='Checking lighting and preparing several image versions…';
   try{
-    const prepared=await preparePhotoForOCR(source);
-    const result=await Tesseract.recognize(prepared,'eng',{
-      workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
-      corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
-      langPath:'https://tessdata.projectnaptha.com/4.0.0',
-      logger:m=>{if(m.status){const pct=Math.round((m.progress||0)*100);status.textContent=`${m.status.replace(/_/g,' ')} ${pct?pct+'%':''}`;bar.style.width=pct+'%'}}
-    });
-    const raw=result.data.text||'';
-    const data=parseKarmakText(raw);
+    const bitmap=await loadPhotoBitmap(source),base=drawScaledBitmap(bitmap,2200),stats=photoStats(base);
+    const variants=[
+      {label:'Balanced lighting',canvas:preprocessVariant(base,'balanced')},
+      {label:'Shadow correction',canvas:preprocessVariant(base,'shadow')},
+      {label:'High contrast',canvas:preprocessVariant(base,'threshold')}
+    ];
+    if(stats.sd<42||stats.mean<115)variants.push({label:'Shadow correction + rotation',canvas:rotateCanvas(preprocessVariant(base,'shadow'),-1.5)});
+    const results=[];
+    for(let i=0;i<variants.length;i++)results.push(await runOCRVariant(variants[i].canvas,variants[i].label,i,variants.length,status,bar));
+    results.sort((a,b)=>b.score-a.score);
+    const data=mergeKarmakData(results),confidence=validateKarmakData(data);
     setPhotoField('photoRO',data.ro);setPhotoField('photoTrailer',data.unit);setPhotoField('photoCustomer',data.customer);setPhotoField('photoYear',data.year);setPhotoField('photoMakeModel',data.makeModel);setPhotoField('photoType',data.type);setPhotoField('photoVIN',data.vin);setPhotoField('photoDate',data.date);setPhotoField('photoCreatedBy',data.createdBy);setPhotoField('photoComplaint',data.complaint);
-    document.getElementById('ocrRaw').textContent=raw||'No readable text found.';
-    const found=[data.ro,data.unit,data.customer,data.vin,data.complaint].filter(Boolean).length;
-    bar.style.width='100%';status.className=found>=3?'extract-status':'extract-warning';
-    status.innerHTML=found>=3?`<b>Photo read.</b> Found ${found} key fields. Verify every field before creating the job.`:`<b>The OCR ran, but field matching was weak.</b> Open “Show OCR text” to confirm text was read, then correct the fields or retake the picture.`;
+    markPhotoConfidence('photoRO',confidence.ro);markPhotoConfidence('photoTrailer',confidence.unit);markPhotoConfidence('photoCustomer',confidence.customer);markPhotoConfidence('photoYear',confidence.year);markPhotoConfidence('photoVIN',confidence.vin);markPhotoConfidence('photoComplaint',confidence.complaint);
+    document.getElementById('ocrRaw').textContent=results.map(r=>`===== ${r.label} | score ${r.score.toFixed(1)} | OCR ${Math.round(r.ocrConfidence)}% =====\n${r.raw}`).join('\n\n');
+    const key=['ro','unit','customer','vin','complaint'],high=key.filter(k=>confidence[k]==='high').length,found=key.filter(k=>data[k]).length;
+    bar.style.width='100%';status.className=high>=3?'extract-status':'extract-warning';
+    const lighting=stats.mean<105?'dark':stats.lightPct>.20?'bright/glare':stats.sd<34?'low contrast':'acceptable';
+    status.innerHTML=high>=3?`<b>Adaptive photo read complete.</b> ${high} key fields passed validation. Lighting appeared ${lighting}. Green fields passed format checks; orange or red fields must be corrected.`:`<b>Photo read completed, but confirmation is required.</b> Found ${found} key fields and ${high} passed validation. Lighting appeared ${lighting}. Retake the photo or correct orange/red fields before creating the job.`;
   }catch(err){
-    console.error(err);
-    status.className='extract-warning';
-    status.innerHTML='<b>OCR failed to start.</b> This is usually a blocked language/worker download. Confirm internet access, disable content blocking for this site, reload, and try again.';
-    document.getElementById('ocrRaw').textContent=String(err&&err.message?err.message:err);
+    console.error(err);status.className='extract-warning';status.innerHTML='<b>OCR failed.</b> Confirm internet access, disable content blocking for this GitHub Pages site, reload, and try again.';document.getElementById('ocrRaw').textContent=String(err&&err.message?err.message:err);
   }finally{btn.disabled=false}
 }
 function createPhotoJob(mode='estimate'){const get=id=>(document.getElementById(id)?.value||'').trim();const ro=get('photoRO'),trailer=get('photoTrailer'),customer=get('photoCustomer'),owner=state.user.role==='manager'?(get('photoOwner')||''):state.user.id,file=document.getElementById('jobPhoto').files[0],sourceName=file?file.name:(photoTestSource?'karmak-test-photo.jpg':'');if(!sourceName)return alert('Take, upload, or load a test photo first.');if(!ro||!trailer||!customer)return alert('Verify the repair order, unit number, and company before creating the job.');if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');const isRepair=mode==='repair';const j={id:ro,trailer,customer,status:isRepair?'Repair In Progress':'Estimate In Progress',stage:isRepair?'Repair':'Estimate',jobType:isRepair?'Repair':'Estimate',owner,createdBy:state.user.id,source:'Karmak Photo',photoName:sourceName,photoAttached:true,year:get('photoYear'),makeModel:get('photoMakeModel'),trailerType:get('photoType'),vin:get('photoVIN'),creationDate:get('photoDate'),karmakCreatedBy:get('photoCreatedBy'),complaint:get('photoComplaint'),repairs:[]};const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('photoModal').remove();state.job=j;state.screen='workflow';resetDraft();save()}
