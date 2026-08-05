@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#061a34" />
 <title>JK Trailer Assistant Alpha 1.1 - Field-by-Field Photo OCR |  – Tablet Alpha 1.1</title>
 <style>
 :root{--navy:#061a34;--blue:#0b57d0;--light:#f5f8fc;--line:#d7e0ec;--green:#148a2f;--orange:#ff7a00;--red:#c62828;--text:#132033;--muted:#65758b}
@@ -52,6 +53,39 @@
 .photo-count-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf2ff;color:#0b57d0;font-size:12px;font-weight:800}
 @media(max-width:760px){.ro-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.ro-photo-grid{grid-template-columns:1fr}.ro-photo-card img{height:210px}}
+
+
+/* 11–12.4 inch tablet optimization */
+:root{--tablet-touch:58px;--tablet-radius:14px}
+@media (min-width:700px) and (max-width:1400px){
+body{font-size:18px}.app{grid-template-columns:210px minmax(0,1fr)}.sidebar{padding:16px 12px}.brand{font-size:22px}
+.main{padding:0 16px 96px;max-width:none}.topbar{min-height:68px;padding:10px 18px}.topbar h1{font-size:22px}
+.card{padding:18px;border-radius:var(--tablet-radius)}.workspace{grid-template-columns:minmax(0,1fr) 320px;gap:16px}
+.manager-grid{grid-template-columns:minmax(0,1fr) 350px;gap:16px}.option-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.jobbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.btn,.option,.quick,.list .row,.simple-location-btn{min-height:var(--tablet-touch)}
+.btn{font-size:17px;padding:13px 16px}.option{padding:18px}.option h3{font-size:20px}.list .row{padding:16px;font-size:18px}
+.simple-location-grid{grid-template-columns:1fr 1fr;gap:16px}.simple-location-btn{min-height:105px}.simple-location-btn strong{font-size:23px}
+.verifyhead,.verifyline{grid-template-columns:minmax(0,1fr) 70px 70px 70px}.verifychoice input,.checkrow input{width:26px;height:26px}
+.field input,.field select,.field textarea{min-height:54px;font-size:18px;padding:12px}
+.footer-actions{position:sticky;bottom:0;background:#eef3f8;padding:12px 0;z-index:25}.footer-actions .btn{min-width:140px}
+.photo-preview{max-height:360px}.ro-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ro-photo-card img{height:180px}
+.pinbox{width:min(760px,94vw)}.steps{padding:8px 4px}.step{font-size:14px}.step .n{width:36px;height:36px}
+}
+@media (min-width:700px) and (max-width:1000px) and (orientation:portrait){
+.app{grid-template-columns:1fr}.sidebar{display:none}.main{max-width:900px;margin:0 auto;padding:0 14px 104px}
+.topbar{margin:0 -14px 14px}.workspace,.manager-grid{grid-template-columns:1fr}.workspace>div.grid,.manager-grid>div.grid{margin-top:14px}
+.quick-grid,.jobbar,.pricebar{grid-template-columns:repeat(2,minmax(0,1fr))}.steps{position:sticky;top:68px;z-index:20;background:white}
+.footer-actions{position:fixed;left:0;right:0;bottom:0;background:white;border-top:1px solid var(--line);padding:10px 14px}
+.footer-actions>.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1}.footer-actions .btn{width:100%;min-height:58px}
+.ro-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1000px) and (max-width:1400px) and (orientation:landscape){
+.app{grid-template-columns:220px minmax(0,1fr)}.workspace{grid-template-columns:minmax(0,1fr) 340px}
+.quick-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.jobbar{grid-template-columns:repeat(6,minmax(0,1fr))}
+.ro-photo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ro-photo-card img{height:165px}
+}
+html,body,#root,.app,.main{max-width:100%;overflow-x:hidden}img,canvas,video{max-width:100%;height:auto}.table{max-width:100%}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -335,7 +369,7 @@ function ignoreSuggestion(key){const arr=ignoredSuggestions();if(!arr.includes(k
 function resetDraft(){state.draft={jobType:(state.job?.stage||null),location:null,system:null,brakeType:null,suspensionType:null,suspensionGroup:null,package:null,condition:null,repair:null,parts:{},lubricant:null,verification:{},verificationNotes:{},additionalParts:[],showAdditionalPart:false,repairScope:'Single',scopeQty:1,notes:'',techNo:(state.user?.role==='manager'?(state.job?.owner||''):state.user?.id||'')};state.step=1}
 function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.1</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
 function render(){const root=document.getElementById('root');if(!state.user){root.innerHTML=loginView();return} if(state.screen==='dashboard')root.innerHTML=appShell(dashboard(),'Dashboard');else if(state.screen==='jobs')root.innerHTML=appShell(jobList(),'Open Jobs');else if(state.screen==='workflow')root.innerHTML=appShell(workflow(),'Repair Documentation');else if(state.screen==='manager')root.innerHTML=appShell(managerView(),'Manager View – Estimate');}
-function loginView(){return `<div class="loginwrap"><div class="login"><h1>JK Trailer Assistant</h1><p class="muted">Employee login</p><div class="field"><label>Employee</label><select id="techsel"><option value="">Select technician</option>${TECHS.map(t=>`<option value="${t.id}">#${t.id} – ${t.name}</option>`).join('')}</select></div><div class="field"><label>3-digit code</label><input id="pin" maxlength="3" inputmode="numeric" /></div><button class="btn primary" onclick="login()">Sign In</button><p class="muted" style="margin-top:14px;font-size:12px">Prototype PINs: Manager Jesse 114, George 371, Alex 172, Allen 410, Max 924, Damien 710, Chaz 507, Jalen 351</p></div></div>`}
+function loginView(){return `<div class="loginwrap"><div class="login"><h1>JK Trailer Assistant</h1><p class="muted">Employee login · Optimized for 11–12.4 inch tablets in portrait or landscape.</p><div class="field"><label>Employee</label><select id="techsel"><option value="">Select technician</option>${TECHS.map(t=>`<option value="${t.id}">#${t.id} – ${t.name}</option>`).join('')}</select></div><div class="field"><label>3-digit code</label><input id="pin" maxlength="3" inputmode="numeric" /></div><button class="btn primary" onclick="login()">Sign In</button><p class="muted" style="margin-top:14px;font-size:12px">Prototype PINs: Manager Jesse 114, George 371, Alex 172, Allen 410, Max 924, Damien 710, Chaz 507, Jalen 351</p></div></div>`}
 function login(){const id=document.getElementById('techsel').value;const pin=document.getElementById('pin').value;const t=TECHS.find(x=>x.id===id&&x.pin===pin);if(!t)return alert('Incorrect employee or code');state.user=t;state.screen=t.role==='manager'?'manager':'dashboard';if(t.role==='manager'&&!state.job)state.job=jobs()[0];save()}
 function logout(){state={...state,user:null,screen:'dashboard',job:null};save()}
 function go(s){
@@ -858,3 +892,5 @@ load();
 </script>
 </body>
 </html>
+JK_Trailer_Assistant_Alpha_1.8_Tab_S9_Plus.html
+HTML
