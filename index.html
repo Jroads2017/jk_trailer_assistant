@@ -41,6 +41,18 @@
 
 .version-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#eaf2ff;color:#0b57d0;font-size:12px;font-weight:800}.top-context{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.tech-commons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.commons-card{border:2px solid var(--line);border-radius:12px;background:#fff;padding:16px;min-height:110px;cursor:pointer;text-align:left}.commons-card:hover{border-color:var(--blue);background:#edf4ff}.commons-card strong{display:block;font-size:19px;margin-bottom:5px}.manager-only-note{font-size:12px;color:var(--muted);font-weight:700}.estimate-line-tech{font-size:12px;color:var(--muted)}
 @media(max-width:520px){.tech-commons-grid{grid-template-columns:1fr}}
+
+.ro-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.ro-photo-card{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+.ro-photo-card img{display:block;width:100%;height:150px;object-fit:cover;background:#eef3f8}
+.ro-photo-meta{padding:10px;font-size:13px}
+.ro-photo-meta strong{display:block;margin-bottom:4px}
+.ro-photo-actions{display:flex;gap:8px;margin-top:8px}
+.ro-photo-actions .btn{padding:7px 9px;font-size:12px;min-height:auto}
+.photo-count-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf2ff;color:#0b57d0;font-size:12px;font-weight:800}
+@media(max-width:760px){.ro-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.ro-photo-grid{grid-template-columns:1fr}.ro-photo-card img{height:210px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
@@ -111,6 +123,184 @@ function setSrtOverride(i,v){
  j.repairs[i].estimateUsed=null;
  saveJobs(jobs().map(x=>x.id===j.id?j:x)); state.job=j; render();
 }
+
+const RO_PHOTO_DB='jk_ro_photos_db';
+const RO_PHOTO_STORE='photos';
+function openPhotoDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(RO_PHOTO_DB,1);
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(RO_PHOTO_STORE)){
+        const s=db.createObjectStore(RO_PHOTO_STORE,{keyPath:'id',autoIncrement:true});
+        s.createIndex('ro','ro',{unique:false});
+      }
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function addROPhotoRecord(record){
+  const db=await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(RO_PHOTO_STORE,'readwrite');
+    const req=tx.objectStore(RO_PHOTO_STORE).add(record);
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function getROPhotos(ro){
+  const db=await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(RO_PHOTO_STORE,'readonly');
+    const req=tx.objectStore(RO_PHOTO_STORE).index('ro').getAll(ro);
+    req.onsuccess=()=>resolve((req.result||[]).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)));
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function deleteROPhotoRecord(id){
+  const db=await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(RO_PHOTO_STORE,'readwrite');
+    const req=tx.objectStore(RO_PHOTO_STORE).delete(Number(id));
+    req.onsuccess=()=>resolve();
+    req.onerror=()=>reject(req.error);
+  });
+}
+function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+function compressPhotoDataURL(dataUrl,maxW=1600,quality=.78){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1,maxW/img.width);
+      const c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(img.width*scale));
+      c.height=Math.max(1,Math.round(img.height*scale));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      resolve(c.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=reject;
+    img.src=dataUrl;
+  });
+}
+async function openROPhotos(){
+  if(!state.job)return alert('Open a repair order first.');
+  const modal=document.createElement('div');
+  modal.className='pinmodal';
+  modal.id='roPhotoModal';
+  modal.innerHTML=`<div class="pinbox" style="width:min(900px,96vw);max-height:94vh;overflow:auto">
+    <div class="toolbar" style="justify-content:space-between">
+      <div>
+        <h2 style="margin:0">RO Photos</h2>
+        <small class="muted">${state.job.id} · Trailer ${state.job.trailer} · Internal JK record</small>
+      </div>
+      <button class="btn" onclick="document.getElementById('roPhotoModal').remove()">Close</button>
+    </div>
+    <div class="notice"><b>Photos are internal only.</b> They are not copied into Karmak Cause or Correction.</div>
+    <div class="card" style="margin-top:12px">
+      <div class="field">
+        <label>Photo type</label>
+        <select id="roPhotoType">
+          <option>Before Repair</option>
+          <option>Damage / Concern</option>
+          <option>During Repair</option>
+          <option>After Repair</option>
+          <option>VIN / Identification</option>
+          <option>Part / Component</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Optional note</label><input id="roPhotoNote" placeholder="Example: RR rotor before replacement"></div>
+      <div class="photo-actions" style="justify-content:flex-start">
+        <label class="btn primary" for="roPhotoInput">📷 Take or Upload Photo</label>
+        <input id="roPhotoInput" class="hidden" type="file" accept="image/*" capture="environment">
+      </div>
+      <div id="roPhotoUploadStatus" class="muted" style="margin-top:8px"></div>
+    </div>
+    <div class="toolbar" style="justify-content:space-between;margin-top:14px">
+      <h3 style="margin:0">Photos on this RO</h3>
+      <span id="roPhotoCount" class="photo-count-badge">0 photos</span>
+    </div>
+    <div id="roPhotoGallery" class="ro-photo-grid"></div>
+  </div>`;
+  document.body.appendChild(modal);
+  document.getElementById('roPhotoInput').addEventListener('change',saveROPhotoFromInput);
+  await refreshROPhotoGallery();
+}
+async function saveROPhotoFromInput(e){
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+  const status=document.getElementById('roPhotoUploadStatus');
+  try{
+    status.textContent='Preparing photo…';
+    const raw=await fileToDataURL(file);
+    const dataUrl=await compressPhotoDataURL(raw);
+    await addROPhotoRecord({
+      ro:state.job.id,
+      trailer:state.job.trailer,
+      type:document.getElementById('roPhotoType').value,
+      note:(document.getElementById('roPhotoNote').value||'').trim(),
+      techNo:state.user.id,
+      createdAt:new Date().toISOString(),
+      fileName:file.name,
+      dataUrl
+    });
+    status.textContent='Photo saved to this tablet/browser.';
+    document.getElementById('roPhotoNote').value='';
+    e.target.value='';
+    await refreshROPhotoGallery();
+  }catch(err){
+    console.error(err);
+    status.textContent='Photo could not be saved. Try a smaller image or free browser storage.';
+  }
+}
+async function refreshROPhotoGallery(){
+  const gallery=document.getElementById('roPhotoGallery');
+  if(!gallery||!state.job)return;
+  const photos=await getROPhotos(state.job.id);
+  document.getElementById('roPhotoCount').textContent=`${photos.length} photo${photos.length===1?'':'s'}`;
+  gallery.innerHTML=photos.length?photos.map(p=>`<div class="ro-photo-card">
+    <img src="${p.dataUrl}" alt="${escapeHtml(p.type)} photo">
+    <div class="ro-photo-meta">
+      <strong>${escapeHtml(p.type)}</strong>
+      ${p.note?`<div>${escapeHtml(p.note)}</div>`:''}
+      <div class="muted">Tech ${escapeHtml(p.techNo)} · ${new Date(p.createdAt).toLocaleString()}</div>
+      <div class="ro-photo-actions">
+        <button class="btn" onclick="viewROPhoto(${p.id})">View</button>
+        ${(state.user.role==='manager'||String(p.techNo)===String(state.user.id))?`<button class="btn danger" onclick="removeROPhoto(${p.id})">Delete</button>`:''}
+      </div>
+    </div>
+  </div>`).join(''):'<div class="muted">No photos have been added to this repair order.</div>';
+}
+async function viewROPhoto(id){
+  const photos=await getROPhotos(state.job.id);
+  const p=photos.find(x=>Number(x.id)===Number(id));
+  if(!p)return;
+  const m=document.createElement('div');
+  m.className='pinmodal';
+  m.id='photoViewer';
+  m.innerHTML=`<div class="pinbox" style="width:min(1000px,97vw);max-height:96vh;overflow:auto">
+    <img src="${p.dataUrl}" alt="${escapeHtml(p.type)}" style="width:100%;height:auto;border-radius:8px">
+    <div class="toolbar" style="justify-content:space-between;margin-top:10px">
+      <div><b>${escapeHtml(p.type)}</b><br><small>Tech ${escapeHtml(p.techNo)} · ${new Date(p.createdAt).toLocaleString()}</small></div>
+      <button class="btn" onclick="document.getElementById('photoViewer').remove()">Close</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+}
+async function removeROPhoto(id){
+  if(!confirm('Delete this photo from the RO?'))return;
+  await deleteROPhotoRecord(id);
+  await refreshROPhotoGallery();
+}
+
 const TECHS=[
 {id:'95',name:'Jesse Kroger',pin:'114',role:'manager',quick:[]},
 {id:'8',name:'George Brandenburg',pin:'371',quick:['Lighting','ABS / Electrical','Doors','Air System','All Systems']},
@@ -506,7 +696,7 @@ function unlockJob(id){const j=jobs().find(x=>x.id===id);if(!j)return alert('Rep
 function jobHeader(){const j=state.job;return `<div class="card jobbar"><div class="jobitem"><div class="label">Trailer #</div><div class="value">${j.trailer}</div></div><div class="jobitem"><div class="label">Customer</div><div class="value">${j.customer}</div></div><div class="jobitem"><div class="label">Work Order</div><div class="value">${j.id}</div></div><div class="jobitem"><div class="label">Stage</div><div class="value">${j.stage}</div></div><div class="jobitem"><div class="label">Status</div><span class="status">${j.status}</span></div><div><div class="label">Current Repair</div><div class="value">${state.draft.location||'—'}</div>${j.photoAttached?`<div class="photo-badge" style="margin-top:5px">📷 Photo Created</div>`:''}</div></div>`}
 function isEstimateMode(){return state.draft?.jobType==='Estimate'||state.job?.stage==='Estimate'}
 function steps(){const estimate=isEstimateMode();const partStep=state.user?.role==='manager'?'Parts / Time':'Parts';const names=estimate?['Location','System','Component','Condition','Repair',partStep,'Review']:['Location','System','Component','Condition','Repair',partStep,'Verification','Review'];const visibleStep=estimate&&state.step===8?7:state.step;return `<div class="card steps">${names.map((n,i)=>`<div class="step ${visibleStep===i+1?'active':visibleStep>i+1?'done':''}"><span class="n">${visibleStep>i+1?'✓':i+1}</span><span>${n}</span></div>${i<names.length-1?'<span class="arrow">→</span>':''}`).join('')}</div>`}
-function workflow(){const isMgr=state.user?.role==='manager';const savedHours=(state.job?.repairs||[]).reduce((s,r)=>s+laborHours(r),0);return `${jobHeader()}${steps()}<div class="mobile-actions"><button class="btn issue-btn" onclick="foundSeparateIssue()">+ Found Separate Issue</button><button class="btn" onclick="openTechCommons()">🧰 Tech Commons</button></div><div class="workspace"><div class="card panel">${stepContent()}</div><div class="grid"><div class="card"><h3>Current Component</h3>${summary()}</div><div class="card"><h3>${state.draft.jobType==='Estimate'||state.job?.stage==='Estimate'?'Estimate Components':'Current Work Order'}</h3>${state.job.repairs.length?state.job.repairs.map((r,i)=>`<div class="summaryline"><span><b>${i+1}. ${r.location} – ${r.package}</b>${r.separateIssue?' <b>(Separate Issue)</b>':''}<br><small>${r.repair||''} · Tech ${r.techNo||'—'}</small></span>${isMgr?`<b>${laborHours(r).toFixed(1)} hr</b>`:''}</div>`).join(''):'<p class="muted">No components added yet.</p>'}${state.job.repairs.length&&isMgr?`<div class="summaryline" style="border-top:2px solid var(--line);margin-top:8px;padding-top:12px"><span><b>Total estimate hours</b></span><b>${savedHours.toFixed(1)} hr</b></div>`:''}</div><button class="btn primary" onclick="addAnother()">+ Add Another Component</button></div></div>`}
+function workflow(){const isMgr=state.user?.role==='manager';const savedHours=(state.job?.repairs||[]).reduce((s,r)=>s+laborHours(r),0);return `${jobHeader()}${steps()}<div class="mobile-actions"><button class="btn issue-btn" onclick="foundSeparateIssue()">+ Found Separate Issue</button><button class="btn" onclick="openTechCommons()">🧰 Tech Commons</button><button class="btn" onclick="openROPhotos()">📷 RO Photos</button></div><div class="workspace"><div class="card panel">${stepContent()}</div><div class="grid"><div class="card"><h3>Current Component</h3>${summary()}</div><div class="card"><h3>${state.draft.jobType==='Estimate'||state.job?.stage==='Estimate'?'Estimate Components':'Current Work Order'}</h3>${state.job.repairs.length?state.job.repairs.map((r,i)=>`<div class="summaryline"><span><b>${i+1}. ${r.location} – ${r.package}</b>${r.separateIssue?' <b>(Separate Issue)</b>':''}<br><small>${r.repair||''} · Tech ${r.techNo||'—'}</small></span>${isMgr?`<b>${laborHours(r).toFixed(1)} hr</b>`:''}</div>`).join(''):'<p class="muted">No components added yet.</p>'}${state.job.repairs.length&&isMgr?`<div class="summaryline" style="border-top:2px solid var(--line);margin-top:8px;padding-top:12px"><span><b>Total estimate hours</b></span><b>${savedHours.toFixed(1)} hr</b></div>`:''}</div><button class="btn primary" onclick="addAnother()">+ Add Another Component</button></div></div>`}
 function stepContent(){if(state.step===1)return locationStep();if(state.step===2)return systemStep();if(state.step===3)return componentStep();if(state.step===4)return conditionStep();if(state.step===5)return repairStep();if(state.step===6)return partsStep();if(state.step===7&&!isEstimateMode())return verifyStep();return finishStep()}
 function jobTypeStep(){return `<div class="eyebrow">STEP 1 OF 9</div><h2>Estimate or Repair?</h2><p class="muted">Choose how this repair line should begin.</p><div class="jobtype-grid"><div class="option ${state.draft.jobType==='Estimate'?'selected':''}" onclick="setJobType('Estimate')"><h3>ESTIMATE</h3><small>Document proposed work for manager or customer approval.</small></div><div class="option ${state.draft.jobType==='Repair'?'selected':''}" onclick="setJobType('Repair')"><h3>REPAIR</h3><small>Document authorized work being performed.</small></div></div>${footer(false,'Select Location','nextStep()',!state.draft.jobType)}`}
 function setJobType(v){state.draft.jobType=v;state.job.stage=v;if(v==='Estimate')state.job.status='Estimate In Progress';else state.job.status='Repair In Progress';save()}
@@ -661,7 +851,7 @@ function managerView(){
    setTimeout(()=>alert('Manager authorization is required to view labor times, SRT information, rates, and totals.'),0);
    return dashboard();
  }
- const j=state.job||jobs()[0];const reps=j.repairs.length?j.repairs:[{location:'Right Rear',system:'Brakes',brakeType:'Disc',package:'Brake Rotor',condition:'Worn',repair:'Replace',lubricant:'80W-90',parts:{},techNo:'394'},{location:'Left Front',system:'Wheel End',package:'Hub Cap',condition:'Cracked',repair:'Replace',lubricant:'80W-90',parts:{},techNo:'8'}];const hrs=reps.reduce((s,r)=>s+laborHours(r),0);const rate=119,labor=hrs*rate,supplies=labor*.13,epa=6,total=labor+supplies+epa;const cause=causeText(reps),correction=correctionText(reps);const parts=consolidatedParts(reps);return `<div class="manager-grid"><div><div class="card"><h2>Estimate Review</h2><table class="table"><thead><tr><th>#</th><th>Location</th><th>System / Repair</th><th>Tech #</th><th>Description</th><th>Hours Used</th><th></th></tr></thead><tbody>${reps.map((r,i)=>`<tr><td>${i+1}</td><td>${r.location}</td><td><b>${r.system}${r.brakeType?' – '+r.brakeType:''}</b><br>${r.package} ${r.repair}${['Hub Cap','Air Bag'].includes(r.package)?`<br><small>Scope: ${scopeLabel(r)}</small>`:''}</td><td><span class="techstamp">${r.techNo||'—'}</span></td><td>${r.condition}; ${r.repair.toLowerCase()} ${r.package.toLowerCase()}.</td><td><b>${laborHours(r).toFixed(1)} hr</b></td><td>${j.repairs.length?`<button class="btn danger" onclick="removeEstimateComponent(${i})">Remove</button>`:''}</td></tr>`).join('')}</tbody></table><div class="toolbar" style="margin-top:10px;flex-wrap:wrap"><button class="btn primary" onclick="managerAddRepair()">+ Add Component to Estimate</button><button class="btn" onclick="managerNewEstimate()">Create New Estimate</button><button class="btn" onclick="createFromPhoto()">📷 Create from Photo</button></div></div><div class="card copybox"><div class="toolbar" style="justify-content:space-between"><h3>CAUSE <small>(Copy to Karmak)</small></h3><button class="btn" onclick="copyText('cause')">Copy</button></div><textarea id="cause">${cause}</textarea></div><div class="card copybox"><div class="toolbar" style="justify-content:space-between"><h3>CORRECTION <small>(Copy to Karmak)</small></h3><button class="btn" onclick="copyText('correction')">Copy</button></div><textarea id="correction">${correction}</textarea></div></div><div class="grid"><div class="card"><h3>Labor Intelligence <small>(Manager Only)</small></h3><div class="manager-only-note">Industry line, JK average, estimate used, and actual Karmak hours never appear on technician screens.</div><div class="notice"><b>LABOR RATE: $119.00 / HR</b><div style="margin-top:10px"><label><b>SRT time basis:</b></label> <select onchange="setSrtMode(this.value)"><option value="average" ${srtMode()==='average'?'selected':''}>Average</option><option value="goal" ${srtMode()==='goal'?'selected':''}>Goal</option></select></div></div>${reps.map((r,i)=>{const samples=laborSamples(r),avg=jkAverage(r),conf=samples<10?'Learning':samples<25?'Developing':samples<50?'Established':'High Confidence';const se=srtEntryFor(r),si=srtIndexFor(r);return `<div class="labor-intel"><div class="li-row"><span><b>${r.package}</b><br><small>${r.location}</small></span><span></span></div><div class="li-row"><span>SRT matched line<br><small>${se?se.description:'No automatic match'}</small></span><b>${se?`${se.goal??'—'} goal<br>${se.average??'—'} avg`:'—'}</b></div><div class="li-row"><label>SRT override</label><select onchange="setSrtOverride(${i},this.value)"><option value="">Automatic match</option>${SRT_LIBRARY.map((x,n)=>`<option value="${n}" ${si===n?'selected':''}>${x.description} — G ${x.goal??'—'} / A ${x.average??'—'}</option>`).join('')}</select></div><div class="li-row"><span>Time generated from SRT</span><b>${srtHours(r)!=null?srtHours(r).toFixed(2)+' hr':'Fallback'}</b></div><div class="li-row"><span>Industry line</span><b>${industryHours(r).toFixed(1)} hr</b></div><div class="li-row"><span>JK average<br><span class="confidence">${conf} · ${samples} example(s)</span></span><b>${avg.toFixed(1)} hr</b></div><div class="li-row"><label for="used-${i}">Estimate used</label><input id="used-${i}" type="number" step="0.25" min="0" value="${laborHours(r)}" onchange="setEstimateUsed(${i},this.value)"></div>${j.repairs.length?`<div class="li-row"><label for="actual-${i}">Actual Karmak hours</label><span><input id="actual-${i}" type="number" step="0.25" min="0" value="${r.actualKarmakHours||''}"><button class="btn" style="margin-top:6px;width:100%" onclick="saveActualHours(${i})">Add to JK Average</button></span></div>`:''}</div>`}).join('')}<div class="summaryline"><span>Estimated Total Labor Hours</span><b>${hrs.toFixed(1)}</b></div><div class="summaryline"><span>Estimated Labor Amount</span><b>$${labor.toFixed(2)}</b></div></div><div class="card"><h3>Automated Parts Pull List <small>(No Part Numbers or Pricing)</small></h3><ul class="parts-pull">${parts.map(([p,q])=>`<li><span>${p}</span><b>${q}</b></li>`).join('')}</ul></div><div class="card"><h3>Shop Learning – Note Suggestions</h3><p class="muted">Repeated completed-repair notes are collected here. Approving one adds it as a shortcut button.</p>${Object.entries(noteLearning()).filter(([k,v])=>v.count>=2&&!ignoredSuggestions().includes(k)).sort((a,b)=>b[1].count-a[1].count).slice(0,8).map(([k,v])=>`<div class="learning-card"><div class="toolbar" style="justify-content:space-between"><b>${v.label}</b><span class="count">${v.count} notes</span></div><small>${Object.keys(v.techs||{}).length} technician(s)</small><div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick='approveSuggestion(${JSON.stringify(k)})'>Approve as Button</button><button class="btn" onclick='ignoreSuggestion(${JSON.stringify(k)})'>Ignore</button></div></div>`).join('')||'<div class="muted">No repeated note suggestions yet. Complete repairs with notes to begin learning.</div>'}</div><div class="card"><h3>Standards Applied</h3><div>✓ Cross-system required parts</div><div>✓ Tech # retained internally</div><div>✓ Karmak Cause and Correction kept clean</div></div></div></div><div class="pricebar"><div class="pricebox">Labor Hours<strong>${hrs.toFixed(1)}</strong></div><div class="pricebox">Labor Amount<strong>$${labor.toFixed(2)}</strong></div><div class="pricebox">Shop Supplies 13%<strong>$${supplies.toFixed(2)}</strong></div><div class="pricebox">EPA Fee<strong>$6.00</strong></div><div class="pricebox" style="background:#062b5c;color:white">Estimate Total<strong>$${total.toFixed(2)}</strong></div></div><div class="footer-actions"><button class="btn" onclick="go('dashboard')">Save as Draft</button><div class="toolbar"><button class="btn primary" onclick="promptConvertEstimate()">Convert Estimate to RO</button><button class="btn success">Approve Estimate & Send to Customer →</button></div></div>`}
+ const j=state.job||jobs()[0];const reps=j.repairs.length?j.repairs:[{location:'Right Rear',system:'Brakes',brakeType:'Disc',package:'Brake Rotor',condition:'Worn',repair:'Replace',lubricant:'80W-90',parts:{},techNo:'394'},{location:'Left Front',system:'Wheel End',package:'Hub Cap',condition:'Cracked',repair:'Replace',lubricant:'80W-90',parts:{},techNo:'8'}];const hrs=reps.reduce((s,r)=>s+laborHours(r),0);const rate=119,labor=hrs*rate,supplies=labor*.13,epa=6,total=labor+supplies+epa;const cause=causeText(reps),correction=correctionText(reps);const parts=consolidatedParts(reps);return `<div class="manager-grid"><div><div class="card"><h2>Estimate Review</h2><table class="table"><thead><tr><th>#</th><th>Location</th><th>System / Repair</th><th>Tech #</th><th>Description</th><th>Hours Used</th><th></th></tr></thead><tbody>${reps.map((r,i)=>`<tr><td>${i+1}</td><td>${r.location}</td><td><b>${r.system}${r.brakeType?' – '+r.brakeType:''}</b><br>${r.package} ${r.repair}${['Hub Cap','Air Bag'].includes(r.package)?`<br><small>Scope: ${scopeLabel(r)}</small>`:''}</td><td><span class="techstamp">${r.techNo||'—'}</span></td><td>${r.condition}; ${r.repair.toLowerCase()} ${r.package.toLowerCase()}.</td><td><b>${laborHours(r).toFixed(1)} hr</b></td><td>${j.repairs.length?`<button class="btn danger" onclick="removeEstimateComponent(${i})">Remove</button>`:''}</td></tr>`).join('')}</tbody></table><div class="toolbar" style="margin-top:10px;flex-wrap:wrap"><button class="btn primary" onclick="managerAddRepair()">+ Add Component to Estimate</button><button class="btn" onclick="managerNewEstimate()">Create New Estimate</button><button class="btn" onclick="createFromPhoto()">📷 Create from Photo</button><button class="btn" onclick="openROPhotos()">📷 RO Photos</button></div></div><div class="card copybox"><div class="toolbar" style="justify-content:space-between"><h3>CAUSE <small>(Copy to Karmak)</small></h3><button class="btn" onclick="copyText('cause')">Copy</button></div><textarea id="cause">${cause}</textarea></div><div class="card copybox"><div class="toolbar" style="justify-content:space-between"><h3>CORRECTION <small>(Copy to Karmak)</small></h3><button class="btn" onclick="copyText('correction')">Copy</button></div><textarea id="correction">${correction}</textarea></div></div><div class="grid"><div class="card"><h3>Labor Intelligence <small>(Manager Only)</small></h3><div class="manager-only-note">Industry line, JK average, estimate used, and actual Karmak hours never appear on technician screens.</div><div class="notice"><b>LABOR RATE: $119.00 / HR</b><div style="margin-top:10px"><label><b>SRT time basis:</b></label> <select onchange="setSrtMode(this.value)"><option value="average" ${srtMode()==='average'?'selected':''}>Average</option><option value="goal" ${srtMode()==='goal'?'selected':''}>Goal</option></select></div></div>${reps.map((r,i)=>{const samples=laborSamples(r),avg=jkAverage(r),conf=samples<10?'Learning':samples<25?'Developing':samples<50?'Established':'High Confidence';const se=srtEntryFor(r),si=srtIndexFor(r);return `<div class="labor-intel"><div class="li-row"><span><b>${r.package}</b><br><small>${r.location}</small></span><span></span></div><div class="li-row"><span>SRT matched line<br><small>${se?se.description:'No automatic match'}</small></span><b>${se?`${se.goal??'—'} goal<br>${se.average??'—'} avg`:'—'}</b></div><div class="li-row"><label>SRT override</label><select onchange="setSrtOverride(${i},this.value)"><option value="">Automatic match</option>${SRT_LIBRARY.map((x,n)=>`<option value="${n}" ${si===n?'selected':''}>${x.description} — G ${x.goal??'—'} / A ${x.average??'—'}</option>`).join('')}</select></div><div class="li-row"><span>Time generated from SRT</span><b>${srtHours(r)!=null?srtHours(r).toFixed(2)+' hr':'Fallback'}</b></div><div class="li-row"><span>Industry line</span><b>${industryHours(r).toFixed(1)} hr</b></div><div class="li-row"><span>JK average<br><span class="confidence">${conf} · ${samples} example(s)</span></span><b>${avg.toFixed(1)} hr</b></div><div class="li-row"><label for="used-${i}">Estimate used</label><input id="used-${i}" type="number" step="0.25" min="0" value="${laborHours(r)}" onchange="setEstimateUsed(${i},this.value)"></div>${j.repairs.length?`<div class="li-row"><label for="actual-${i}">Actual Karmak hours</label><span><input id="actual-${i}" type="number" step="0.25" min="0" value="${r.actualKarmakHours||''}"><button class="btn" style="margin-top:6px;width:100%" onclick="saveActualHours(${i})">Add to JK Average</button></span></div>`:''}</div>`}).join('')}<div class="summaryline"><span>Estimated Total Labor Hours</span><b>${hrs.toFixed(1)}</b></div><div class="summaryline"><span>Estimated Labor Amount</span><b>$${labor.toFixed(2)}</b></div></div><div class="card"><h3>Automated Parts Pull List <small>(No Part Numbers or Pricing)</small></h3><ul class="parts-pull">${parts.map(([p,q])=>`<li><span>${p}</span><b>${q}</b></li>`).join('')}</ul></div><div class="card"><h3>Shop Learning – Note Suggestions</h3><p class="muted">Repeated completed-repair notes are collected here. Approving one adds it as a shortcut button.</p>${Object.entries(noteLearning()).filter(([k,v])=>v.count>=2&&!ignoredSuggestions().includes(k)).sort((a,b)=>b[1].count-a[1].count).slice(0,8).map(([k,v])=>`<div class="learning-card"><div class="toolbar" style="justify-content:space-between"><b>${v.label}</b><span class="count">${v.count} notes</span></div><small>${Object.keys(v.techs||{}).length} technician(s)</small><div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick='approveSuggestion(${JSON.stringify(k)})'>Approve as Button</button><button class="btn" onclick='ignoreSuggestion(${JSON.stringify(k)})'>Ignore</button></div></div>`).join('')||'<div class="muted">No repeated note suggestions yet. Complete repairs with notes to begin learning.</div>'}</div><div class="card"><h3>Standards Applied</h3><div>✓ Cross-system required parts</div><div>✓ Tech # retained internally</div><div>✓ Karmak Cause and Correction kept clean</div></div></div></div><div class="pricebar"><div class="pricebox">Labor Hours<strong>${hrs.toFixed(1)}</strong></div><div class="pricebox">Labor Amount<strong>$${labor.toFixed(2)}</strong></div><div class="pricebox">Shop Supplies 13%<strong>$${supplies.toFixed(2)}</strong></div><div class="pricebox">EPA Fee<strong>$6.00</strong></div><div class="pricebox" style="background:#062b5c;color:white">Estimate Total<strong>$${total.toFixed(2)}</strong></div></div><div class="footer-actions"><button class="btn" onclick="go('dashboard')">Save as Draft</button><div class="toolbar"><button class="btn primary" onclick="promptConvertEstimate()">Convert Estimate to RO</button><button class="btn success">Approve Estimate & Send to Customer →</button></div></div>`}
 function partsDataFor(r){if(r.package==='Brake Rotor')return ['Brake Rotor','Rotor Mounting Bolts','Wheel Seal','Hub Cap Gasket',r.lubricant||'80W-90 or EBL'];if(r.package==='Hub Cap'){const q=scopeQuantity(r);return Array(q).fill('Hub Cap').concat(Array(q).fill('Hub Cap Gasket'),[r.lubricant||'80W-90 or EBL']);}if(r.package==='Wheel Seal')return ['Wheel Seal','Hub Cap Gasket',r.lubricant||'80W-90 or EBL'];if(r.package==='Brake Caliper')return ['Brake Caliper','Caliper Mounting Bolts','Blue Loctite','Wheel Seal','Hub Cap Gasket',r.lubricant||'80W-90 or EBL'];if(r.package==='Air Bag'){const q=scopeQuantity(r);return Array(q).fill('Air Bag').concat(Array(q).fill('Air Bag Mounting Kit'),Array(q).fill('Air Fitting'));}if(r.package==='Height Control Valve')return ['Height Control Valve'];if(r.package==='Air Lines / Fittings')return ['Air Line / Fitting'];if(r.package==='Shock Absorber')return ['Shock Absorber'];if(r.package==='Alignment')return ['Alignment Service'];if(r.package==='Bogey')return r.repair==='Replace'?['Bogey Assembly','Mounting Hardware']:['Bogey Repair Materials'];if(r.package==='Dump Valve')return ['Dump Valve'];if(r.package==='Install New Light')return ['Light','Wire Harness / Pigtail','Harness Connector','Mounting Screws'];if(['Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'].includes(r.package))return ['Wiring Repair Materials','Butt Connectors','Zip Ties','Heat Shrink'];if(r.package==='Slider Box Rebuild')return ['Slider Box Repair Materials'];if(r.package==='Complete Slider Box Replacement')return ['Complete Slider Box','Box Weld'];if(['Roadside Leg','Curbside Leg','Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','Cross Tube','K-Brace','Drive Shaft','Bushings','Pins / Roll Pins','Complete Landing Gear Assembly'].includes(r.package))return [r.package];return [r.package]}
 function copyText(id){const el=document.getElementById(id);el.select();navigator.clipboard.writeText(el.value);alert(id.toUpperCase()+' copied')}
 load();
