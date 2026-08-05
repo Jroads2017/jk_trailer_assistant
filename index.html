@@ -95,7 +95,7 @@ function jobList(){return dashboard()}
 function newJob(){const ownerOptions=state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="newOwner"><option value="">Unassigned</option>${TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('')}</select></div>`:'';document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="newJobModal"><div class="pinbox"><h3>Create New Job</h3><div class="create-choice"><button class="btn primary" onclick="showManualJobFields()">Manual Entry</button><button class="btn" onclick="document.getElementById('newJobModal').remove();createFromPhoto()">📷 Create from Photo</button></div><div id="manualJobFields" class="hidden"><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="newRO"></div><div class="field"><label>Trailer Number <span class="required">!</span></label><input id="newTrailer"></div><div class="field"><label>Trailer Owner / Company <span class="required">!</span></label><input id="newCustomer"></div>${ownerOptions}<div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('newJobModal').remove()">Cancel</button><button class="btn primary" onclick="createManualJob()">Create Job</button></div></div><div id="newJobInitialActions" class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('newJobModal').remove()">Cancel</button></div></div></div>`)}
 function showManualJobFields(){document.getElementById('manualJobFields').classList.remove('hidden');document.getElementById('newJobInitialActions').classList.add('hidden')}
 function createManualJob(){const ro=document.getElementById('newRO').value.trim(),trailer=document.getElementById('newTrailer').value.trim(),customer=document.getElementById('newCustomer').value.trim(),owner=state.user.role==='manager'?(document.getElementById('newOwner').value||''):state.user.id;if(!ro||!trailer||!customer)return alert('Repair order, trailer number, and company are required.');if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');const j={id:ro,trailer,customer,status:'Estimate In Progress',stage:'Estimate',owner,createdBy:state.user.id,source:'Manual Entry',repairs:[]};const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('newJobModal').remove();state.job=j;state.screen='workflow';resetDraft();save()}
-function createFromPhoto(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="photoModal"><div class="pinbox" style="width:min(720px,96vw);max-height:96vh;overflow:auto"><span class="photo-badge">CREATE FROM KARMAK PHOTO</span><h3 style="margin-top:0">Read the seven job-identification fields</h3><p class="muted">The reader focuses only on Owning Customer, Repair Order, Unit, VIN, Year, Make, and Type. Review every value before creating the estimate or repair.</p><div class="photo-drop"><div class="photo-actions"><label class="btn primary" for="jobPhoto">📷 Take or Upload Photo</label><button type="button" class="btn" onclick="useIncludedTestPhoto()">Use Included Test Photo</button><input id="jobPhoto" type="file" accept="image/*" capture="environment" class="hidden"></div><img id="jobPhotoPreview" class="photo-preview hidden" alt="Repair order photo preview"><div id="photoFileName" class="muted" style="margin-top:8px"></div><div class="photo-help">Keep the full page visible, place the camera directly above the form, and avoid glare over the customer and unit-information areas.</div></div><button id="readPhotoBtn" class="btn primary" style="width:100%" disabled onclick="readPhotoDetails()">Read Seven Fields</button><div class="ocr-progress"><span id="ocrBar"></span></div><div id="photoStatus" class="extract-warning">No photo selected.</div><div class="ocr-grid"><div class="field wide"><label>Owning Customer <span class="required">!</span></label><input id="photoCustomer" placeholder="Customer name"></div><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="photoRO" inputmode="numeric" placeholder="RO number"></div><div class="field"><label>Unit <span class="required">!</span></label><input id="photoTrailer" placeholder="Unit number"></div><div class="field wide"><label>VIN</label><input id="photoVIN" autocapitalize="characters" placeholder="17-character VIN"></div><div class="field"><label>Year</label><input id="photoYear" inputmode="numeric" placeholder="Year"></div><div class="field"><label>Make</label><input id="photoMake" placeholder="Make"></div><div class="field wide"><label>Type</label><input id="photoType" placeholder="Trailer type"></div></div>${state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="photoOwner"><option value="">Unassigned</option>${techOptions}</select></div>`:''}<details style="margin:8px 0"><summary>Show field-reading details</summary><div id="ocrRaw" class="ocr-raw">No OCR text yet.</div></details><div class="create-choice"><button class="btn warn" onclick="createPhotoJob('estimate')">Confirm & Create Estimate</button><button class="btn success" onclick="createPhotoJob('repair')">Confirm & Create Repair</button></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('photoModal').remove()">Cancel</button></div></div></div>`);document.getElementById('jobPhoto').addEventListener('change',previewJobPhoto)}
+function createFromPhoto(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="photoModal"><div class="pinbox" style="width:min(760px,96vw);max-height:96vh;overflow:auto"><span class="photo-badge">CREATE NEW RO FROM KARMAK PHOTO</span><h3 style="margin-top:0">Read the nine required RO fields</h3><p class="muted">The reader checks the same nine fixed areas marked on the Karmak form. Review every value before creating the estimate or repair.</p><div class="photo-drop"><div class="photo-actions"><label class="btn primary" for="jobPhoto">📷 Take or Upload Photo</label><button type="button" class="btn" onclick="useIncludedTestPhoto()">Use Included Test Photo</button><input id="jobPhoto" type="file" accept="image/*" capture="environment" class="hidden"></div><img id="jobPhotoPreview" class="photo-preview hidden" alt="Repair order photo preview"><div id="photoFileName" class="muted" style="margin-top:8px"></div><div class="photo-help">Keep the full page in the picture. The form should be upright with all four page edges visible when possible.</div></div><button id="readPhotoBtn" class="btn primary" style="width:100%" disabled onclick="readPhotoDetails()">Read 9 RO Fields</button><div class="ocr-progress"><span id="ocrBar"></span></div><div id="photoStatus" class="extract-warning">No photo selected.</div><div class="ocr-grid"><div class="field wide"><label>1. Billing Customer</label><input id="photoBillingCustomer" placeholder="Billing customer"></div><div class="field wide"><label>2. Owning Customer <span class="required">!</span></label><input id="photoCustomer" placeholder="Owning customer"></div><div class="field"><label>3. Repair Order Number <span class="required">!</span></label><input id="photoRO" inputmode="numeric" placeholder="RO number"></div><div class="field"><label>4. Unit <span class="required">!</span></label><input id="photoTrailer" placeholder="Unit number"></div><div class="field"><label>5. Year</label><input id="photoYear" inputmode="numeric" placeholder="Year"></div><div class="field wide"><label>6. Make / Model</label><input id="photoMakeModel" placeholder="Make and model"></div><div class="field wide"><label>7. Type</label><input id="photoType" placeholder="Trailer type"></div><div class="field wide"><label>8. VIN</label><input id="photoVIN" autocapitalize="characters" placeholder="17-character VIN"></div><div class="field wide"><label>9. Complaint / Work Requested</label><textarea id="photoComplaint" style="width:100%;min-height:100px" placeholder="Complaint text"></textarea></div></div>${state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="photoOwner"><option value="">Unassigned</option>${techOptions}</select></div>`:''}<details style="margin:8px 0"><summary>Show field-reading details</summary><div id="ocrRaw" class="ocr-raw">No OCR text yet.</div></details><div class="create-choice"><button class="btn warn" onclick="createPhotoJob('estimate')">Confirm & Create Estimate</button><button class="btn success" onclick="createPhotoJob('repair')">Confirm & Create Repair</button></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('photoModal').remove()">Cancel</button></div></div></div>`);document.getElementById('jobPhoto').addEventListener('change',previewJobPhoto)}
 let photoTestSource=null;
 function previewJobPhoto(e){const file=e.target.files&&e.target.files[0];if(!file)return;photoTestSource=null;const img=document.getElementById('jobPhotoPreview');img.src=URL.createObjectURL(file);img.classList.remove('hidden');document.getElementById('photoFileName').textContent=file.name;document.getElementById('readPhotoBtn').disabled=false;document.getElementById('photoStatus').className='extract-warning';document.getElementById('photoStatus').textContent='Photo selected. Reading automatically…';document.getElementById('ocrBar').style.width='0%';setTimeout(()=>readPhotoDetails(),150)}
 async function useIncludedTestPhoto(){photoTestSource='karmak-test-photo.jpg';const img=document.getElementById('jobPhotoPreview');img.src=photoTestSource;img.classList.remove('hidden');document.getElementById('photoFileName').textContent='Included test photo: RO 20802';document.getElementById('readPhotoBtn').disabled=false;document.getElementById('photoStatus').className='extract-warning';document.getElementById('photoStatus').textContent='Loading included Karmak test photo…';await readPhotoDetails()}
@@ -236,30 +236,36 @@ function fieldParser(name,raw){
     const x=all.match(/[A-HJ-NPR-Z0-9]{17}/);
     return x?x[0]:all.slice(0,17);
   }
-  if(name==='customer'){
-    let x=cleanFieldOCR(v,'Owning Customer').replace(/\bPhone\b.*$/i,'').replace(/\bContact\b.*$/i,'');
+  if(name==='billingCustomer'||name==='customer'){
+    const label=name==='billingCustomer'?'Billing Customer':'Owning Customer';
+    let x=cleanFieldOCR(v,label).replace(/\bPhone\b.*$/i,'').replace(/\bContact\b.*$/i,'').replace(/\bCustomer P\/?O\b.*$/i,'');
     const lines=String(raw||'').split(/\r?\n/).map(cleanOCRLine).filter(Boolean);
-    const filtered=lines.filter(line=>!/(Owning Customer|Phone|Contact|Industrial Road|Canton|\bSD\b|\d{3}-\d{3}-\d{4})/i.test(line));
+    const filtered=lines.filter(line=>!new RegExp(`${label}|Phone|Contact|Customer P/?O|Industrial Road|Crossroads Blvd|Canton|Albert Lea|\\bSD\\b|\\bMN\\b|\\d{3}-\\d{3}-\\d{4}`,'i').test(line));
     if(filtered.length)x=filtered[0];
     return x.replace(/[^A-Z0-9&'().,\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,80);
   }
-  if(name==='make'){
-    let x=cleanFieldOCR(v,'Make / Model').replace(/\bVIN\b.*$/i,'').replace(/\bMeter\b.*$/i,'').trim();
-    if(x.includes('/'))x=x.split('/')[0].trim();
-    return x.replace(/[^A-Z0-9&'().\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,50);
+  if(name==='makeModel'){
+    return cleanFieldOCR(v,'Make/Model').replace(/\bVIN\b.*$/i,'').replace(/\bMeter\b.*$/i,'').replace(/\bType\b.*$/i,'').replace(/[^A-Z0-9&'()./\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,80);
   }
-  if(name==='type')return cleanFieldOCR(v,'Type').replace(/\bECM\b.*$/i,'').replace(/[^A-Z0-9&'().\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,50);
+  if(name==='type')return cleanFieldOCR(v,'Type').replace(/\bECM\b.*$/i,'').replace(/[^A-Z0-9&'()./\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,50);
+  if(name==='complaint'){
+    let x=String(raw||'').replace(/\r/g,' ').replace(/\n+/g,' ').replace(/\s+/g,' ').trim();
+    x=x.replace(/^.*?Complaint\s*:\s*/i,'').replace(/\s*(Cause|Correction)\s*:.*$/i,'').trim();
+    return x.slice(0,700);
+  }
   return v;
 }
 const KARMAK_FIELD_REGIONS=[
-  // Coordinates are relative to the full photographed page. Each crop includes the printed label and its value.
-  {name:'customer',label:'Owning Customer',box:{x:.52,y:.105,w:.43,h:.125},target:'photoCustomer',mode:'6'},
-  {name:'ro',label:'Repair Order',box:{x:.055,y:.225,w:.22,h:.095},target:'photoRO',whitelist:'0123456789',mode:'6'},
-  {name:'unit',label:'Unit',box:{x:.045,y:.405,w:.27,h:.075},target:'photoTrailer',whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-',mode:'7'},
-  {name:'year',label:'Year',box:{x:.295,y:.405,w:.17,h:.075},target:'photoYear',whitelist:'0123456789',mode:'7'},
-  {name:'make',label:'Make / Model',box:{x:.045,y:.445,w:.55,h:.060},target:'photoMake',mode:'7'},
-  {name:'type',label:'Type',box:{x:.645,y:.415,w:.31,h:.075},target:'photoType',mode:'7'},
-  {name:'vin',label:'VIN',box:{x:.040,y:.485,w:.49,h:.065},target:'photoVIN',whitelist:'ABCDEFGHJKLMNPRSTUVWXYZ0123456789',mode:'7'}
+  // Ratios match the standard full-page Karmak hard-copy form shown in the marked reference photo.
+  {name:'billingCustomer',label:'Billing Customer',box:{x:.025,y:.165,w:.445,h:.145},target:'photoBillingCustomer',mode:'6'},
+  {name:'customer',label:'Owning Customer',box:{x:.515,y:.165,w:.445,h:.145},target:'photoCustomer',mode:'6'},
+  {name:'ro',label:'Repair Order',box:{x:.025,y:.305,w:.185,h:.110},target:'photoRO',whitelist:'0123456789',mode:'6'},
+  {name:'unit',label:'Unit',box:{x:.010,y:.490,w:.285,h:.055},target:'photoTrailer',whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-',mode:'7'},
+  {name:'year',label:'Year',box:{x:.285,y:.490,w:.155,h:.055},target:'photoYear',whitelist:'0123456789',mode:'7'},
+  {name:'makeModel',label:'Make / Model',box:{x:.020,y:.525,w:.585,h:.050},target:'photoMakeModel',mode:'7'},
+  {name:'type',label:'Type',box:{x:.625,y:.515,w:.325,h:.060},target:'photoType',mode:'7'},
+  {name:'vin',label:'VIN',box:{x:.010,y:.555,w:.435,h:.055},target:'photoVIN',whitelist:'ABCDEFGHJKLMNPRSTUVWXYZ0123456789',mode:'7'},
+  {name:'complaint',label:'Complaint',box:{x:.005,y:.820,w:.965,h:.100},target:'photoComplaint',mode:'6'}
 ];
 async function runFieldOCR(canvas,field,index,total,status,bar){
   const versions=[preprocessVariant(canvas,'shadow'),preprocessVariant(canvas,'threshold')];
@@ -284,8 +290,9 @@ function fieldConfidence(name,value){
   if(name==='unit')return /^(?=.*\d)[A-Z0-9-]{2,20}$/i.test(value)?'high':value?'low':'missing';
   if(name==='year')return /^(19|20)\d{2}$/.test(value)?'high':value?'low':'missing';
   if(name==='vin')return normalizeVIN(value).length===17?'high':value?'low':'missing';
-  if(name==='customer')return value.length>=4?'high':value?'low':'missing';
-  if(name==='make'||name==='type')return value.length>=2?'high':value?'low':'missing';
+  if(name==='billingCustomer'||name==='customer')return value.length>=4?'high':value?'low':'missing';
+  if(name==='makeModel'||name==='type')return value.length>=2?'high':value?'low':'missing';
+  if(name==='complaint')return value.length>=8?'high':value?'low':'missing';
   return value?'low':'missing';
 }
 async function readPhotoDetails(){
@@ -293,7 +300,7 @@ async function readPhotoDetails(){
   if(!source)return alert('Choose, take, or load the included test photo first.');
   const status=document.getElementById('photoStatus'),bar=document.getElementById('ocrBar'),btn=document.getElementById('readPhotoBtn');
   if(typeof Tesseract==='undefined'){status.className='extract-warning';status.textContent='OCR did not load. Confirm the tablet has internet access, then reload this page.';return}
-  btn.disabled=true;bar.style.width='0%';status.className='extract-warning';status.textContent='Preparing seven-field Karmak reader…';
+  btn.disabled=true;bar.style.width='0%';status.className='extract-warning';status.textContent='Preparing nine-field Karmak RO reader…';
   try{
     const bitmap=await loadPhotoBitmap(source),base=drawScaledBitmap(bitmap,2400),stats=photoStats(base),results=[];
     for(let i=0;i<KARMAK_FIELD_REGIONS.length;i++){
@@ -310,22 +317,22 @@ async function readPhotoDetails(){
     const missingRequired=required.filter(name=>!results.find(r=>r.field.name===name)?.value);
     bar.style.width='100%';status.className=missingRequired.length?'extract-warning':'extract-status';
     const lighting=stats.mean<105?'dark':stats.lightPct>.20?'bright/glare':stats.sd<34?'low contrast':'acceptable';
-    status.innerHTML=missingRequired.length?`<b>Seven-field read completed.</b> ${found} of 7 fields were found, but ${missingRequired.join(', ')} still require entry. Lighting appeared ${lighting}. Check every orange or red field.`:`<b>Seven-field read completed.</b> ${found} of 7 fields were found and ${high} passed format checks. Lighting appeared ${lighting}. Verify all values before creating the job.`;
+    status.innerHTML=missingRequired.length?`<b>Nine-field RO read completed.</b> ${found} of 9 fields were found, but ${missingRequired.join(', ')} still require entry. Lighting appeared ${lighting}. Check every orange or red field.`:`<b>Nine-field RO read completed.</b> ${found} of 9 fields were found and ${high} passed format checks. Lighting appeared ${lighting}. Verify all values before creating the job.`;
   }catch(err){
     console.error(err);status.className='extract-warning';status.innerHTML='<b>OCR failed.</b> Confirm internet access, disable content blocking for this GitHub Pages site, reload, and try again.';document.getElementById('ocrRaw').textContent=String(err&&err.message?err.message:err);
   }finally{btn.disabled=false}
 }
 function createPhotoJob(mode='estimate'){
   const get=id=>(document.getElementById(id)?.value||'').trim();
-  const ro=get('photoRO').replace(/\D/g,''),trailer=get('photoTrailer').toUpperCase(),customer=get('photoCustomer'),vin=normalizeVIN(get('photoVIN')),year=get('photoYear').replace(/\D/g,''),make=get('photoMake'),trailerType=get('photoType');
+  const ro=get('photoRO').replace(/\D/g,''),trailer=get('photoTrailer').toUpperCase(),customer=get('photoCustomer'),billingCustomer=get('photoBillingCustomer'),vin=normalizeVIN(get('photoVIN')),year=get('photoYear').replace(/\D/g,''),makeModel=get('photoMakeModel'),trailerType=get('photoType'),complaint=get('photoComplaint');
   const owner=state.user.role==='manager'?(get('photoOwner')||''):state.user.id,file=document.getElementById('jobPhoto').files[0],sourceName=file?file.name:(photoTestSource?'karmak-test-photo.jpg':'');
   if(!sourceName)return alert('Take, upload, or load a test photo first.');
-  if(!ro||!trailer||!customer)return alert('Verify the customer, repair order number, and unit before creating the job.');
+  if(!ro||!trailer||!customer)return alert('Verify the owning customer, repair order number, and unit before creating the job.');
   if(vin&&vin.length!==17&&!confirm('The VIN is not 17 characters. Create the job anyway and correct it later?'))return;
   if(year&&!/^(19|20)\d{2}$/.test(year)&&!confirm('The year does not look valid. Create the job anyway and correct it later?'))return;
   if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');
   const isRepair=mode==='repair';
-  const j={id:ro,trailer,customer,status:isRepair?'Repair In Progress':'Estimate In Progress',stage:isRepair?'Repair':'Estimate',jobType:isRepair?'Repair':'Estimate',owner,createdBy:state.user.id,source:'Karmak Photo',photoName:sourceName,photoAttached:true,year,make,makeModel:make,trailerType,vin,repairs:[]};
+  const j={id:ro,trailer,customer,billingCustomer,status:isRepair?'Repair In Progress':'Estimate In Progress',stage:isRepair?'Repair':'Estimate',jobType:isRepair?'Repair':'Estimate',owner,createdBy:state.user.id,source:'Karmak Photo',photoName:sourceName,photoAttached:true,year,makeModel,trailerType,vin,complaint,repairs:[]};
   const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('photoModal').remove();state.job=j;state.screen='workflow';resetDraft();save();
 }
 function managerNewEstimate(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="estimateModal"><div class="pinbox"><h3>Create Manager Estimate</h3><p class="muted">Create the repair order and choose the technician who will receive the job. You can assign a different Tech # to each repair later.</p><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="mgrRO" placeholder="RO number"></div><div class="field"><label>Trailer Number <span class="required">!</span></label><input id="mgrTrailer" placeholder="Trailer number"></div><div class="field"><label>Trailer Owner / Company <span class="required">!</span></label><input id="mgrCustomer" placeholder="Company name"></div><div class="field"><label>Primary Technician</label><select id="mgrTech"><option value="">Unassigned</option>${techOptions}</select></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('estimateModal').remove()">Cancel</button><button class="btn primary" onclick="createManagerEstimate()">Create Estimate</button></div></div></div>`)}
