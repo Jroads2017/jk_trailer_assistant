@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#061a34" />
+<title>JK Trailer Assistant Alpha 1.1 - Field-by-Field Photo OCR |  – Tablet Alpha 1.1</title>
+<style>
+:root{--navy:#061a34;--blue:#0b57d0;--light:#f5f8fc;--line:#d7e0ec;--green:#148a2f;--orange:#ff7a00;--red:#c62828;--text:#132033;--muted:#65758b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#eef3f8}button,input,select,textarea{font:inherit}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}.sidebar{background:linear-gradient(#061a34,#09284e);color:white;padding:18px 14px;display:flex;flex-direction:column;gap:14px}.brand{font-size:24px;font-weight:800;letter-spacing:.5px}.brand small{display:block;color:#ff9d00;font-size:12px;letter-spacing:4px;margin-top:3px}.nav button,.techlink{width:100%;text-align:left;border:0;background:transparent;color:white;padding:12px;border-radius:8px;cursor:pointer}.nav button.active,.nav button:hover{background:#0d57c7}.techs{margin-top:auto;border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:10px}.techrow{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:13px}.techrow:last-child{border-bottom:0}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2cc45a;margin-right:7px}
+.main{padding:0 18px 24px}.topbar{height:64px;background:var(--navy);color:white;margin:0 -18px 18px;padding:0 22px;display:flex;align-items:center;justify-content:space-between}.topbar h1{font-size:22px;margin:0}.topbar .user{font-size:14px}.toolbar{display:flex;gap:10px;align-items:center}.btn{border:1px solid var(--line);background:white;padding:10px 14px;border-radius:7px;cursor:pointer;font-weight:700}.btn.primary{background:var(--blue);border-color:var(--blue);color:white}.btn.success{background:var(--green);border-color:var(--green);color:white}.btn.warn{background:var(--orange);border-color:var(--orange);color:white}.btn.danger{background:var(--red);border-color:var(--red);color:white}.btn.ghost{background:transparent}.btn:disabled{opacity:.5;cursor:not-allowed}
+.card{background:white;border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}.grid{display:grid;gap:14px}.grid.cols-2{grid-template-columns:1fr 1fr}.grid.cols-3{grid-template-columns:1fr 1fr 1fr}.jobbar{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}.jobitem{border-right:1px solid var(--line)}.jobitem:last-child{border:0}.label{font-size:12px;color:var(--muted);margin-bottom:5px}.value{font-weight:800}.status{display:inline-block;padding:5px 9px;border-radius:6px;background:#fff1e5;color:#d95d00;font-size:12px;font-weight:800}
+.steps{display:flex;align-items:center;gap:10px;overflow:auto;margin-bottom:14px}.step{display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:12px}.step .n{width:30px;height:30px;border-radius:50%;border:1px solid #b8c7da;display:grid;place-items:center;font-weight:800}.step.active .n{background:var(--blue);color:#fff;border-color:var(--blue)}.step.done .n{background:#1e9d47;color:white;border-color:#1e9d47}.arrow{color:#8ea0b6}
+.workspace{display:grid;grid-template-columns:1fr 310px;gap:14px}.panel h2{margin:0 0 6px;font-size:22px}.eyebrow{color:var(--blue);font-weight:800;font-size:12px;margin-bottom:6px}.muted{color:var(--muted)}.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.option{border:2px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;background:#fff}.option:hover{border-color:#8ab0f4}.option.selected{border-color:var(--blue);background:#edf4ff}.option h3{margin:0 0 6px}.option small{color:var(--muted)}
+.trailer{height:330px;position:relative;border:1px dashed #b7c4d4;border-radius:10px;background:#fbfdff;margin-top:12px}.trailer-body{position:absolute;left:34%;right:34%;top:28px;bottom:28px;border:3px solid #7d8ea4;border-radius:8px;background:linear-gradient(90deg,#f7f9fc,#fff,#f7f9fc)}.kingpin{position:absolute;left:50%;top:54px;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:#22354d;border:4px solid #dbe3ee;box-shadow:0 0 0 2px #61758d}.kingpin:after{content:'KINGPIN / FRONT';position:absolute;white-space:nowrap;left:50%;top:-28px;transform:translateX(-50%);font-size:11px;font-weight:800;color:#4f627b}.axle{position:absolute;left:37%;right:37%;height:5px;background:#61758d}.axle.front{bottom:104px}.axle.rear{bottom:48px}.wheelset{position:absolute;width:54px;height:34px;cursor:pointer}.wheelset:before,.wheelset:after{content:'';position:absolute;top:0;width:21px;height:34px;background:#24364b;border-radius:5px}.wheelset:before{left:0}.wheelset:after{right:0}.wheelset.lf{left:26%;bottom:88px}.wheelset.rf{right:26%;bottom:88px}.wheelset.lr{left:26%;bottom:32px}.wheelset.rr{right:26%;bottom:32px}.wheelset.selected{outline:4px solid var(--blue);outline-offset:4px;border-radius:7px}.loclabel{position:absolute;font-size:12px;font-weight:800}.loclabel.lf{left:8%;bottom:97px}.loclabel.rf{right:8%;bottom:97px}.loclabel.lr{left:8%;bottom:41px}.loclabel.rr{right:8%;bottom:41px}.quick-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.quick{border:2px solid var(--line);background:white;border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;font-weight:800}.quick:hover{border-color:var(--blue);background:#edf4ff}.techstamp{display:inline-block;padding:3px 7px;border-radius:6px;background:#eef3f8;font-weight:800;font-size:12px}
+.list{border:1px solid var(--line);border-radius:8px;overflow:hidden}.list .row{padding:12px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between}.list .row:last-child{border-bottom:0}.list .row.selected{background:#eaf2ff;color:#0b4fc0;font-weight:800}.section-title{color:var(--blue);font-weight:800;font-size:13px;margin:14px 0 7px}.checkrow{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:10px 0}.checkrow:last-child{border:0}.checkrow input{width:20px;height:20px}.verifyrow{border-bottom:1px solid var(--line);padding:12px 0}.verifyrow:last-child{border-bottom:0}.verifyhead{display:grid;grid-template-columns:1fr 72px 72px 72px;gap:8px;align-items:center;font-size:12px;font-weight:800;color:var(--muted);padding:8px 0;border-bottom:2px solid var(--line)}.verifyline{display:grid;grid-template-columns:1fr 72px 72px 72px;gap:8px;align-items:center}.verifychoice{text-align:center}.verifychoice input{width:20px;height:20px}.failnote{margin:10px 0 0 0}.failnote textarea{width:100%;min-height:62px;border:1px solid var(--line);border-radius:7px;padding:9px}.summaryline{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e7edf5}.summaryline:last-child{border:0}.copybox{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fbfdff;margin-bottom:12px}.copybox textarea{width:100%;min-height:84px;border:0;background:transparent;resize:vertical}.footer-actions{display:flex;justify-content:space-between;margin-top:16px}.hidden{display:none!important}.notice{background:#fff7e2;border:1px solid #f5d78b;padding:10px;border-radius:8px;margin:10px 0}.required{color:#d82323;font-weight:900}.manager-grid{display:grid;grid-template-columns:1fr 330px;gap:14px}.table{width:100%;border-collapse:collapse}.table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;font-size:14px}.table th{color:#31445f;background:#f6f9fd}.pricebar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.pricebox{background:white;border:1px solid var(--line);border-radius:8px;padding:12px;text-align:center}.pricebox strong{display:block;font-size:20px;margin-top:4px}.loginwrap{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#061a34,#0b57d0)}.login{width:min(520px,92vw);background:white;padding:28px;border-radius:14px}.login h1{margin-top:0}.field{margin-bottom:14px}.field label{display:block;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:7px}.pinmodal{position:fixed;inset:0;background:rgba(1,12,28,.65);display:grid;place-items:center;z-index:99}.pinbox{background:white;border-radius:12px;padding:22px;width:min(430px,92vw)}
+
+.photo-drop{border:2px dashed #9bb0c8;border-radius:10px;padding:18px;text-align:center;background:#f8fbff;margin-bottom:14px}.photo-preview{width:100%;max-height:220px;object-fit:contain;border-radius:8px;border:1px solid var(--line);margin-top:10px;background:white}.photo-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.photo-badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eaf2ff;color:#0b57d0;font-size:12px;font-weight:800;margin-bottom:10px}.create-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.create-choice button{min-height:74px}.extract-status{padding:9px 11px;border-radius:7px;background:#eef8f0;color:#176d2b;font-size:13px;margin:10px 0}.extract-warning{padding:9px 11px;border-radius:7px;background:#fff7e2;color:#7c5900;font-size:13px;margin:10px 0}
+
+.location-map{position:relative;width:100%;max-width:1040px;margin:14px auto;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white}.location-map img{display:block;width:100%;height:auto}.location-hotspot{position:absolute;border:3px solid transparent;background:rgba(11,87,208,.025);border-radius:12px;cursor:pointer}.location-hotspot:hover,.location-hotspot.selected{border-color:var(--blue);background:rgba(11,87,208,.14)}.location-hotspot.rf{left:18%;top:10%;width:25%;height:13%}.location-hotspot.rr{left:57%;top:10%;width:25%;height:13%}.location-hotspot.lf{left:18%;top:70%;width:25%;height:14%}.location-hotspot.lr{left:57%;top:70%;width:25%;height:14%}.map-special{position:absolute;display:flex;align-items:center;gap:10px;border:3px solid transparent;border-radius:14px;background:rgba(255,255,255,.93);padding:8px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(6,26,52,.13);font-weight:800;color:var(--navy)}.map-special:hover,.map-special.selected{border-color:var(--blue);background:#edf4ff}.map-special .symbol{font-size:38px;line-height:.8;font-weight:900}.map-special .map-label{display:flex;flex-direction:column;text-align:left;font-size:14px}.map-special .map-label small{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}.map-special.whole{left:27%;top:39%}.map-special.center{left:58%;top:39%}.map-special.whole .symbol{color:var(--green)}.map-special.center .symbol{color:var(--blue)}.location-special-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:1040px;margin:14px auto 0}.location-special-btn{display:flex;align-items:center;gap:18px;width:100%;min-height:112px;border:2px solid var(--line);border-radius:14px;background:white;padding:16px 22px;text-align:left;cursor:pointer;color:var(--navy)}.location-special-btn:hover,.location-special-btn.selected{border-color:var(--blue);background:#edf4ff}.location-special-btn.whole{border-color:#8ac49a;background:#f4fbf5}.location-special-btn.whole.selected{border-color:var(--green);background:#e8f7eb}.location-special-btn .symbol{font-size:60px;line-height:.8;font-weight:900;min-width:58px;text-align:center}.location-special-btn.whole .symbol{color:var(--green)}.location-special-btn.center .symbol{color:var(--blue)}.location-special-btn strong{display:block;font-size:21px;text-transform:uppercase}.location-special-btn small{display:block;color:var(--muted);font-size:14px;line-height:1.35;margin-top:3px}.location-extra{max-width:760px;margin:12px auto}.labor-intel{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}.labor-intel .li-row{display:grid;grid-template-columns:1fr 110px;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);align-items:center}.labor-intel .li-row:last-child{border-bottom:0}.labor-intel input{width:100%;padding:8px;border:1px solid var(--line);border-radius:7px}.confidence{font-size:12px;color:var(--muted)}.parts-pull{columns:1;list-style:none;padding:0;margin:0}.parts-pull li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+@media(max-width:1000px){.app{grid-template-columns:1fr}.sidebar{display:none}.workspace,.manager-grid{grid-template-columns:1fr}.jobbar{grid-template-columns:1fr 1fr}.pricebar{grid-template-columns:1fr 1fr}.option-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr 1fr}.main{padding:0 10px 90px;max-width:820px;margin:auto;width:100%}.topbar{margin:0 -10px 12px;position:sticky;top:0;z-index:20}.topbar h1{font-size:18px}.card{padding:14px}.table{display:block;overflow-x:auto}.footer-actions{position:sticky;bottom:0;background:#eef3f8;padding:10px 0;z-index:15;gap:10px}.footer-actions .btn{min-height:52px;flex:1}.option,.quick,.list .row{min-height:58px;font-size:17px}.panel h2,.card h2{font-size:24px}.location-map{margin:10px auto}.location-extra .option-grid{grid-template-columns:1fr 1fr}.steps{padding-bottom:4px}.step{font-size:13px}.verifyhead,.verifyline{grid-template-columns:1fr 58px 58px 58px}.manager-grid .grid{order:-1}}@media(max-width:520px){.quick-grid,.jobbar,.pricebar,.location-extra .option-grid,.create-choice,.location-special-grid{grid-template-columns:1fr}.topbar .user{display:none}.main{padding-left:8px;padding-right:8px}.location-map{border-radius:8px}.location-hotspot{border-width:2px}.btn{padding:12px}.labor-intel .li-row{grid-template-columns:1fr 90px}.location-special-btn{min-height:92px;padding:14px 16px}.location-special-btn .symbol{font-size:48px;min-width:46px}.location-special-btn strong{font-size:18px}}
+
+/* Tablet-first refresh */
+.mobile-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.mobile-actions .btn{flex:1;min-width:180px}
+.issue-btn{width:100%;min-height:54px;background:#fff7e2;border:2px solid #f0b84b;color:#684700}
+.jobtype-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.jobtype-grid .option{min-height:120px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.supply-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.supply-box{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfdff}.supply-box h4{margin:0 0 10px}
+
+.location-map{position:relative;width:100%;max-width:1040px;margin:14px auto;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white}.location-map img{display:block;width:100%;height:auto}.location-hotspot{position:absolute;border:3px solid transparent;background:rgba(11,87,208,.025);border-radius:12px;cursor:pointer}.location-hotspot:hover,.location-hotspot.selected{border-color:var(--blue);background:rgba(11,87,208,.14)}.location-hotspot.rf{left:18%;top:10%;width:25%;height:13%}.location-hotspot.rr{left:57%;top:10%;width:25%;height:13%}.location-hotspot.lf{left:18%;top:70%;width:25%;height:14%}.location-hotspot.lr{left:57%;top:70%;width:25%;height:14%}.map-special{position:absolute;display:flex;align-items:center;gap:10px;border:3px solid transparent;border-radius:14px;background:rgba(255,255,255,.93);padding:8px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(6,26,52,.13);font-weight:800;color:var(--navy)}.map-special:hover,.map-special.selected{border-color:var(--blue);background:#edf4ff}.map-special .symbol{font-size:38px;line-height:.8;font-weight:900}.map-special .map-label{display:flex;flex-direction:column;text-align:left;font-size:14px}.map-special .map-label small{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}.map-special.whole{left:27%;top:39%}.map-special.center{left:58%;top:39%}.map-special.whole .symbol{color:var(--green)}.map-special.center .symbol{color:var(--blue)}.location-extra{max-width:760px;margin:12px auto}.labor-intel{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}.labor-intel .li-row{display:grid;grid-template-columns:1fr 110px;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);align-items:center}.labor-intel .li-row:last-child{border-bottom:0}.labor-intel input{width:100%;padding:8px;border:1px solid var(--line);border-radius:7px}.confidence{font-size:12px;color:var(--muted)}.parts-pull{columns:1;list-style:none;padding:0;margin:0}.parts-pull li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+@media(max-width:1000px){
+ body{font-size:18px;background:#f4f7fb}.main{padding:0 12px 92px;max-width:760px;margin:0 auto;width:100%}.topbar{height:auto;min-height:64px;padding:12px 14px;position:sticky;top:0;z-index:20}.topbar .toolbar{gap:6px}.topbar .user{display:none}.card{padding:18px;border-radius:14px}.panel h2{font-size:28px}.eyebrow{font-size:14px}.muted,.label,.step{font-size:15px}.workspace{display:block}.workspace>div.grid{margin-top:14px}.jobbar{grid-template-columns:1fr 1fr}.jobitem{border-right:0;border-bottom:1px solid var(--line);padding-bottom:8px}.jobbar .value{font-size:18px}.steps{position:sticky;top:64px;z-index:15;padding:10px;scrollbar-width:none}.step .n{width:34px;height:34px}.step span:not(.n){display:none}.option-grid,.quick-grid,.create-choice,.grid.cols-2,.grid.cols-3,.jobtype-grid{grid-template-columns:1fr}.option,.quick,.btn{min-height:54px;font-size:18px}.option{padding:18px}.list .row{padding:17px 14px;font-size:18px}.trailer{height:430px}.trailer-body{left:28%;right:28%}.wheelset.lf,.wheelset.lr{left:15%}.wheelset.rf,.wheelset.rr{right:15%}.loclabel.lf,.loclabel.lr{left:2%}.loclabel.rf,.loclabel.rr{right:2%}.verifyhead,.verifyline{grid-template-columns:1fr 58px 58px 58px}.footer-actions{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);padding:10px 12px;z-index:30;gap:8px}.footer-actions>.toolbar{flex:1;display:grid;grid-template-columns:1fr 1fr}.footer-actions .btn{flex:1;padding:12px 8px;font-size:16px}.manager-grid{display:block}.manager-grid>div.grid{margin-top:14px}.table{display:block;overflow-x:auto}.pricebar{grid-template-columns:1fr 1fr}.pricebox strong{font-size:22px}.supply-grid{grid-template-columns:1fr}.mobile-actions .btn{min-width:0;width:100%}
+}
+@media(max-width:520px){.jobbar{grid-template-columns:1fr}.pricebar{grid-template-columns:1fr}.topbar h1{font-size:18px}.panel h2{font-size:25px}.trailer{height:390px}.verifyhead,.verifyline{grid-template-columns:1fr 52px 52px 52px}.btn{font-size:17px}}
+
+
+@media(max-width:700px){.map-special{padding:6px 8px;gap:6px;border-width:2px}.map-special .symbol{font-size:30px}.map-special .map-label{font-size:12px}.map-special .map-label small{display:none}.map-special.whole{left:24%;top:38%}.map-special.center{left:57%;top:38%}.location-hotspot.rf{left:16%;width:28%}.location-hotspot.rr{left:56%;width:28%}.location-hotspot.lf{left:16%;width:28%}.location-hotspot.lr{left:56%;width:28%}}
+
+.simple-location-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:760px;margin:24px auto}.simple-location-btn{min-height:120px;border:3px solid var(--line);border-radius:14px;background:#fff;color:var(--navy);cursor:pointer;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.simple-location-btn strong{font-size:24px;text-transform:uppercase}.simple-location-btn small{font-size:15px;color:var(--muted);font-weight:700}.simple-location-btn:hover,.simple-location-btn.selected{border-color:var(--blue);background:#edf4ff;box-shadow:0 0 0 2px rgba(11,87,208,.12)}
+.simple-location-center{max-width:760px;margin:0 auto 20px}.center-module-btn{width:100%;min-height:105px}.center-module-btn small{max-width:560px}
+@media(max-width:520px){.simple-location-grid{grid-template-columns:1fr;gap:12px;margin:16px auto}.simple-location-btn{min-height:88px;padding:14px}.simple-location-btn strong{font-size:21px}.simple-location-center{margin:0 auto 14px}.center-module-btn{min-height:96px}}
+
+.version-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#eaf2ff;color:#0b57d0;font-size:12px;font-weight:800}.top-context{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.tech-commons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.commons-card{border:2px solid var(--line);border-radius:12px;background:#fff;padding:16px;min-height:110px;cursor:pointer;text-align:left}.commons-card:hover{border-color:var(--blue);background:#edf4ff}.commons-card strong{display:block;font-size:19px;margin-bottom:5px}.manager-only-note{font-size:12px;color:var(--muted);font-weight:700}.estimate-line-tech{font-size:12px;color:var(--muted)}
+@media(max-width:520px){.tech-commons-grid{grid-template-columns:1fr}}
+
+.ro-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.ro-photo-card{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+.ro-photo-card img{display:block;width:100%;height:150px;object-fit:cover;background:#eef3f8}
+.ro-photo-meta{padding:10px;font-size:13px}
+.ro-photo-meta strong{display:block;margin-bottom:4px}
+.ro-photo-actions{display:flex;gap:8px;margin-top:8px}
+.ro-photo-actions .btn{padding:7px 9px;font-size:12px;min-height:auto}
+.photo-count-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf2ff;color:#0b57d0;font-size:12px;font-weight:800}
+@media(max-width:760px){.ro-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.ro-photo-grid{grid-template-columns:1fr}.ro-photo-card img{height:210px}}
+
+
+/* 11–12.4 inch tablet optimization */
+:root{--tablet-touch:58px;--tablet-radius:14px}
+@media (min-width:700px) and (max-width:1400px){
+body{font-size:18px}.app{grid-template-columns:210px minmax(0,1fr)}.sidebar{padding:16px 12px}.brand{font-size:22px}
+.main{padding:0 16px 96px;max-width:none}.topbar{min-height:68px;padding:10px 18px}.topbar h1{font-size:22px}
+.card{padding:18px;border-radius:var(--tablet-radius)}.workspace{grid-template-columns:minmax(0,1fr) 320px;gap:16px}
+.manager-grid{grid-template-columns:minmax(0,1fr) 350px;gap:16px}.option-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.jobbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.btn,.option,.quick,.list .row,.simple-location-btn{min-height:var(--tablet-touch)}
+.btn{font-size:17px;padding:13px 16px}.option{padding:18px}.option h3{font-size:20px}.list .row{padding:16px;font-size:18px}
+.simple-location-grid{grid-template-columns:1fr 1fr;gap:16px}.simple-location-btn{min-height:105px}.simple-location-btn strong{font-size:23px}
+.verifyhead,.verifyline{grid-template-columns:minmax(0,1fr) 70px 70px 70px}.verifychoice input,.checkrow input{width:26px;height:26px}
+.field input,.field select,.field textarea{min-height:54px;font-size:18px;padding:12px}
+.footer-actions{position:sticky;bottom:0;background:#eef3f8;padding:12px 0;z-index:25}.footer-actions .btn{min-width:140px}
+.photo-preview{max-height:360px}.ro-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ro-photo-card img{height:180px}
+.pinbox{width:min(760px,94vw)}.steps{padding:8px 4px}.step{font-size:14px}.step .n{width:36px;height:36px}
+}
+@media (min-width:700px) and (max-width:1000px) and (orientation:portrait){
+.app{grid-template-columns:1fr}.sidebar{display:none}.main{max-width:900px;margin:0 auto;padding:0 14px 104px}
+.topbar{margin:0 -14px 14px}.workspace,.manager-grid{grid-template-columns:1fr}.workspace>div.grid,.manager-grid>div.grid{margin-top:14px}
+.quick-grid,.jobbar,.pricebar{grid-template-columns:repeat(2,minmax(0,1fr))}.steps{position:sticky;top:68px;z-index:20;background:white}
+.footer-actions{position:fixed;left:0;right:0;bottom:0;background:white;border-top:1px solid var(--line);padding:10px 14px}
+.footer-actions>.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1}.footer-actions .btn{width:100%;min-height:58px}
+.ro-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1000px) and (max-width:1400px) and (orientation:landscape){
+.app{grid-template-columns:220px minmax(0,1fr)}.workspace{grid-template-columns:minmax(0,1fr) 340px}
+.quick-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.jobbar{grid-template-columns:repeat(6,minmax(0,1fr))}
+.ro-photo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ro-photo-card img{height:165px}
+}
+html,body,#root,.app,.main{max-width:100%;overflow-x:hidden}img,canvas,video{max-width:100%;height:auto}.table{max-width:100%}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+<style>
+.ocr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ocr-grid .wide{grid-column:1/-1}.ocr-progress{height:10px;background:#e6edf5;border-radius:999px;overflow:hidden;margin:8px 0}.ocr-progress>span{display:block;height:100%;width:0;background:#0b57d0;transition:width .2s}.ocr-raw{font-family:monospace;font-size:11px;white-space:pre-wrap;max-height:150px;overflow:auto;background:#f6f8fb;border:1px solid #d9e2ee;padding:8px;border-radius:6px}.ocr-confidence{font-weight:800}.photo-help{font-size:12px;color:#526274;margin-top:8px}
+@media(max-width:620px){.ocr-grid{grid-template-columns:1fr}.ocr-grid .wide{grid-column:auto}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const SRT_LIBRARY=[{"description":"Replace air reservoir (air tank) include air valve removal","goal":2.5,"average":3.5,"category":"Wheel ends and brakes:"},{"description":"Replace one air spring (air bag)","goal":1,"average":1.5,"category":"Wheel ends and brakes:"},{"description":"Replace one air spring (air bag) on \"K\" style slider box","goal":2.5,"average":3,"category":"Wheel ends and brakes:"},{"description":"Replace height control valve","goal":1,"average":1.5,"category":"Wheel ends and brakes:"},{"description":"Check and set alignment (Quik-Align) on tandem (includes replacing pivot bolt)","goal":2,"average":2.5,"category":"Wheel ends and brakes:"},{"description":"Check and set alignment welded collar","goal":3,"average":4,"category":"Wheel ends and brakes:"},{"description":"Replace axle (welded attachment)","goal":10,"average":12,"category":"Wheel ends and brakes:"},{"description":"Replace axle (\"U\" bolt attachment)","goal":7,"average":8,"category":"Wheel ends and brakes:"},{"description":"Replace one beam axle seat (R&R \"U\" bolts, pivot joints, cut and reweld)","goal":5,"average":6,"category":"Wheel ends and brakes:"},{"description":"Replace tube spacers - wear pads  (per axle) includes replacing pivot bolt","goal":1.5,"average":2,"category":"Wheel ends and brakes:"},{"description":"Replace tri-functional bushing (pivot bushing) per axle (6' bushing)","goal":5,"average":8,"category":"Wheel ends and brakes:"},{"description":"Replace tri-functional bushing (pivot bushing) per axle (3' bushing)","goal":4,"average":6,"category":"Wheel ends and brakes:"},{"description":"Replace weld on hanger (replace pivot hardware) includes setting alignment","goal":4,"average":6,"category":"Wheel ends and brakes:"},{"description":"Replace HALFTRAAX intergrated axle (includes R&R wheel end pivot hardware)","goal":8,"average":10,"category":"Wheel ends and brakes:"},{"description":"Replace shock absorber each","goal":0.5,"average":1,"category":"Wheel ends and brakes:"},{"description":"Replace upper shock bracket (weld on bracket)","goal":1.5,"average":1.75,"category":"Wheel ends and brakes:"},{"description":"Remove and replace slider box","goal":18,"average":22,"category":"Wheel ends and brakes:"},{"description":"Install \"K\" brace reinforcement plate kit (includes removing suspension)","goal":5,"average":7,"category":"Wheel ends and brakes:"},{"description":"Replace slider quikdraw assembly each","goal":1,"average":1.5,"category":"Wheel ends and brakes:"},{"description":"Remove and replace slider box wear pads","goal":4,"average":6,"category":"Wheel ends and brakes:"},{"description":"Install surelock (retrofit)","goal":2.5,"average":3,"category":"Wheel ends and brakes:"},{"description":"Replace one axle assembly includes camshafts and chamber brackets","goal":8,"average":12,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace one spring and \"U\" bolts","goal":1.5,"average":2,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace equalizer assembly","goal":2,"average":2.5,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace one torque arm and bolt kits","goal":1,"average":1.25,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Check and set alignment (spring suspension)","goal":1.5,"average":2,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace front spring hanger","goal":4,"average":5,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace center spring hanger with equalizer","goal":5,"average":6,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace rear hanger","goal":2,"average":2.5,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace complete slider box with hangers (bogie) using existing axles","goal":10,"average":12,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace upper slider rail one side","goal":14,"average":16,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace both slider rails","goal":24,"average":26,"category":"1.  SUSPENSIONS & AXLES…SPRING SUSPENSION"},{"description":"Replace one marker light","goal":0.3,"average":0.5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Each additional marker light","goal":0.2,"average":0.4,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace stop turn or tail light each","goal":0.3,"average":0.5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Remove & install light and anti-theft ring","goal":0.4,"average":0.6,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace license plate light","goal":0.3,"average":0.5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace 7 way plug","goal":1,"average":1.3,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace mid-turn light and bracket","goal":0.7,"average":1.25,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace junction box and plug","goal":1.3,"average":1.5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace junction box and plug with breakers","goal":1.8,"average":2,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace main wiring harness 48' to 53' reefer trailer","goal":6,"average":8,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace main wiring harness 48' to 53' van trailer","goal":4,"average":6,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace main wiring harness for 28' reefer trailer","goal":4,"average":5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace main wiring harness for 28' van trailer","goal":3,"average":5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace tail light harness at rear","goal":4,"average":6,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace dome light only","goal":0.8,"average":1.5,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace interior light switch","goal":0.5,"average":0.8,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Replace permalogic on front nose of trailer","goal":1.5,"average":2,"category":"2. ELECTRICAL & LIGHTS"},{"description":"Reline brakes and replace brake hardware one axle","goal":2.5,"average":3,"category":"Reline brakes with outboard drums:"},{"description":"Reline brakes, replace brake hardware kits two axles","goal":4,"average":5,"category":"Reline brakes with outboard drums:"},{"description":"Reline brakes, replace oil seals, replace brake hardware kits & hubcap gasket singe axle","goal":3,"average":4,"category":"Reline brakes with inboard drums:"},{"description":"Reline brakes, replace oil seals, replace brake hardware kits & hubcap gasket tandem axle","goal":5,"average":6,"category":"Reline brakes with inboard drums:"},{"description":"Replace one wheel seal and gasket","goal":1.2,"average":1.5,"category":"Reline brakes with inboard drums:"},{"description":"Replace one brake inboard drum","goal":1.5,"average":2,"category":"Additional work with wheel end already removed."},{"description":"Rebush bushings in one camshaft","goal":0.75,"average":1,"category":"Additional work with wheel end already removed."},{"description":"Replace one automatic slack","goal":0.5,"average":1,"category":"Additional work with wheel end already removed."},{"description":"Replace bearings and cups in one wheel end","goal":0.5,"average":1,"category":"Additional work with wheel end already removed."},{"description":"Replace spring brake valve","goal":1,"average":1.25,"category":"4. ABS and air system"},{"description":"Replace relay valve","goal":1,"average":2,"category":"4. ABS and air system"},{"description":"Replace spring brake chamber","goal":0.75,"average":1.25,"category":"4. ABS and air system"},{"description":"Replace air reservoir tank","goal":2.5,"average":3.5,"category":"4. ABS and air system"},{"description":"Replace sensor cable","goal":0.75,"average":1,"category":"4. ABS and air system"},{"description":"Replace ECU valve","goal":2,"average":2.5,"category":"4. ABS and air system"},{"description":"Diagnostic time to trouble shoot ABS","goal":0.5,"average":1,"category":"4. ABS and air system"},{"description":"Replace complete set of landing gears, mounting brackets, \"K\" frame, and five crossmenbers over landing gears, prep, prime and paint new work.","goal":16,"average":22,"category":"4. LANDING GEARS"},{"description":"Replace one landing leg","goal":2,"average":2.5,"category":"4. LANDING GEARS"},{"description":"Replace complete set of landing gears","goal":4,"average":5,"category":"4. LANDING GEARS"},{"description":"Replace  sand shoe or cushion foot","goal":0.5,"average":0.75,"category":"4. LANDING GEARS"},{"description":"Replace landing gear mounting wing plate (with landing gear removed)","goal":1.5,"average":2.5,"category":"4. LANDING GEARS"},{"description":"Replace five crossmembers, intercostal gussets over LG and replace both mounting angles","goal":12,"average":16,"category":"4. LANDING GEARS"},{"description":"Replace forward or aft landing gear brace each (bolt on brace)","goal":0.5,"average":1,"category":"4. LANDING GEARS"},{"description":"Replace \"K\" frame assembly between landing gears","goal":1,"average":2.5,"category":"4. LANDING GEARS"},{"description":"Replace landing gear crossover shaft adjust gear timing","goal":0.6,"average":1,"category":"4. LANDING GEARS"},{"description":"Replace complete upper coupler with P/U plate assby.(R&R of interior not incl.)…Van","goal":16,"average":20,"category":"5. UPPER COUPLER"},{"description":"Replace complete upper coupler with P/U plate assby. (R&R of interior not incl.)... Reefer","goal":20,"average":24,"category":"5. UPPER COUPLER"},{"description":"Replace complete coupler plate, king pin & reinforcements (R&R of floor not incl)... Flatbed","goal":14,"average":18,"category":"5. UPPER COUPLER"},{"description":"Replace main beam upper coupler. (does not include approach plate)...Van","goal":16,"average":22,"category":"5. UPPER COUPLER"},{"description":"Replace main beam upper coupler. (does not include approach plate)…Reefer","goal":24,"average":26,"category":"5. UPPER COUPLER"},{"description":"Forward side door applications…R&R beam behind upper coupler assembly","goal":12,"average":16,"category":"5. UPPER COUPLER"},{"description":"Remove and replace complete laminated oak floor in a 53' van","goal":36,"average":42,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Undercoat complete floor 53' van","goal":2,"average":4,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Remove and replace complete laminated oak floor in a 48' van","goal":34,"average":40,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Undercoat complete floor 48' van","goal":2,"average":4,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Remove and replace complete laminated oak floor in a 28' van","goal":26,"average":30,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Undercoat complete floor 28' van","goal":1.5,"average":3,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Replace threshold plate when replacing floor (larger plates slightly more)","goal":2,"average":2.5,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Replace intermediate crossmember (with end clips)","goal":1.25,"average":2.5,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Replace each additional intermedite crossmember (with end clips)","goal":1,"average":2,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Replace hat section crossmember between upper coupler and landing legs","goal":2,"average":3,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Replace crossmember over upper running gear rails (includes cutting upper rails)","goal":5,"average":7,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Replace each additional adjacent crossmember (with upper rails removed)","goal":2,"average":3,"category":"6. FLOORS & CROSSMEMBERS…Vans"},{"description":"Remove aluminum floor only (48') less side flashing, front and rear gutters","goal":95,"average":110,"category":"FLOORS...REEFERS"},{"description":"Same as above add floor sills, subfloor and foam insulation","goal":120,"average":140,"category":"FLOORS...REEFERS"},{"description":"Replace flr. sills and subfloor up to 18 sills at rear without removing floor (incl welding bands)","goal":65,"average":85,"category":"FLOORS...REEFERS"},{"description":"Replace rear gutter assembly","goal":10,"average":12,"category":"FLOORS...REEFERS"},{"description":"Replace complete 53' top rail (does not include R&R of interior lining)","goal":18,"average":26,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace complete 53' top rail with roof sheet removed","goal":14,"average":22,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace complete 28' top rail (does not include R&R of interior lining)","goal":14,"average":20,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace complete 28' top rail with roof sheet removed","goal":12,"average":18,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Section and reinforce top rail 3'  front or rear only (does not incl. side or roof damage)","goal":5,"average":8,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Section and reinforce each additional foot","goal":0.5,"average":1,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace complete 53' bottom rail (does not include R&R of interior lining and scuff bands)","goal":20,"average":28,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace complete 28' bottom rail (does not include R&R of interior lining)","goal":16,"average":20,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Section and reinforce bottom rail bottom rail at rear 3' (does not incl. other damage repairs)","goal":5,"average":8,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Section and reinforce each additional foot","goal":1,"average":2,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Section and reinforce bottom rail from front of trailer to centerline of landing gears","goal":14,"average":18,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace front top nose rail. (does not incl. R&R of interior, roof or panel damage)","goal":6,"average":8,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace corner cap only. (does not incl. R&R of lining, roof or panel damage)","goal":1.5,"average":2,"category":"Top, Bottom and Front top nose rail …Van trailers"},{"description":"Replace complete 53' top rail (does not include R&R of interior lining) Includes removing foam","goal":24,"average":34,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace complete 53' top rail with roof sheet removed (includes removing of foam)","goal":24,"average":30,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Each additional foot over 48'","goal":0.75,"average":1.25,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace complete 32' top rail (does not include R&R of interior lining) Incl. foam removal","goal":22,"average":24,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace complete 32' top rail with roof sheet removed. Includes foam removal","goal":18,"average":22,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Section and reinforce top rail 3'  front or rear only (does not incl. side or roof damage)","goal":6,"average":9,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Section and reinforce each additional foot","goal":1.5,"average":2.5,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace compete 53' bottom rail (does not include removing of interior) include removing foam","goal":28,"average":36,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace complete 32' bottom rail (does not include R&R of interior lining) Inlc. foam removal","goal":22,"average":32,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Section and reinforce bottom rail bottom rail at rear 3' (does not incl. other damage repairs)","goal":6,"average":9,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Section and reinforce each additional foot","goal":1.5,"average":2.5,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Section and reinforce bottom rail from front of trailer to centerline of landing gears","goal":18,"average":22,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace complete 48' bottom rail (does not include R&R of interior lining) Include foam removal","goal":32,"average":36,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace complete 32' bottom rail (does not include R&R of interior lining) Inlc. foam removal","goal":24,"average":28,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace front top nose rail. (does not incl. R&R of interior, roof or panel damage)","goal":8,"average":10,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace Super Seal front top nose rail assembly complete","goal":12,"average":14,"category":"Top, Bottom and Front top nose rail …Reefer trailers"},{"description":"Replace one front nose aluminum panel","goal":4,"average":6,"category":"9. FRONT END…VANS"},{"description":"Replace one front stainless steel nose panel","goal":7,"average":9,"category":"9. FRONT END…VANS"},{"description":"Replace one front aluminum radius panel","goal":6,"average":8,"category":"9. FRONT END…VANS"},{"description":"Replace one front stainless steel raduis panel","goal":9,"average":12,"category":"9. FRONT END…VANS"},{"description":"Replace one front nose post","goal":1.5,"average":2,"category":"9. FRONT END…VANS"},{"description":"Replace front lower nose scuff band","goal":8,"average":12,"category":"9. FRONT END…VANS"},{"description":"Replace bevel or multi piece corner post","goal":6,"average":8,"category":"9. FRONT END…VANS"},{"description":"Remove and reinstall electrical box and glad hands","goal":1,"average":1.5,"category":"9. FRONT END…VANS"},{"description":"Install front hinged vent door","goal":2,"average":3,"category":"9. FRONT END…VANS"},{"description":"Replace ladder rungs each","goal":1,"average":1.5,"category":"9. FRONT END…VANS"},{"description":"Replace each additional ladder rung","goal":0.5,"average":0.75,"category":"9. FRONT END…VANS"},{"description":"Replace one front nose aluminum panel (includes removal of foam)","goal":6,"average":9,"category":"9. FRONT END…REEFERS"},{"description":"Replace one front stainless steel nose panel (includes removal of foam)","goal":8,"average":10,"category":"9. FRONT END…REEFERS"},{"description":"Replace one front aluminum radius panel (includes removal of foam)","goal":9,"average":10,"category":"9. FRONT END…REEFERS"},{"description":"Replace one front stainless steel raduis panel (includes removal of foam)","goal":11,"average":14,"category":"9. FRONT END…REEFERS"},{"description":"Replace front lower nose scuff band (includes removal of foam)","goal":10,"average":12,"category":"9. FRONT END…REEFERS"},{"description":"Replace bevel or multi piece corner post (includes removal of foam)","goal":8,"average":10,"category":"9. FRONT END…REEFERS"},{"description":"Remove and reinstall electrical box and glad hands","goal":1,"average":1.5,"category":"9. FRONT END…REEFERS"},{"description":"Install front hinged vent door (includes removal of foam)","goal":4,"average":6,"category":"9. FRONT END…REEFERS"},{"description":"Replace ladder rungs each (includes removal of foam)","goal":1.5,"average":2,"category":"9. FRONT END…REEFERS"},{"description":"Replace each additional ladder rung (includes removal of foam)","goal":1,"average":1.5,"category":"9. FRONT END…REEFERS"},{"description":"Replace unit frame with all panels front panels removed","goal":4,"average":6,"category":"9. FRONT END…REEFERS"},{"description":"Replace 1 composite side panel","goal":6,"average":7,"category":"SIDE WALLS…VANS"},{"description":"Replace additional composite side panel","goal":5,"average":6,"category":"SIDE WALLS…VANS"},{"description":"Replace one aluminum side panel with interior lining removed","goal":5,"average":6,"category":"SIDE WALLS…VANS"},{"description":"Replace each additional aluminum side panel with interior lining removed","goal":4,"average":5,"category":"SIDE WALLS…VANS"},{"description":"Replace one side post with interior lining and side panel removed","goal":0.5,"average":0.75,"category":"SIDE WALLS…VANS"},{"description":"Replace each additional post with interior lining and side panel removed","goal":0.25,"average":0.5,"category":"SIDE WALLS…VANS"},{"description":"Replace one stainless side panel with interior lining removed","goal":7,"average":9,"category":"SIDE WALLS…VANS"},{"description":"Replace each additional stainless side panel with interior lining removed","goal":6,"average":8,"category":"SIDE WALLS…VANS"},{"description":"Replace one aluminum side panel with interior lining removed (Includes foam removal)","goal":7,"average":9,"category":"SIDE WALLS…REEFERS"},{"description":"Replace each additional aluminum side panel with interior lining removed (Incl. foam removal)","goal":6,"average":8,"category":"SIDE WALLS…REEFERS"},{"description":"Replace one side post with interior lining and side panel removed  (Incl. foam removal)","goal":2,"average":3,"category":"SIDE WALLS…REEFERS"},{"description":"Replace each additional post with interior lining and side panel removed  (Incl. foam removal)","goal":1.5,"average":2.5,"category":"SIDE WALLS…REEFERS"},{"description":"Replace one stainless side panel with interior lining removed  (Incl. foam removal)","goal":9,"average":11,"category":"SIDE WALLS…REEFERS"},{"description":"Replace each additional stainless side panel with interior lining removed  (Incl. foam removal)","goal":8,"average":10,"category":"SIDE WALLS…REEFERS"},{"description":"Replace complete rear frame assembled (does not incl. removal of doors and interior)...Van","goal":18,"average":22,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace complete rear frame assembled (does not incl. removal of doors & interior)... Reefer","goal":24,"average":32,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace complete rear buckplate assembly includes light protectors with channel...Van","goal":12,"average":16,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace complete rear buckplate assembly includes light protectors with channel...Reefer","goal":16,"average":20,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace rear frame corner post (one) does not include removal of interior...Van","goal":12,"average":14,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace rear frame corner post (one) does not include removal of interior & foam ...Reefer","goal":18,"average":22,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace complete rear header assembled (does not include removal of interior...Van","goal":10,"average":14,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace comp. rear header assembled (does not include removal of interior & foam…Reefer","goal":14,"average":18,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace complete weld on rear underride guard (RUG)","goal":5,"average":6,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace complete bolt on bolt on rear underride guard (RUG)","goal":4,"average":5,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace weld on horizonal lower tube and apply conspicuity tape","goal":2,"average":3,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace bolt on horizonal lower tube and apply conspicuity tape","goal":1.5,"average":2.5,"category":"10. REAR FRAME ASSEMBLY and RUG"},{"description":"Replace one plymetal or composite door using sealock edging apply conspicuity tape","goal":4,"average":5,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace two plymetal or composite doors using sealock edging apply conspicuity tape","goal":7,"average":9,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace one hinge","goal":0.5,"average":1,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace each additional hinge","goal":0.25,"average":0.5,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace one lock rod","goal":2,"average":2.5,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace each additional lock rod","goal":1,"average":1.5,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace gravity keeper each (that welds to header and and buckplate)","goal":1,"average":1.5,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Replace door hold back","goal":0.25,"average":0.5,"category":"11. DOORS & HARDWARE…Vans"},{"description":"Rebuild a reefer door with damage up to 50% damage including molding, panels and foam","goal":16,"average":24,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Section damaged corner of reefer door including up to 1' of side and bottom framing","goal":6,"average":10,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace \"D\" door gasket inner and outer on set of door","goal":3,"average":4,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace one door hinge","goal":0.75,"average":1,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace each additional hinge","goal":0.5,"average":0.75,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace inner rear door liner","goal":1.5,"average":3,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Install rear vent door","goal":4,"average":6,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace cam keeper (weld on)","goal":1,"average":1.5,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace gravity keeper","goal":0.5,"average":1,"category":"11. DOORS & HARDWARE…Reefer"},{"description":"Replace compete roll up door operator and track (universal door)","goal":12,"average":16,"category":"Roll up Doors... (Vans)"},{"description":"Replace compete roll up door operator and track (drop in door made to fit)","goal":10,"average":14,"category":"Roll up Doors... (Vans)"},{"description":"Replace compete roll up door and cables (universal door)","goal":8,"average":10,"category":"Roll up Doors... (Vans)"},{"description":"Replace one vertical roll up door track","goal":3,"average":4,"category":"Roll up Doors... (Vans)"},{"description":"Replace one horizonal track","goal":1,"average":2,"category":"Roll up Doors... (Vans)"},{"description":"Replace door operator (includes replacing door cables)","goal":3,"average":5,"category":"Roll up Doors... (Vans)"},{"description":"Replace two door cables (recommended by door manufacturer)","goal":1.5,"average":2,"category":"Roll up Doors... (Vans)"},{"description":"Replace top roll up door panel","goal":2.5,"average":3,"category":"Roll up Doors... (Vans)"},{"description":"Replace intermediate roll up door panel","goal":2.5,"average":3,"category":"Roll up Doors... (Vans)"},{"description":"Replace bottom roll up door panel and bottom seal","goal":3.5,"average":4.5,"category":"Roll up Doors... (Vans)"},{"description":"Replace one side seal","goal":0.5,"average":0.75,"category":"Roll up Doors... (Vans)"},{"description":"Replace one roller hinge","goal":0.5,"average":0.75,"category":"Roll up Doors... (Vans)"},{"description":"Replace each additional hinge","goal":0.25,"average":0.5,"category":"Roll up Doors... (Vans)"},{"description":"Replace one intermediate door hinge","goal":0.5,"average":0.75,"category":"Roll up Doors... (Vans)"},{"description":"Replace each additional intermediate door hinge","goal":0.5,"average":0.75,"category":"Roll up Doors... (Vans)"},{"description":"Replace door handle latch (lever lock)","goal":1,"average":1.5,"category":"Roll up Doors... (Vans)"},{"description":"Replace strike locking plate welded in buckplate","goal":1.75,"average":2.5,"category":"Roll up Doors... (Vans)"},{"description":"Replace complete 53' roof sheet on van trailer (incl. molding, corner caps & bonding roof bows)","goal":18,"average":26,"category":"12. ROOF ASSEMBLY"},{"description":"Replace complete 53' roof sheet on reefer trailer (incl. molding, corner caps)","goal":15,"average":24,"category":"12. ROOF ASSEMBLY"},{"description":"Section roof sheet 2' includes installing moldings and corner caps","goal":3.5,"average":4.5,"category":"12. ROOF ASSEMBLY"},{"description":"Section roof each additional foot","goal":0.5,"average":1,"category":"12. ROOF ASSEMBLY"},{"description":"Replace one roof bow on van trailer (includes bonding roof bow)","goal":0.75,"average":1.5,"category":"12. ROOF ASSEMBLY"},{"description":"Replace each additional roof bow (includes bonding roof bow)","goal":0.5,"average":1.25,"category":"12. ROOF ASSEMBLY"},{"description":"Patch and seal hole in roof up to 1'x 1' using buck rivets on alum.","goal":1,"average":1.5,"category":"12. ROOF ASSEMBLY"},{"description":"Patch and seal each additional hole in roof up to 1'x 1' using buck rivets on alum.","goal":0.5,"average":1.25,"category":"12. ROOF ASSEMBLY"},{"description":"Patch and seal hole in translucent roof up to 1'x1' using buck rivets","goal":1.25,"average":2,"category":"12. ROOF ASSEMBLY"},{"description":"Patch and seal each additional hole in translucent roof up to 1'x1' using buck rivets","goal":1,"average":1.75,"category":"12. ROOF ASSEMBLY"},{"description":"Replace complete RUG weld on weld on assembly","goal":3.5,"average":5,"category":"7. REAR UNDERRIDE GUARD - RUG"},{"description":"Replace weld on horizonal tube includes","goal":1.5,"average":3,"category":"7. REAR UNDERRIDE GUARD - RUG"},{"description":"Replace bolt on horizonal tube","goal":1,"average":1.75,"category":"7. REAR UNDERRIDE GUARD - RUG"},{"description":"Install rail lift gate with standard installation kit with charge lline","goal":13,"average":18,"category":"13. Lift Gates"},{"description":"Install Maxon rail lift with bolt on mounting bracket already welded to the rear frame","goal":10,"average":18,"category":"13. Lift Gates"},{"description":"Install header kit with lights mounted in header kit","goal":4,"average":6,"category":"13. Lift Gates"},{"description":"Install Layman side gate 3,000 to 3,500#","goal":10,"average":14,"category":"13. Lift Gates"},{"description":"Install GPTLR tuck away gate","goal":28,"average":34,"category":"13. Lift Gates"},{"description":"Install tuck away lift gates with out factory preping","goal":22,"average":28,"category":"13. Lift Gates"},{"description":"Install Waltco side door gate","goal":10,"average":14,"category":"13. Lift Gates"},{"description":"Install Theiman tuck away (requires assembly  of gate and trailer prepped at factory)","goal":26,"average":32,"category":"13. Lift Gates"},{"description":"Install Waltco rear slider gate depending on depth of buckplate (restrict suspension at rear)","goal":10,"average":14,"category":"13. Lift Gates"},{"description":"Install Maxon side gate (Needs to be assembled)","goal":16,"average":20,"category":"13. Lift Gates"},{"description":"Install Holland tuck away gate","goal":24,"average":28,"category":"13. Lift Gates"},{"description":"Must be engineered by manufacturing and approve for certification","goal":28,"average":38,"category":"14. PINTLE HOOK & DOLLY"}];
+const SRT_ALIASES={
+'Air Bag':['replace one air spring (air bag)'],
+'Height Control Valve':['replace height control valve'],
+'Shock Absorber':['replace shock absorber each'],
+'Wheel Seal':['replace one wheel seal and gasket'],
+'Alignment':['check and set alignment'],
+'Slider Box Rebuild':['remove and replace slider box wear pads'],
+'Complete Slider Box Replacement':['remove and replace slider box'],
+'Bogey':['replace complete slider box with hangers (bogie)','remove and replace slider box'],
+'Single Light Repair':['replace one marker light','replace stop turn or tail light each'],
+'Install New Light':['replace one marker light'],
+'ABS Light On':['diagnostic time to trouble shoot abs'],
+'ABS Light Does Not Work':['diagnostic time to trouble shoot abs'],
+'Fault Code Present':['diagnostic time to trouble shoot abs'],
+'Sensor / Tone Ring':['diagnostic time to trouble shoot abs'],
+'Wiring / Power':['diagnostic time to trouble shoot abs'],
+'ABS Modulator Valve':['diagnostic time to trouble shoot abs'],
+'Complete Landing Gear Assembly':['replace complete set of landing gears'],
+'Cross Shaft':['replace landing gear crossover shaft adjust gear timing'],
+'Leg Brace':['replace forward or aft landing gear brace each (bolt on brace)'],
+'K-Brace':['replace "k" frame assembly between landing gears']
+};
+function srtMode(){return localStorage.getItem('jk_srt_mode')||'average'}
+function setSrtMode(v){localStorage.setItem('jk_srt_mode',v);render()}
+function srtEntryByIndex(i){i=Number(i);return Number.isInteger(i)&&i>=0?SRT_LIBRARY[i]:null}
+function autoSrtIndex(r){
+ const aliases=SRT_ALIASES[r.package]||[];
+ const repair=(r.repair||'').toLowerCase(), system=(r.system||'').toLowerCase();
+ for(const phrase of aliases){
+   const idx=SRT_LIBRARY.findIndex(x=>x.description.toLowerCase().includes(phrase));
+   if(idx>=0)return idx;
+ }
+ const words=[r.package,r.repair,r.system].filter(Boolean).join(' ').toLowerCase()
+   .replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(x=>x.length>2&&!['repair','replace','inspect','system'].includes(x));
+ let best=-1,bestScore=0;
+ SRT_LIBRARY.forEach((x,i)=>{
+   const d=x.description.toLowerCase();
+   let score=words.reduce((s,w)=>s+(d.includes(w)?1:0),0);
+   if(repair&&d.includes(repair))score+=1;
+   if(system&&d.includes(system))score+=.5;
+   if(score>bestScore){best=i;bestScore=score}
+ });
+ return bestScore>=2?best:-1;
+}
+function srtIndexFor(r){return r.srtIndex!==undefined&&r.srtIndex!==null&&r.srtIndex!==''?Number(r.srtIndex):autoSrtIndex(r)}
+function srtEntryFor(r){return srtEntryByIndex(srtIndexFor(r))}
+function srtHours(r){
+ const e=srtEntryFor(r); if(!e)return null;
+ const mode=srtMode();
+ const v=mode==='goal'?e.goal:e.average;
+ return Number(v)>0?Number(v):(Number(e.average)>0?Number(e.average):Number(e.goal));
+}
+function setSrtOverride(i,v){
+ const j=state.job||jobs()[0]; if(!j||!j.repairs[i])return;
+ j.repairs[i].srtIndex=v===''?null:Number(v);
+ j.repairs[i].estimateUsed=null;
+ saveJobs(jobs().map(x=>x.id===j.id?j:x)); state.job=j; render();
+}
+
+const RO_PHOTO_DB='jk_ro_photos_db';
+const RO_PHOTO_STORE='photos';
+function openPhotoDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(RO_PHOTO_DB,1);
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(RO_PHOTO_STORE)){
+        const s=db.createObjectStore(RO_PHOTO_STORE,{keyPath:'id',autoIncrement:true});
+        s.createIndex('ro','ro',{unique:false});
+      }
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function addROPhotoRecord(record){
+  const db=await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(RO_PHOTO_STORE,'readwrite');
+    const req=tx.objectStore(RO_PHOTO_STORE).add(record);
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function getROPhotos(ro){
+  const db=await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(RO_PHOTO_STORE,'readonly');
+    const req=tx.objectStore(RO_PHOTO_STORE).index('ro').getAll(ro);
+    req.onsuccess=()=>resolve((req.result||[]).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)));
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function deleteROPhotoRecord(id){
+  const db=await openPhotoDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(RO_PHOTO_STORE,'readwrite');
+    const req=tx.objectStore(RO_PHOTO_STORE).delete(Number(id));
+    req.onsuccess=()=>resolve();
+    req.onerror=()=>reject(req.error);
+  });
+}
+function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+function compressPhotoDataURL(dataUrl,maxW=1600,quality=.78){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1,maxW/img.width);
+      const c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(img.width*scale));
+      c.height=Math.max(1,Math.round(img.height*scale));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      resolve(c.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=reject;
+    img.src=dataUrl;
+  });
+}
+async function openROPhotos(){
+  if(!state.job)return alert('Open a repair order first.');
+  const modal=document.createElement('div');
+  modal.className='pinmodal';
+  modal.id='roPhotoModal';
+  modal.innerHTML=`<div class="pinbox" style="width:min(900px,96vw);max-height:94vh;overflow:auto">
+    <div class="toolbar" style="justify-content:space-between">
+      <div>
+        <h2 style="margin:0">RO Photos</h2>
+        <small class="muted">${state.job.id} · Trailer ${state.job.trailer} · Internal JK record</small>
+      </div>
+      <button class="btn" onclick="document.getElementById('roPhotoModal').remove()">Close</button>
+    </div>
+    <div class="notice"><b>Photos are internal only.</b> They are not copied into Karmak Cause or Correction.</div>
+    <div class="card" style="margin-top:12px">
+      <div class="field">
+        <label>Photo type</label>
+        <select id="roPhotoType">
+          <option>Before Repair</option>
+          <option>Damage / Concern</option>
+          <option>During Repair</option>
+          <option>After Repair</option>
+          <option>VIN / Identification</option>
+          <option>Part / Component</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Optional note</label><input id="roPhotoNote" placeholder="Example: RR rotor before replacement"></div>
+      <div class="photo-actions" style="justify-content:flex-start">
+        <label class="btn primary" for="roPhotoInput">📷 Take or Upload Photo</label>
+        <input id="roPhotoInput" class="hidden" type="file" accept="image/*" capture="environment">
+      </div>
+      <div id="roPhotoUploadStatus" class="muted" style="margin-top:8px"></div>
+    </div>
+    <div class="toolbar" style="justify-content:space-between;margin-top:14px">
+      <h3 style="margin:0">Photos on this RO</h3>
+      <span id="roPhotoCount" class="photo-count-badge">0 photos</span>
+    </div>
+    <div id="roPhotoGallery" class="ro-photo-grid"></div>
+  </div>`;
+  document.body.appendChild(modal);
+  document.getElementById('roPhotoInput').addEventListener('change',saveROPhotoFromInput);
+  await refreshROPhotoGallery();
+}
+async function saveROPhotoFromInput(e){
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+  const status=document.getElementById('roPhotoUploadStatus');
+  try{
+    status.textContent='Preparing photo…';
+    const raw=await fileToDataURL(file);
+    const dataUrl=await compressPhotoDataURL(raw);
+    await addROPhotoRecord({
+      ro:state.job.id,
+      trailer:state.job.trailer,
+      type:document.getElementById('roPhotoType').value,
+      note:(document.getElementById('roPhotoNote').value||'').trim(),
+      techNo:state.user.id,
+      createdAt:new Date().toISOString(),
+      fileName:file.name,
+      dataUrl
+    });
+    status.textContent='Photo saved to this tablet/browser.';
+    document.getElementById('roPhotoNote').value='';
+    e.target.value='';
+    await refreshROPhotoGallery();
+  }catch(err){
+    console.error(err);
+    status.textContent='Photo could not be saved. Try a smaller image or free browser storage.';
+  }
+}
+async function refreshROPhotoGallery(){
+  const gallery=document.getElementById('roPhotoGallery');
+  if(!gallery||!state.job)return;
+  const photos=await getROPhotos(state.job.id);
+  document.getElementById('roPhotoCount').textContent=`${photos.length} photo${photos.length===1?'':'s'}`;
+  gallery.innerHTML=photos.length?photos.map(p=>`<div class="ro-photo-card">
+    <img src="${p.dataUrl}" alt="${escapeHtml(p.type)} photo">
+    <div class="ro-photo-meta">
+      <strong>${escapeHtml(p.type)}</strong>
+      ${p.note?`<div>${escapeHtml(p.note)}</div>`:''}
+      <div class="muted">Tech ${escapeHtml(p.techNo)} · ${new Date(p.createdAt).toLocaleString()}</div>
+      <div class="ro-photo-actions">
+        <button class="btn" onclick="viewROPhoto(${p.id})">View</button>
+        ${(state.user.role==='manager'||String(p.techNo)===String(state.user.id))?`<button class="btn danger" onclick="removeROPhoto(${p.id})">Delete</button>`:''}
+      </div>
+    </div>
+  </div>`).join(''):'<div class="muted">No photos have been added to this repair order.</div>';
+}
+async function viewROPhoto(id){
+  const photos=await getROPhotos(state.job.id);
+  const p=photos.find(x=>Number(x.id)===Number(id));
+  if(!p)return;
+  const m=document.createElement('div');
+  m.className='pinmodal';
+  m.id='photoViewer';
+  m.innerHTML=`<div class="pinbox" style="width:min(1000px,97vw);max-height:96vh;overflow:auto">
+    <img src="${p.dataUrl}" alt="${escapeHtml(p.type)}" style="width:100%;height:auto;border-radius:8px">
+    <div class="toolbar" style="justify-content:space-between;margin-top:10px">
+      <div><b>${escapeHtml(p.type)}</b><br><small>Tech ${escapeHtml(p.techNo)} · ${new Date(p.createdAt).toLocaleString()}</small></div>
+      <button class="btn" onclick="document.getElementById('photoViewer').remove()">Close</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+}
+async function removeROPhoto(id){
+  if(!confirm('Delete this photo from the RO?'))return;
+  await deleteROPhotoRecord(id);
+  await refreshROPhotoGallery();
+}
+
+const TECHS=[
+{id:'95',name:'Jesse Kroger',pin:'114',role:'manager',quick:[]},
+{id:'8',name:'George Brandenburg',pin:'371',quick:['Lighting','ABS / Electrical','Doors','Air System','All Systems']},
+{id:'394',name:'Alex Moen',pin:'172',quick:['Brakes','Suspension','Wheel End','Air System','All Systems']},
+{id:'84',name:'Allen Corbin',pin:'410',quick:['Body','DOT Inspection','Doors','Lighting','All Systems']},
+{id:'96',name:'Max Anderson',pin:'924',quick:['Brakes','Suspension','Wheel End','Air System','All Systems']},
+{id:'136',name:'Damien Vandenberg',pin:'710',quick:['Brakes','Suspension','Wheel End','Air System','All Systems']},
+{id:'86',name:'Chaz Kohorst',pin:'507',quick:['Suspension','DOT Inspection','Air Ride','Wheel End','All Systems']},
+{id:'351',name:'Jalen Carter',pin:'351',quick:['Body','Doors','Rear Impact Guard','Frame','All Systems']}
+];
+const SAMPLE_JOBS=[
+{id:'WO12345',trailer:'4812',customer:'ABC Logistics',status:'Estimate In Progress',stage:'Estimate',owner:'8',repairs:[]},
+{id:'WO12346',trailer:'4920',customer:'Fleet One',status:'Repair In Progress',stage:'Repair',owner:'86',repairs:[]},
+{id:'WO12347',trailer:'4765',customer:'North Star Transport',status:'Waiting Approval',stage:'Estimate',owner:'84',repairs:[]}
+];
+let state={user:null,screen:'dashboard',job:null,step:1,draft:{jobType:null,location:null,system:null,brakeType:null,suspensionType:null,suspensionGroup:null,package:null,condition:null,repair:null,parts:{},lubricant:null,verification:{},verificationNotes:{},additionalParts:[],showAdditionalPart:false,notes:''}};
+function load(){const s=localStorage.getItem('jk_proto_state');if(s) try{state=JSON.parse(s)}catch{}; const jobs=localStorage.getItem('jk_proto_jobs');if(!jobs)localStorage.setItem('jk_proto_jobs',JSON.stringify(SAMPLE_JOBS));render()}
+function jobs(){return JSON.parse(localStorage.getItem('jk_proto_jobs')||'[]')}
+function save(){localStorage.setItem('jk_proto_state',JSON.stringify(state));render()}
+function saveJobs(arr){localStorage.setItem('jk_proto_jobs',JSON.stringify(arr));}
+function usageData(){return JSON.parse(localStorage.getItem('jk_smart_usage')||'{}')}
+function saveUsageData(x){localStorage.setItem('jk_smart_usage',JSON.stringify(x))}
+function noteLearning(){return JSON.parse(localStorage.getItem('jk_note_learning')||'{}')}
+function saveNoteLearning(x){localStorage.setItem('jk_note_learning',JSON.stringify(x))}
+function customButtons(){return JSON.parse(localStorage.getItem('jk_custom_buttons')||'[]')}
+function ignoredSuggestions(){return JSON.parse(localStorage.getItem('jk_ignored_suggestions')||'[]')}
+function dynamicQuick(tech){const base=[...(tech.quick||[])],u=usageData()[tech.id]||{};const promoted=Object.entries(u).filter(([k,v])=>v>=10).sort((a,b)=>b[1]-a[1]).map(([k])=>k);const approved=customButtons();return [...new Set([...promoted,...approved,...base])].slice(0,5)}
+function normalizeNotePhrases(note){return String(note||'').split(/[\n,;]+/).map(x=>x.trim().replace(/[.]+$/,'')).filter(x=>x.length>=4&&x.length<=70)}
+function recordCompletedLearning(job){const u=usageData(),n=noteLearning();job.repairs.forEach(r=>{if(r.learningCounted)return;const tech=String(r.techNo||r.enteredBy||'');if(tech&&r.system){u[tech]=u[tech]||{};u[tech][r.system]=(u[tech][r.system]||0)+1}normalizeNotePhrases(r.notes).forEach(phrase=>{const key=phrase.toLowerCase();n[key]=n[key]||{label:phrase,count:0,techs:{}};n[key].count++;n[key].techs[tech]=true});r.learningCounted=true});saveUsageData(u);saveNoteLearning(n)}
+function approveSuggestion(key){const n=noteLearning(),item=n[key];if(!item)return;const arr=customButtons();if(!arr.includes(item.label))arr.push(item.label);localStorage.setItem('jk_custom_buttons',JSON.stringify(arr));render()}
+function ignoreSuggestion(key){const arr=ignoredSuggestions();if(!arr.includes(key))arr.push(key);localStorage.setItem('jk_ignored_suggestions',JSON.stringify(arr));render()}
+function resetDraft(){state.draft={jobType:(state.job?.stage||null),location:null,system:null,brakeType:null,suspensionType:null,suspensionGroup:null,package:null,condition:null,repair:null,parts:{},lubricant:null,verification:{},verificationNotes:{},additionalParts:[],showAdditionalPart:false,repairScope:'Single',scopeQty:1,notes:'',techNo:(state.user?.role==='manager'?(state.job?.owner||''):state.user?.id||'')};state.step=1}
+function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.1</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
+function render(){const root=document.getElementById('root');if(!state.user){root.innerHTML=loginView();return} if(state.screen==='dashboard')root.innerHTML=appShell(dashboard(),'Dashboard');else if(state.screen==='jobs')root.innerHTML=appShell(jobList(),'Open Jobs');else if(state.screen==='workflow')root.innerHTML=appShell(workflow(),'Repair Documentation');else if(state.screen==='manager')root.innerHTML=appShell(managerView(),'Manager View – Estimate');}
+function loginView(){return `<div class="loginwrap"><div class="login"><h1>JK Trailer Assistant</h1><p class="muted">Employee login · Optimized for 11–12.4 inch tablets in portrait or landscape.</p><div class="field"><label>Employee</label><select id="techsel"><option value="">Select technician</option>${TECHS.map(t=>`<option value="${t.id}">#${t.id} – ${t.name}</option>`).join('')}</select></div><div class="field"><label>3-digit code</label><input id="pin" maxlength="3" inputmode="numeric" /></div><button class="btn primary" onclick="login()">Sign In</button><p class="muted" style="margin-top:14px;font-size:12px">Prototype PINs: Manager Jesse 114, George 371, Alex 172, Allen 410, Max 924, Damien 710, Chaz 507, Jalen 351</p></div></div>`}
+function login(){const id=document.getElementById('techsel').value;const pin=document.getElementById('pin').value;const t=TECHS.find(x=>x.id===id&&x.pin===pin);if(!t)return alert('Incorrect employee or code');state.user=t;state.screen=t.role==='manager'?'manager':'dashboard';if(t.role==='manager'&&!state.job)state.job=jobs()[0];save()}
+function logout(){state={...state,user:null,screen:'dashboard',job:null};save()}
+function go(s){
+ if(s==='manager'&&state.user?.role!=='manager'){
+   alert('Manager authorization is required to view labor times, SRT information, rates, and totals.');
+   return;
+ }
+ state.screen=s;
+ if(s==='manager'&&!state.job)state.job=jobs()[0];
+ save();
+}
+function dashboard(){const open=jobs().filter(j=>j.status!=='Completed');const mine=open.filter(j=>j.owner===state.user.id);const quick=dynamicQuick(state.user);return `<div class="card"><h2>Welcome, ${state.user.name}</h2><p class="muted">Tech #${state.user.id} · Your common repairs are one click away.</p><div class="notice"><b>Technician view:</b> labor hours, SRT standards, rates, fees, and estimate totals are manager-only.</div><div class="toolbar" style="flex-wrap:wrap;margin-bottom:12px"><button class="btn primary" onclick="newJob()">+ Create Job</button><button class="btn" onclick="createFromPhoto()">📷 Create from Photo</button><button class="btn" onclick="openTechCommons()">🧰 Tech Commons</button>${mine.length?`<button class="btn success" onclick="openJob('${mine[0].id}')">Resume ${mine[0].id} – Trailer ${mine[0].trailer}</button>`:''}</div><div class="section-title">QUICK ACCESS</div><div class="quick-grid">${quick.map(x=>`<button class="quick" onclick='startQuick(${JSON.stringify(x)})'>${x}</button>`).join('')}</div><div class="smart-note">Smart Favorites: a system moves toward the top after 10 completed repairs.</div></div><div class="card" style="margin-top:14px"><h2>Shop Job Board</h2><p class="muted">Select a trailer to continue where the job was saved.</p><table class="table"><thead><tr><th>Status</th><th>Trailer</th><th>Customer</th><th>Work Order</th><th>Stage</th><th>Assigned Tech #</th><th></th></tr></thead><tbody>${open.map(j=>`<tr><td><span class="status">${j.status}</span></td><td><b>${j.trailer}</b></td><td>${j.customer}</td><td>${j.id}</td><td>${j.stage}</td><td><span class="techstamp">${j.owner}</span></td><td><button class="btn primary" onclick="openJob('${j.id}')">Open</button></td></tr>`).join('')}</tbody></table></div>`}
+function startQuick(system){if(system==='All Systems'){state.screen='jobs';save();return}const mine=jobs().find(j=>j.owner===state.user.id&&j.status!=='Completed');if(!mine){newJob();return}state.job=mine;resetDraft();const known=['Lighting','ABS / Electrical','Doors','Air System','Brakes','Suspension','Wheel End','Body','DOT Inspection','Air Ride','Rear Impact Guard','Frame'];if(known.includes(system)){state.draft.system=system==='ABS / Electrical'?'Lighting':system}else{state.draft.system='Other';state.draft.package=system;state.step=4}state.screen='workflow';save()}
+function jobList(){return dashboard()}
+function newJob(){const ownerOptions=state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="newOwner"><option value="">Unassigned</option>${TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('')}</select></div>`:'';document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="newJobModal"><div class="pinbox"><h3>Create New Job</h3><div class="create-choice"><button class="btn primary" onclick="showManualJobFields()">Manual Entry</button><button class="btn" onclick="document.getElementById('newJobModal').remove();createFromPhoto()">📷 Create from Photo</button></div><div id="manualJobFields" class="hidden"><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="newRO"></div><div class="field"><label>Trailer Number <span class="required">!</span></label><input id="newTrailer"></div><div class="field"><label>Trailer Owner / Company <span class="required">!</span></label><input id="newCustomer"></div>${ownerOptions}<div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('newJobModal').remove()">Cancel</button><button class="btn primary" onclick="createManualJob()">Create Job</button></div></div><div id="newJobInitialActions" class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('newJobModal').remove()">Cancel</button></div></div></div>`)}
+function showManualJobFields(){document.getElementById('manualJobFields').classList.remove('hidden');document.getElementById('newJobInitialActions').classList.add('hidden')}
+function createManualJob(){const ro=document.getElementById('newRO').value.trim(),trailer=document.getElementById('newTrailer').value.trim(),customer=document.getElementById('newCustomer').value.trim(),owner=state.user.role==='manager'?(document.getElementById('newOwner').value||''):state.user.id;if(!ro||!trailer||!customer)return alert('Repair order, trailer number, and company are required.');if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');const j={id:ro,trailer,customer,status:'Estimate In Progress',stage:'Estimate',owner,createdBy:state.user.id,source:'Manual Entry',repairs:[]};const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('newJobModal').remove();state.job=j;state.screen='workflow';resetDraft();save()}
+function createFromPhoto(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="photoModal"><div class="pinbox" style="width:min(760px,96vw);max-height:96vh;overflow:auto"><span class="photo-badge">CREATE NEW RO FROM KARMAK PHOTO</span><h3 style="margin-top:0">Read the nine required RO fields</h3><p class="muted">The reader first finds and straightens the page, then reads the nine labeled Karmak fields. Review every value before creating the estimate or repair.</p><div class="photo-drop"><div class="photo-actions"><label class="btn primary" for="jobPhoto">📷 Take or Upload Photo</label><button type="button" class="btn" onclick="useIncludedTestPhoto()">Use Included Test Photo</button><input id="jobPhoto" type="file" accept="image/*" capture="environment" class="hidden"></div><img id="jobPhotoPreview" class="photo-preview hidden" alt="Repair order photo preview"><div id="photoFileName" class="muted" style="margin-top:8px"></div><div class="photo-help">Keep all four page edges visible when possible. The page may be tilted or photographed at an angle; the reader will try to straighten it automatically.</div></div><button id="readPhotoBtn" class="btn primary" style="width:100%" disabled onclick="readPhotoDetails()">Straighten Page & Read 9 RO Fields</button><div class="ocr-progress"><span id="ocrBar"></span></div><div id="photoStatus" class="extract-warning">No photo selected.</div><div class="ocr-grid"><div class="field wide"><label>1. Billing Customer</label><input id="photoBillingCustomer" placeholder="Billing customer"></div><div class="field wide"><label>2. Owning Customer <span class="required">!</span></label><input id="photoCustomer" placeholder="Owning customer"></div><div class="field"><label>3. Repair Order Number <span class="required">!</span></label><input id="photoRO" inputmode="numeric" placeholder="RO number"></div><div class="field"><label>4. Unit <span class="required">!</span></label><input id="photoTrailer" placeholder="Unit number"></div><div class="field"><label>5. Year</label><input id="photoYear" inputmode="numeric" placeholder="Year"></div><div class="field wide"><label>6. Make / Model</label><input id="photoMakeModel" placeholder="Make and model"></div><div class="field wide"><label>7. Type</label><input id="photoType" placeholder="Trailer type"></div><div class="field wide"><label>8. VIN</label><input id="photoVIN" autocapitalize="characters" placeholder="17-character VIN"></div><div class="field wide"><label>9. Complaint / Work Requested</label><textarea id="photoComplaint" style="width:100%;min-height:100px" placeholder="Complaint text"></textarea></div></div>${state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="photoOwner"><option value="">Unassigned</option>${techOptions}</select></div>`:''}<details style="margin:8px 0"><summary>Show field-reading details</summary><div id="ocrRaw" class="ocr-raw">No OCR text yet.</div></details><div class="create-choice"><button class="btn warn" onclick="createPhotoJob('estimate')">Confirm & Create Estimate</button><button class="btn success" onclick="createPhotoJob('repair')">Confirm & Create Repair</button></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('photoModal').remove()">Cancel</button></div></div></div>`);document.getElementById('jobPhoto').addEventListener('change',previewJobPhoto)}
+let photoTestSource=null;
+function previewJobPhoto(e){const file=e.target.files&&e.target.files[0];if(!file)return;photoTestSource=null;const img=document.getElementById('jobPhotoPreview');img.src=URL.createObjectURL(file);img.classList.remove('hidden');document.getElementById('photoFileName').textContent=file.name;document.getElementById('readPhotoBtn').disabled=false;document.getElementById('photoStatus').className='extract-warning';document.getElementById('photoStatus').textContent='Photo selected. Reading automatically…';document.getElementById('ocrBar').style.width='0%';setTimeout(()=>readPhotoDetails(),150)}
+async function useIncludedTestPhoto(){photoTestSource='karmak-test-photo.jpg';const img=document.getElementById('jobPhotoPreview');img.src=photoTestSource;img.classList.remove('hidden');document.getElementById('photoFileName').textContent='Included test photo: RO 20802';document.getElementById('readPhotoBtn').disabled=false;document.getElementById('photoStatus').className='extract-warning';document.getElementById('photoStatus').textContent='Loading included Karmak test photo…';await readPhotoDetails()}
+function cleanOCRLine(v){return (v||'').replace(/[|]/g,'I').replace(/\s+/g,' ').trim()}
+function firstMatch(text,patterns){for(const p of patterns){const m=text.match(p);if(m&&m[1])return cleanOCRLine(m[1])}return''}
+function parseKarmakText(raw){const text=raw.replace(/\r/g,'');const one=text.replace(/[ \t]+/g,' ');
+// The RO number sits near a barcode and a multi-column Created-By/Creation-Date block, so OCR
+// often jumbles a few extra characters in between the "Repair Order" label and the digits —
+// allow a short run of noise rather than requiring the digits immediately after the label.
+let ro=firstMatch(one,[/Repair\s*Order[\s\S]{0,25}?([0-9]{4,10})/i,/\bRO\s*#?\s*[:\-]?\s*([0-9]{4,10})/i]);
+if(!ro){
+  // Karmak repair-order hardcopies print the RO number twice (once in the page header timestamp,
+  // once under "Repair Order"). If direct label matching fails, the number that shows up more
+  // than once is a reliable fallback signal.
+  const counts={};(one.match(/\b\d{4,6}\b/g)||[]).forEach(n=>{counts[n]=(counts[n]||0)+1});
+  const repeated=Object.keys(counts).filter(n=>counts[n]>1).sort((a,b)=>b.length-a.length);
+  if(repeated.length)ro=repeated[0];
+}
+let unit=firstMatch(one,[/\bUnit\s*[:#]?\s*([A-Z0-9-]{2,20})/i,/Trailer\s*(?:Number|#)\s*[:\-]?\s*([A-Z0-9-]{2,20})/i]);let year=firstMatch(one,[/\bYear\s*[:#]?\s*((?:19|20)\d{2})/i]);
+if(!year){
+  // OCR sometimes eats the word "Year" entirely on noisy photos but leaves the 4-digit number
+  // intact. A standalone year-shaped number that ISN'T part of a MM/DD/YYYY date is a safe fallback.
+  const ym=one.match(/(?<![\d/])((?:19|20)\d{2})(?![\d/])/);
+  if(ym)year=ym[1];
+}let vin=firstMatch(one,[/\bVIN\s*[:#]?\s*([A-HJ-NPR-Z0-9]{15,20})/i]);let makeModel=firstMatch(one,[/Make\s*\/\s*Model\s*[:#]?\s*(.+?)(?=\s+(?:VIN|Meter|Type|In-Service|ECM|$))/i]);let type=firstMatch(one,[/\bType\s*[:#]?\s*(.+?)(?=\s+(?:ECM|VIN|Meter|$))/i]);let date=firstMatch(one,[/Creation\s*Date\s*\n?\s*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i]);let createdBy=firstMatch(one,[/Created\s*By\s*\n?\s*([A-Za-z0-9._-]+)/i]);let customer=firstMatch(text,[/Owning\s+Customer\s*\n\s*([^\n]+)/i,/Billing\s+Customer\s*\n\s*([^\n]+)/i]);if(!customer){const lines=text.split('\n').map(cleanOCRLine).filter(Boolean);const idx=lines.findIndex(x=>/Billing Customer/i.test(x));if(idx>=0&&lines[idx+1])customer=lines[idx+1]}let complaint='';const cm=text.match(/Complaint\s*:\s*([\s\S]*?)(?=\n\s*Cause\s*:|\n\s*Correction\s*:|\n\s*Supplier\b|$)/i);if(cm)complaint=cleanOCRLine(cm[1]);return{ro,unit,customer,year,makeModel,type,vin,date,createdBy,complaint}}
+function setPhotoField(id,value){if(value){const el=document.getElementById(id);if(el)el.value=value}}
+async function sourceToBlob(source){
+  if(source instanceof Blob)return source;
+  const response=await fetch(source,{cache:'no-store'});
+  if(!response.ok)throw new Error('Unable to load the selected photo.');
+  return await response.blob();
+}
+function clamp255(v){return Math.max(0,Math.min(255,v))}
+async function loadPhotoBitmap(source){
+  const blob=await sourceToBlob(source);
+  try{return await createImageBitmap(blob,{imageOrientation:'from-image'})}
+  catch{return await createImageBitmap(blob)}
+}
+function drawScaledBitmap(bitmap,maxWidth=2200){
+  const scale=Math.min(1,maxWidth/bitmap.width);
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(bitmap.width*scale));
+  canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
+  return canvas;
+}
+function photoStats(canvas){
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  const {data}=ctx.getImageData(0,0,canvas.width,canvas.height);
+  let sum=0,sum2=0,dark=0,light=0,n=0;
+  const stride=Math.max(4,Math.floor(data.length/180000/4)*4);
+  for(let i=0;i<data.length;i+=stride){
+    const g=.299*data[i]+.587*data[i+1]+.114*data[i+2];
+    sum+=g;sum2+=g*g;n++;if(g<55)dark++;if(g>235)light++;
+  }
+  const mean=sum/n,sd=Math.sqrt(Math.max(0,sum2/n-mean*mean));
+  return{mean,sd,darkPct:dark/n,lightPct:light/n};
+}
+function preprocessVariant(base,mode){
+  const out=document.createElement('canvas');out.width=base.width;out.height=base.height;
+  const ctx=out.getContext('2d',{willReadFrequently:true});ctx.drawImage(base,0,0);
+  const img=ctx.getImageData(0,0,out.width,out.height),d=img.data;
+  let sum=0,n=0;
+  for(let i=0;i<d.length;i+=4){sum+=.299*d[i]+.587*d[i+1]+.114*d[i+2];n++}
+  const mean=sum/n;
+  for(let i=0;i<d.length;i+=4){
+    const g=.299*d[i]+.587*d[i+1]+.114*d[i+2];let v=g;
+    if(mode==='balanced')v=(g-mean)*1.42+165;
+    if(mode==='shadow'){
+      const gamma=mean<150?.72:.88;
+      v=255*Math.pow(g/255,gamma);
+      v=(v-128)*1.35+150;
+    }
+    if(mode==='threshold'){
+      const t=Math.max(125,Math.min(205,mean*.93));
+      v=g>t?255:0;
+    }
+    d[i]=d[i+1]=d[i+2]=clamp255(v);d[i+3]=255;
+  }
+  ctx.putImageData(img,0,0);
+  if(mode!=='threshold'){
+    const copy=document.createElement('canvas');copy.width=out.width;copy.height=out.height;
+    const c=copy.getContext('2d');c.filter='contrast(1.12) saturate(0)';c.drawImage(out,0,0);
+    return copy;
+  }
+  return out;
+}
+function rotateCanvas(source,degrees){
+  if(!degrees)return source;
+  const rad=degrees*Math.PI/180,cos=Math.abs(Math.cos(rad)),sin=Math.abs(Math.sin(rad));
+  const out=document.createElement('canvas');out.width=Math.ceil(source.width*cos+source.height*sin);out.height=Math.ceil(source.width*sin+source.height*cos);
+  const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);ctx.translate(out.width/2,out.height/2);ctx.rotate(rad);ctx.drawImage(source,-source.width/2,-source.height/2);return out;
+}
+function normalizeVIN(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/[IOQ]/g,m=>({I:'1',O:'0',Q:'0'}[m]))}
+function validateKarmakData(data){
+  const confidence={};
+  confidence.ro=/^\d{4,10}$/.test(data.ro||'')?'high':data.ro?'low':'missing';
+  confidence.unit=/^[A-Z0-9-]{2,20}$/i.test(data.unit||'')?'high':data.unit?'low':'missing';
+  data.vin=normalizeVIN(data.vin);
+  confidence.vin=data.vin.length===17?'high':data.vin?'low':'missing';
+  confidence.year=/^(19|20)\d{2}$/.test(data.year||'')?'high':data.year?'low':'missing';
+  confidence.customer=(data.customer||'').length>=4?'high':data.customer?'low':'missing';
+  confidence.complaint=(data.complaint||'').length>=12?'high':data.complaint?'low':'missing';
+  return confidence;
+}
+function scoreKarmakData(data,raw,ocrConfidence=0){
+  const c=validateKarmakData(data);let score=0;
+  score+=c.ro==='high'?18:c.ro==='low'?5:0;
+  score+=c.unit==='high'?12:c.unit==='low'?4:0;
+  score+=c.vin==='high'?22:c.vin==='low'?4:0;
+  score+=c.year==='high'?8:c.year==='low'?2:0;
+  score+=c.customer==='high'?14:c.customer==='low'?3:0;
+  score+=c.complaint==='high'?18:c.complaint==='low'?4:0;
+  score+=Math.min(8,(raw||'').length/180);
+  score+=Math.min(8,(Number(ocrConfidence)||0)/12.5);
+  return{score,confidence:c};
+}
+function mergeKarmakData(candidates){
+  const fields=['ro','unit','customer','year','makeModel','type','vin','date','createdBy','complaint'];const merged={};
+  for(const f of fields){
+    const options=candidates.map(x=>({v:(x.data[f]||'').trim(),score:x.score})).filter(x=>x.v);
+    if(!options.length){merged[f]='';continue}
+    options.sort((a,b)=>b.score-a.score||b.v.length-a.v.length);merged[f]=options[0].v;
+  }
+  validateKarmakData(merged);return merged;
+}
+function markPhotoConfidence(id,level){
+  const el=document.getElementById(id);if(!el)return;
+  el.style.borderColor=level==='high'?'#2f9e44':level==='low'?'#f0a202':'#c62828';
+  el.title=level==='high'?'OCR value passed format checks':level==='low'?'Please verify this OCR value':'OCR did not find this field';
+}
+function cropCanvasByRatio(source,box){
+  const x=Math.max(0,Math.round(source.width*box.x)),y=Math.max(0,Math.round(source.height*box.y));
+  const w=Math.min(source.width-x,Math.round(source.width*box.w)),h=Math.min(source.height-y,Math.round(source.height*box.h));
+  const out=document.createElement('canvas');out.width=Math.max(1,w);out.height=Math.max(1,h);
+  const ctx=out.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(source,x,y,w,h,0,0,w,h);return out;
+}
+function cleanFieldOCR(raw,label=''){
+  let v=String(raw||'').replace(/\r/g,'\n').replace(/[|]/g,'I').replace(/\n+/g,' ').replace(/\s+/g,' ').trim();
+  if(label)v=v.replace(new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:#-]?','i'),'').trim();
+  return v.replace(/^[:#\-\s]+|[:#\-\s]+$/g,'').trim();
+}
+function digitsOnly(v,min=1,max=20){const m=String(v||'').match(new RegExp('\\d{'+min+','+max+'}'));return m?m[0]:''}
+function fieldParser(name,raw){
+  const v=cleanFieldOCR(raw);
+  if(name==='ro')return digitsOnly(v,4,10);
+  if(name==='unit'){
+    const cleaned=cleanFieldOCR(v,'Unit').replace(/[^A-Z0-9-]/gi,' ');
+    const matches=cleaned.match(/[A-Z0-9-]{2,20}/gi)||[];
+    return (matches.find(x=>/\d/.test(x))||matches[0]||'').toUpperCase();
+  }
+  if(name==='year'){const x=v.match(/(?:19|20)\d{2}/);return x?x[0]:''}
+  if(name==='vin'){
+    const all=normalizeVIN(cleanFieldOCR(v,'VIN'));
+    const x=all.match(/[A-HJ-NPR-Z0-9]{17}/);
+    return x?x[0]:all.slice(0,17);
+  }
+  if(name==='billingCustomer'||name==='customer'){
+    const label=name==='billingCustomer'?'Billing Customer':'Owning Customer';
+    let x=cleanFieldOCR(v,label).replace(/\bPhone\b.*$/i,'').replace(/\bContact\b.*$/i,'').replace(/\bCustomer P\/?O\b.*$/i,'');
+    const lines=String(raw||'').split(/\r?\n/).map(cleanOCRLine).filter(Boolean);
+    // Drop lines that are clearly labels/metadata rather than a customer name — no more hardcoded
+    // town/street names, so this generalizes to any shop's real customer list instead of one test photo.
+    const filtered=lines.filter(line=>!new RegExp(`${label}|^Phone\\b|^Contact\\b|Customer P/?O|\\d{3}-\\d{3}-\\d{4}|,\\s*[A-Z]{2}\\s*\\d{5}`,'i').test(line));
+    if(filtered.length)x=filtered[0];
+    return x.replace(/[^A-Z0-9&'().,\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,80);
+  }
+  if(name==='makeModel'){
+    return cleanFieldOCR(v,'Make/Model').replace(/\bVIN\b.*$/i,'').replace(/\bMeter\b.*$/i,'').replace(/\bType\b.*$/i,'').replace(/[^A-Z0-9&'()./\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,80);
+  }
+  if(name==='type')return cleanFieldOCR(v,'Type').replace(/\bECM\b.*$/i,'').replace(/[^A-Z0-9&'()./\- ]/gi,'').replace(/\s+/g,' ').trim().slice(0,50);
+  if(name==='complaint'){
+    let x=String(raw||'').replace(/\r/g,' ').replace(/\n+/g,' ').replace(/\s+/g,' ').trim();
+    x=x.replace(/^.*?Complaint\s*:\s*/i,'').replace(/\s*(Cause|Correction)\s*:.*$/i,'').trim();
+    return x.slice(0,700);
+  }
+  return v;
+}
+const KARMAK_FIELD_REGIONS=[
+  // Ratios match the standard full-page Karmak hard-copy form shown in the marked reference photo.
+  {name:'billingCustomer',label:'Billing Customer',box:{x:.025,y:.165,w:.445,h:.145},target:'photoBillingCustomer',mode:'6'},
+  {name:'customer',label:'Owning Customer',box:{x:.515,y:.165,w:.445,h:.145},target:'photoCustomer',mode:'6'},
+  {name:'ro',label:'Repair Order',box:{x:.025,y:.305,w:.185,h:.110},target:'photoRO',whitelist:'0123456789',mode:'6'},
+  {name:'unit',label:'Unit',box:{x:.010,y:.490,w:.285,h:.055},target:'photoTrailer',whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-',mode:'7'},
+  {name:'year',label:'Year',box:{x:.285,y:.490,w:.155,h:.055},target:'photoYear',whitelist:'0123456789',mode:'7'},
+  {name:'makeModel',label:'Make / Model',box:{x:.020,y:.525,w:.585,h:.050},target:'photoMakeModel',mode:'7'},
+  {name:'type',label:'Type',box:{x:.625,y:.515,w:.325,h:.060},target:'photoType',mode:'7'},
+  {name:'vin',label:'VIN',box:{x:.010,y:.555,w:.435,h:.055},target:'photoVIN',whitelist:'ABCDEFGHJKLMNPRSTUVWXYZ0123456789',mode:'7'},
+  {name:'complaint',label:'Complaint',box:{x:.005,y:.820,w:.965,h:.100},target:'photoComplaint',mode:'6'}
+];
+async function runFieldOCR(canvas,field,index,total,status,bar){
+  const versions=[preprocessVariant(canvas,'shadow'),preprocessVariant(canvas,'threshold')];
+  let best={raw:'',value:'',confidence:0};
+  for(let pass=0;pass<versions.length;pass++){
+    const result=await Tesseract.recognize(versions[pass],'eng',{
+      workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+      corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
+      langPath:'https://tessdata.projectnaptha.com/4.0.0',
+      tessedit_pageseg_mode:field.mode||'7',
+      ...(field.whitelist?{tessedit_char_whitelist:field.whitelist}:{}),
+      logger:m=>{if(m.status){const fraction=(index+(pass+(m.progress||0))/versions.length)/total;bar.style.width=Math.round(fraction*100)+'%';status.textContent=`Reading ${field.label} (${index+1} of ${total})`;}}
+    });
+    const raw=result.data.text||'',value=fieldParser(field.name,raw),confidence=Number(result.data.confidence)||0;
+    const score=(value?50:0)+confidence+(value.length>2?10:0);
+    if(score>((best.value?50:0)+best.confidence+(best.value.length>2?10:0)))best={raw,value,confidence};
+  }
+  return best;
+}
+function fieldConfidence(name,value){
+  if(name==='ro')return /^\d{4,10}$/.test(value)?'high':value?'low':'missing';
+  if(name==='unit')return /^(?=.*\d)[A-Z0-9-]{2,20}$/i.test(value)?'high':value?'low':'missing';
+  if(name==='year')return /^(19|20)\d{2}$/.test(value)?'high':value?'low':'missing';
+  if(name==='vin')return normalizeVIN(value).length===17?'high':value?'low':'missing';
+  if(name==='billingCustomer'||name==='customer')return value.length>=4?'high':value?'low':'missing';
+  if(name==='makeModel'||name==='type')return value.length>=2?'high':value?'low':'missing';
+  if(name==='complaint')return value.length>=8?'high':value?'low':'missing';
+  return value?'low':'missing';
+}
+async function waitForOpenCV(timeoutMs=12000){
+  const started=Date.now();
+  while(Date.now()-started<timeoutMs){
+    if(window.cv&&cv.Mat){return true}
+    await new Promise(r=>setTimeout(r,150));
+  }
+  return false;
+}
+function rotateCanvas90(source,turns=1){
+  turns=((turns%4)+4)%4;if(!turns)return source;
+  const out=document.createElement('canvas'),swap=turns%2===1;
+  out.width=swap?source.height:source.width;out.height=swap?source.width:source.height;
+  const ctx=out.getContext('2d',{willReadFrequently:true});ctx.save();
+  if(turns===1){ctx.translate(out.width,0);ctx.rotate(Math.PI/2)}
+  else if(turns===2){ctx.translate(out.width,out.height);ctx.rotate(Math.PI)}
+  else{ctx.translate(0,out.height);ctx.rotate(-Math.PI/2)}
+  ctx.drawImage(source,0,0);ctx.restore();return out;
+}
+function orderPagePoints(points){
+  const sums=points.map(p=>p.x+p.y),diffs=points.map(p=>p.x-p.y);
+  const tl=points[sums.indexOf(Math.min(...sums))],br=points[sums.indexOf(Math.max(...sums))];
+  const tr=points[diffs.indexOf(Math.max(...diffs))],bl=points[diffs.indexOf(Math.min(...diffs))];
+  return[tl,tr,br,bl];
+}
+async function detectAndStraightenPage(source,status){
+  const hasCV=await waitForOpenCV();
+  if(!hasCV)return{canvas:source,detected:false,message:'OpenCV page alignment did not load; using the original photo.'};
+  let src=null,gray=null,blur=null,edges=null,kernel=null,contours=null,hierarchy=null,bestApprox=null,dst=null,M=null,srcTri=null,dstTri=null;
+  try{
+    status.textContent='Finding the four page corners…';
+    src=cv.imread(source);gray=new cv.Mat();blur=new cv.Mat();edges=new cv.Mat();
+    cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY,0);cv.GaussianBlur(gray,blur,new cv.Size(5,5),0,0,cv.BORDER_DEFAULT);
+    cv.Canny(blur,edges,45,145);kernel=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(7,7));
+    cv.morphologyEx(edges,edges,cv.MORPH_CLOSE,kernel);
+    contours=new cv.MatVector();hierarchy=new cv.Mat();cv.findContours(edges,contours,hierarchy,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE);
+    let bestArea=0;const minArea=src.rows*src.cols*.22;
+    for(let i=0;i<contours.size();i++){
+      const c=contours.get(i),peri=cv.arcLength(c,true),approx=new cv.Mat();cv.approxPolyDP(c,approx,.02*peri,true);
+      const area=Math.abs(cv.contourArea(approx));
+      if(approx.rows===4&&area>bestArea&&area>minArea){if(bestApprox)bestApprox.delete();bestApprox=approx;bestArea=area}else approx.delete();
+      c.delete();
+    }
+    if(!bestApprox)return{canvas:source,detected:false,message:'Could not see all four page edges; using the original photo.'};
+    const pts=[];for(let i=0;i<4;i++){const p=bestApprox.intPtr(i,0);pts.push({x:p[0],y:p[1]})}
+    const [tl,tr,br,bl]=orderPagePoints(pts);
+    const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),top=d(tl,tr),bottom=d(bl,br),left=d(tl,bl),right=d(tr,br);
+    let W=Math.max(top,bottom),H=Math.max(left,right);if(W>H){const t=W;W=H;H=t}
+    const targetH=2400,targetW=Math.round(targetH*(W/H));
+    srcTri=cv.matFromArray(4,1,cv.CV_32FC2,[tl.x,tl.y,tr.x,tr.y,br.x,br.y,bl.x,bl.y]);
+    dstTri=cv.matFromArray(4,1,cv.CV_32FC2,[0,0,targetW-1,0,targetW-1,targetH-1,0,targetH-1]);
+    M=cv.getPerspectiveTransform(srcTri,dstTri);dst=new cv.Mat();cv.warpPerspective(src,dst,M,new cv.Size(targetW,targetH),cv.INTER_CUBIC,cv.BORDER_CONSTANT,new cv.Scalar(255,255,255,255));
+    const out=document.createElement('canvas');cv.imshow(out,dst);
+    return{canvas:out,detected:true,message:'Page corners found and perspective corrected.'};
+  }catch(err){console.warn('Page alignment failed',err);return{canvas:source,detected:false,message:'Page alignment failed; using the original photo.'}}
+  finally{[src,gray,blur,edges,kernel,hierarchy,bestApprox,dst,M,srcTri,dstTri].forEach(x=>{try{x&&x.delete&&x.delete()}catch{}});try{contours&&contours.delete()}catch{}}
+}
+function strictFieldConfidence(name,value){
+  // Only reject a value when it's obviously the field LABEL leaking through (OCR grabbed the
+  // printed form heading instead of the handwritten/typed value next to it), not because the
+  // real-world text doesn't match a fixed list. That fixed-list approach only ever worked on
+  // one sample photo and rejected legitimate values from every other RO.
+  const v=String(value||'').trim(),bad=/^(Repair Order|Created By|Supplier|Part Number|Description|Bin Location|King Pin|Wheels|Dump Valve|Crossmember|ECM Reading|Billing Customer|Owning Customer|Unit|Year|Make\s*\/?\s*Model|Type|VIN|Complaint)$/i;
+  if(name==='ro')return /^\d{4,10}$/.test(v)?'high':'missing';
+  if(name==='unit')return /^(?=.*\d)[A-Z0-9-]{2,12}$/i.test(v)&&!bad.test(v)?'high':'missing';
+  if(name==='year')return /^(19|20)\d{2}$/.test(v)?'high':'missing';
+  if(name==='vin')return /^[A-HJ-NPR-Z0-9]{17}$/.test(normalizeVIN(v))?'high':'missing';
+  if(name==='billingCustomer'||name==='customer')return v.length>=3&&v.length<=80&&/[A-Z]{2}/i.test(v)&&!bad.test(v)?'high':'missing';
+  if(name==='makeModel')return v.length>=2&&v.length<=80&&/[A-Z0-9]{2}/i.test(v)&&!bad.test(v)?'high':'missing';
+  if(name==='type')return v.length>=2&&v.length<=50&&!bad.test(v)?'high':'missing';
+  if(name==='complaint')return v.length>=5&&!bad.test(v)?'high':'missing';
+  return'missing';
+}
+function chooseValidatedField(field,cropResult,fullData){
+  // The whole-page pass finds values by searching for the printed LABEL text itself
+  // ("Unit:", "VIN:", "Owning Customer", etc.) wherever it lands in the OCR output, so it
+  // still works when the photo is tilted, cropped tight, or shot on a cluttered desk.
+  // The fixed-box crop only works when the page fills the frame at the expected position —
+  // on a messy real-world photo it can grab a neighboring field, a barcode, or scrap paper
+  // in the background. So the label-anchored whole-page value is checked FIRST, and the
+  // pixel-box crop is only used as a fallback.
+  const wholePageValue=field.name==='billingCustomer'?(fullData.billingCustomer||''):field.name==='customer'?(fullData.customer||''):(fullData[field.name]||'');
+  const candidates=[wholePageValue,cropResult.value];
+  // 1) Prefer a candidate that passes strict validation, whole-page match first.
+  for(const candidate of candidates){if(strictFieldConfidence(field.name,candidate)==='high')return{value:candidate,level:'high'}}
+  // 2) Nothing strict-passed — rather than leaving the field blank (which just means more manual
+  //    typing every time), fall back to the best non-empty OCR guess and flag it "low" so the
+  //    tech can glance at it and correct it instead of retyping from scratch.
+  const fallback=candidates.map(c=>String(c||'').trim()).filter(Boolean).sort((a,b)=>b.length-a.length)[0]||'';
+  return{value:fallback,level:fallback?'low':'missing'};
+}
+function parseNineFieldsFromPage(raw){
+  const t=String(raw||'').replace(/\r/g,''),one=t.replace(/[ \t]+/g,' '),data=parseKarmakText(t);
+  const bill=t.match(/Billing\s+Customer[\s\S]{0,80}?\n\s*([^\n]+)/i);
+  const own=t.match(/Owning\s+Customer[\s\S]{0,80}?\n\s*([^\n]+)/i);
+  data.billingCustomer=bill?cleanOCRLine(bill[1]):'';
+  if(own)data.customer=cleanOCRLine(own[1]);
+  return data;
+}
+async function runWholePageOCR(canvas,status){
+  const preview=drawScaledBitmap(await createImageBitmap(canvas),1500);
+  const result=await Tesseract.recognize(preprocessVariant(preview,'shadow'),'eng',{
+    workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+    corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
+    langPath:'https://tessdata.projectnaptha.com/4.0.0',tessedit_pageseg_mode:'6',
+    logger:m=>{if(m.status)status.textContent='Locating printed field labels…'}
+  });
+  return{raw:result.data.text||'',data:parseNineFieldsFromPage(result.data.text||'')};
+}
+async function readPhotoDetails(){
+  const input=document.getElementById('jobPhoto'),file=input&&input.files&&input.files[0],source=file||photoTestSource;
+  if(!source)return alert('Choose, take, or load the included test photo first.');
+  const status=document.getElementById('photoStatus'),bar=document.getElementById('ocrBar'),btn=document.getElementById('readPhotoBtn');
+  if(typeof Tesseract==='undefined'){status.className='extract-warning';status.textContent='OCR did not load. Confirm the tablet has internet access, then reload this page.';return}
+  btn.disabled=true;bar.style.width='2%';status.className='extract-warning';status.textContent='Loading photo and preparing page alignment…';
+  try{
+    const bitmap=await loadPhotoBitmap(source),original=drawScaledBitmap(bitmap,2600),aligned=await detectAndStraightenPage(original,status);
+    let base=aligned.canvas;if(base.width>base.height)base=rotateCanvas90(base,1);
+    bar.style.width='12%';
+    const whole=await runWholePageOCR(base,status),results=[];
+    for(let i=0;i<KARMAK_FIELD_REGIONS.length;i++){
+      const field=KARMAK_FIELD_REGIONS[i],crop=cropCanvasByRatio(base,field.box),result=await runFieldOCR(crop,field,i,KARMAK_FIELD_REGIONS.length,status,bar);
+      const chosen=chooseValidatedField(field,result,whole.data),value=chosen.value,level=chosen.level;
+      results.push({field,...result,value,level});
+      const el=document.getElementById(field.target);if(el)el.value=value;
+      markPhotoConfidence(field.target,level);
+    }
+    const raw=`PAGE ALIGNMENT: ${aligned.message}\n\n===== WHOLE PAGE LABEL PASS =====\n${whole.raw}\n\n`+results.map(r=>`===== ${r.field.label} | OCR ${Math.round(r.confidence)}% | ${r.level.toUpperCase()} =====\n${r.raw}\nACCEPTED VALUE: ${r.value||'[left blank — manual review required]'}`).join('\n\n');
+    document.getElementById('ocrRaw').textContent=raw;
+    const required=['customer','ro','unit'],found=results.filter(r=>r.value).length,lowConf=results.filter(r=>r.level==='low').length,missingRequired=required.filter(name=>!results.find(r=>r.field.name===name)?.value);
+    bar.style.width='100%';status.className=missingRequired.length?'extract-warning':'extract-status';
+    status.innerHTML=`<b>${aligned.detected?'Page straightened successfully.':'Page-edge detection was incomplete.'}</b> ${found} of 9 fields were read. ${missingRequired.length?'Required fields still missing: '+missingRequired.join(', ')+'. ':''}${lowConf?lowConf+' field(s) are marked orange — best-guess text that didn\u2019t pass strict checks, please glance at those. ':''}Review every field before creating the RO.`;
+  }catch(err){
+    console.error(err);status.className='extract-warning';status.innerHTML='<b>Photo reading failed.</b> Confirm internet access, keep the full page visible, reload, and try again.';document.getElementById('ocrRaw').textContent=String(err&&err.message?err.message:err);
+  }finally{btn.disabled=false}
+}
+function createPhotoJob(mode='estimate'){
+  const get=id=>(document.getElementById(id)?.value||'').trim();
+  const ro=get('photoRO').replace(/\D/g,''),trailer=get('photoTrailer').toUpperCase(),customer=get('photoCustomer'),billingCustomer=get('photoBillingCustomer'),vin=normalizeVIN(get('photoVIN')),year=get('photoYear').replace(/\D/g,''),makeModel=get('photoMakeModel'),trailerType=get('photoType'),complaint=get('photoComplaint');
+  const owner=state.user.role==='manager'?(get('photoOwner')||''):state.user.id,file=document.getElementById('jobPhoto').files[0],sourceName=file?file.name:(photoTestSource?'karmak-test-photo.jpg':'');
+  if(!sourceName)return alert('Take, upload, or load a test photo first.');
+  if(!ro||!trailer||!customer)return alert('Verify the owning customer, repair order number, and unit before creating the job.');
+  if(vin&&vin.length!==17&&!confirm('The VIN is not 17 characters. Create the job anyway and correct it later?'))return;
+  if(year&&!/^(19|20)\d{2}$/.test(year)&&!confirm('The year does not look valid. Create the job anyway and correct it later?'))return;
+  if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');
+  const isRepair=mode==='repair';
+  const j={id:ro,trailer,customer,billingCustomer,status:isRepair?'Repair In Progress':'Estimate In Progress',stage:isRepair?'Repair':'Estimate',jobType:isRepair?'Repair':'Estimate',owner,createdBy:state.user.id,source:'Karmak Photo',photoName:sourceName,photoAttached:true,year,makeModel,trailerType,vin,complaint,repairs:[]};
+  const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('photoModal').remove();state.job=j;state.screen='workflow';resetDraft();save();
+}
+function managerNewEstimate(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="estimateModal"><div class="pinbox"><h3>Create Manager Estimate</h3><p class="muted">Create the repair order and choose the technician who will receive the job. You can assign a different Tech # to each repair later.</p><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="mgrRO" placeholder="RO number"></div><div class="field"><label>Trailer Number <span class="required">!</span></label><input id="mgrTrailer" placeholder="Trailer number"></div><div class="field"><label>Trailer Owner / Company <span class="required">!</span></label><input id="mgrCustomer" placeholder="Company name"></div><div class="field"><label>Primary Technician</label><select id="mgrTech"><option value="">Unassigned</option>${techOptions}</select></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('estimateModal').remove()">Cancel</button><button class="btn primary" onclick="createManagerEstimate()">Create Estimate</button></div></div></div>`)}
+function createManagerEstimate(){const ro=document.getElementById('mgrRO').value.trim(),trailer=document.getElementById('mgrTrailer').value.trim(),customer=document.getElementById('mgrCustomer').value.trim(),owner=document.getElementById('mgrTech').value;if(!ro||!trailer||!customer)return alert('Repair order, trailer number, and company are required.');if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');const j={id:ro,trailer,customer,status:'Estimate In Progress',stage:'Estimate',owner,createdBy:'95',repairs:[]};const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('estimateModal').remove();state.job=j;state.screen='workflow';resetDraft();save()}
+function managerAddRepair(){if(!state.job)return managerNewEstimate();state.screen='workflow';resetDraft();save()}
+function openJob(id){const j=jobs().find(x=>x.id===id);if(!j)return; if(j.owner!==state.user.id){showPin(j);return} state.job=j;state.screen='workflow';resetDraft();save()}
+function showPin(j){const owner=TECHS.find(t=>t.id===j.owner);const managerAccess=state.user?.role==='manager';const accessText=managerAccess?`Enter your manager code or ${owner?`Tech #${owner.id}'s`:"the assigned technician's"} 3-digit code to edit this estimate.`:`Enter ${owner?`Tech #${owner.id}'s`:"the assigned technician's"} 3-digit code to open or change this job.`;document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="pinmodal"><div class="pinbox"><h3>${j.customer}</h3><p>Trailer ${j.trailer}${owner?` is assigned to ${owner.name}.`:'.'} ${accessText}</p><div class="field"><label>3-digit code</label><input id="jobpin" maxlength="3" inputmode="numeric" autocomplete="one-time-code" placeholder="3-digit code"></div><div class="toolbar"><button class="btn" onclick="document.getElementById('pinmodal').remove()">Cancel</button><button class="btn primary" onclick="unlockJob('${j.id}')">Continue</button></div></div></div>`);setTimeout(()=>document.getElementById('jobpin')?.focus(),0)}
+function unlockJob(id){const j=jobs().find(x=>x.id===id);if(!j)return alert('Repair order not found.');const entered=(document.getElementById('jobpin')?.value||'').trim();const owner=TECHS.find(t=>t.id===j.owner);const currentUser=TECHS.find(t=>t.id===state.user?.id);const ownerMatch=!!owner&&entered===owner.pin;const managerMatch=state.user?.role==='manager'&&!!currentUser&&entered===currentUser.pin;if(!ownerMatch&&!managerMatch)return alert('Incorrect code');document.getElementById('pinmodal')?.remove();state.job=j;state.screen='workflow';resetDraft();save()}
+function jobHeader(){const j=state.job;return `<div class="card jobbar"><div class="jobitem"><div class="label">Trailer #</div><div class="value">${j.trailer}</div></div><div class="jobitem"><div class="label">Customer</div><div class="value">${j.customer}</div></div><div class="jobitem"><div class="label">Work Order</div><div class="value">${j.id}</div></div><div class="jobitem"><div class="label">Stage</div><div class="value">${j.stage}</div></div><div class="jobitem"><div class="label">Status</div><span class="status">${j.status}</span></div><div><div class="label">Current Repair</div><div class="value">${state.draft.location||'—'}</div>${j.photoAttached?`<div class="photo-badge" style="margin-top:5px">📷 Photo Created</div>`:''}</div></div>`}
+function isEstimateMode(){return state.draft?.jobType==='Estimate'||state.job?.stage==='Estimate'}
+function steps(){const estimate=isEstimateMode();const partStep=state.user?.role==='manager'?'Parts / Time':'Parts';const names=estimate?['Location','System','Component','Condition','Repair',partStep,'Review']:['Location','System','Component','Condition','Repair',partStep,'Verification','Review'];const visibleStep=estimate&&state.step===8?7:state.step;return `<div class="card steps">${names.map((n,i)=>`<div class="step ${visibleStep===i+1?'active':visibleStep>i+1?'done':''}"><span class="n">${visibleStep>i+1?'✓':i+1}</span><span>${n}</span></div>${i<names.length-1?'<span class="arrow">→</span>':''}`).join('')}</div>`}
+function workflow(){const isMgr=state.user?.role==='manager';const savedHours=(state.job?.repairs||[]).reduce((s,r)=>s+laborHours(r),0);return `${jobHeader()}${steps()}<div class="mobile-actions"><button class="btn issue-btn" onclick="foundSeparateIssue()">+ Found Separate Issue</button><button class="btn" onclick="openTechCommons()">🧰 Tech Commons</button><button class="btn" onclick="openROPhotos()">📷 RO Photos</button></div><div class="workspace"><div class="card panel">${stepContent()}</div><div class="grid"><div class="card"><h3>Current Component</h3>${summary()}</div><div class="card"><h3>${state.draft.jobType==='Estimate'||state.job?.stage==='Estimate'?'Estimate Components':'Current Work Order'}</h3>${state.job.repairs.length?state.job.repairs.map((r,i)=>`<div class="summaryline"><span><b>${i+1}. ${r.location} – ${r.package}</b>${r.separateIssue?' <b>(Separate Issue)</b>':''}<br><small>${r.repair||''} · Tech ${r.techNo||'—'}</small></span>${isMgr?`<b>${laborHours(r).toFixed(1)} hr</b>`:''}</div>`).join(''):'<p class="muted">No components added yet.</p>'}${state.job.repairs.length&&isMgr?`<div class="summaryline" style="border-top:2px solid var(--line);margin-top:8px;padding-top:12px"><span><b>Total estimate hours</b></span><b>${savedHours.toFixed(1)} hr</b></div>`:''}</div><button class="btn primary" onclick="addAnother()">+ Add Another Component</button></div></div>`}
+function stepContent(){if(state.step===1)return locationStep();if(state.step===2)return systemStep();if(state.step===3)return componentStep();if(state.step===4)return conditionStep();if(state.step===5)return repairStep();if(state.step===6)return partsStep();if(state.step===7&&!isEstimateMode())return verifyStep();return finishStep()}
+function jobTypeStep(){return `<div class="eyebrow">STEP 1 OF 9</div><h2>Estimate or Repair?</h2><p class="muted">Choose how this repair line should begin.</p><div class="jobtype-grid"><div class="option ${state.draft.jobType==='Estimate'?'selected':''}" onclick="setJobType('Estimate')"><h3>ESTIMATE</h3><small>Document proposed work for manager or customer approval.</small></div><div class="option ${state.draft.jobType==='Repair'?'selected':''}" onclick="setJobType('Repair')"><h3>REPAIR</h3><small>Document authorized work being performed.</small></div></div>${footer(false,'Select Location','nextStep()',!state.draft.jobType)}`}
+function setJobType(v){state.draft.jobType=v;state.job.stage=v;if(v==='Estimate')state.job.status='Estimate In Progress';else state.job.status='Repair In Progress';save()}
+function footer(back=true,next='Continue',fn='nextStep()',disabled=false){return `<div class="footer-actions"><button class="btn" ${back?'':'disabled'} onclick="prevStep()">← Back</button><button class="btn primary" ${disabled?'disabled':''} onclick="${fn}">${next} →</button></div>`}
+function locationStep(){const locations=[['Left Front','Near Kingpin'],['Right Front','Near Kingpin'],['Left Rear','Tandem End'],['Right Rear','Tandem End']];return `<div class="eyebrow">SECTION 1 OF 8</div><h2>Step 1: Select Repair Location</h2><p class="muted"><b>Front of the trailer is the KINGPIN end.</b> Select a wheel location or Center Module.</p><div class="simple-location-grid">${locations.map(([name,detail])=>`<button type="button" class="simple-location-btn ${state.draft.location===name?'selected':''}" onclick="setVal('location','${name}')"><strong>${name}</strong><small>${detail}</small></button>`).join('')}</div><div class="simple-location-center"><button type="button" class="simple-location-btn center-module-btn ${state.draft.location==='Center Module'?'selected':''}" onclick="setVal('location','Center Module')"><strong>Center Module</strong><small>Landing gear, air tank, ABS module/valve, level valve and center components</small></button></div>${state.draft.location?`<div class="notice"><b>Selected:</b> ${state.draft.location}</div>`:''}${footer(false,'Continue to System','nextStep()',!state.draft.location)}`}
+function systemStep(){const systems=['Wheel End','Brakes','Suspension','Air System','Lighting','ABS','Electrical','Wheel & Tire','Slider / Bogie','Kingpin','Landing Gear'];return `<div class="eyebrow">SECTION 2 OF 8</div><h2>Select System</h2><p class="muted">Choose a system to narrow the repair options.</p><div class="option-grid">${systems.map(x=>`<div class="option ${state.draft.system===x?'selected':''}" onclick="setVal('system','${x}')"><h3>${x}</h3><small>${x==='Wheel End'?'Hub cap, wheel seal, hub assembly':x==='Brakes'?'Disc or drum brake repairs':x==='Suspension'?'Air ride, shocks, alignment and bogey':x==='Lighting'?'Single or multiple light repairs':x==='ABS'?'ABS light, fault code, sensor, wiring or valve':x==='Slider / Bogie'?'Slider box rebuild or replacement':x==='Landing Gear'?'Roadside leg, curbside leg, crank and braces':'Prototype placeholder'}</small></div>`).join('')}</div>${footer(true,'Select Component','nextStep()',!state.draft.system)}`}
+function componentStep(){const d=state.draft;
+if(d.system==='Brakes'&&!d.brakeType)return `<div class="eyebrow">SECTION 3 OF 8</div><h2>Brake Type</h2><div class="option-grid"><div class="option ${d.brakeType==='Disc'?'selected':''}" onclick="setVal('brakeType','Disc')"><h3>Disc</h3><small>Pads, rotor, caliper</small></div><div class="option ${d.brakeType==='Drum'?'selected':''}" onclick="setVal('brakeType','Drum')"><h3>Drum</h3><small>Shoes, drum, chamber, slack adjuster</small></div></div>${footer(true,'Select Component','render()',!d.brakeType)}`;
+if(d.system==='Suspension'&&!d.suspensionGroup)return `<div class="eyebrow">SECTION 3 OF 8</div><h2>Suspension</h2><p class="muted">Most common repairs are listed first.</p><div class="list">${['Air Ride','Shock Absorber','Alignment','Bogey','Height Control Valve','Torque Arm','Suspension Bushings','Hanger / Bracket','Crossmember','Axle','Leaf Spring (Rare)'].map(x=>`<div class="row" onclick="selectSuspensionGroup('${x}')"><span><b>${x}</b></span><span>›</span></div>`).join('')}</div>${footer(true,'Select Component','render()',true)}`;
+if(d.system==='Suspension'&&d.suspensionGroup==='Air Ride'&&!d.package){const opts=['Air Bag','Height Control Valve','Dump Valve','Air Lines / Fittings'];return `<div class="eyebrow">SECTION 3 OF 8</div><h2>Air Ride</h2><div class="list">${opts.map(x=>`<div class="row" onclick="setVal('package','${x}')"><span>${x}</span><span>›</span></div>`).join('')}</div>${footer(true,'Select Condition','nextStep()',true)}`}
+let opts=[];
+if(d.system==='Wheel End')opts=['Hub Cap','Wheel Seal','Hub Assembly','Advanced Repairs'];
+else if(d.system==='Brakes'&&d.brakeType==='Disc')opts=['Brake Pads','Brake Rotor','Brake Caliper','Advanced Repairs'];
+else if(d.system==='Brakes'&&d.brakeType==='Drum')opts=['Brake Shoes','Brake Drum','Brake Chamber','Slack Adjuster','Advanced Repairs'];
+else if(d.system==='Suspension')opts=d.package?[d.package]:[];
+else if(d.system==='Lighting')opts=['Single Light Repair','Install New Light','Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'];
+else if(d.system==='ABS')opts=['ABS Light On','ABS Light Does Not Work','Fault Code Present','Sensor / Tone Ring','Wiring / Power','ABS Modulator Valve'];
+else if(d.system==='Electrical')opts=['Wiring / Connector','No Power','Poor Ground','Harness','Junction Box'];
+else if(d.system==='Wheel & Tire')opts=['Tire','Wheel / Rim','Valve Stem','Inflation System','Wheel Stud / Lug Nut'];
+else if(d.system==='Slider / Bogie')opts=['Slider Box Rebuild','Complete Slider Box Replacement','Slider Pins / Release','Other Slider Repair'];
+else if(d.system==='Landing Gear')opts=['Roadside Leg','Curbside Leg','Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','Cross Tube','K-Brace','Drive Shaft','Bushings','Pins / Roll Pins','Complete Landing Gear Assembly'];
+else opts=['Inspection / Repair','Other'];
+return `<div class="eyebrow">SECTION 3 OF 8</div><h2>Select Component</h2><p class="muted">${d.system}${d.brakeType?' – '+d.brakeType:''}${d.suspensionGroup?' – '+d.suspensionGroup:''}</p><div class="list">${opts.map(x=>`<div class="row ${d.package===x?'selected':''}" onclick="${x==='Brakes'?`routeToBrakes()`: `setVal('package','${x}')`}"><span>${x}</span><span>›</span></div>`).join('')}</div>${footer(true,'Select Condition','nextStep()',!d.package)}`}
+function selectSuspensionGroup(x){state.draft.suspensionGroup=x;state.draft.suspensionType=x==='Air Ride'?'Air Ride':null;if(x!=='Air Ride')state.draft.package=x;save()}
+function routeToBrakes(){state.draft.system='Brakes';state.draft.package=null;state.draft.brakeType=null;save()}
+function conditionOptions(){const p=state.draft.package;if(p==='Hub Cap')return ['Leaking','Cracked','Cloudy','Loose','Inflation Port Damaged'];if(p==='Wheel Seal')return ['Leaking','Damaged'];if(p==='Hub Assembly')return ['Broken','Cracked','Non-Serviceable'];if(p==='Brake Rotor')return ['Worn','Cracked','Heat Checked','Failed Tone Ring'];if(p==='Brake Caliper')return ['Leaking','Seized','Damaged','Oversized Cross Bar Holes'];if(p==='Brake Pads'||p==='Brake Shoes')return ['Worn','Contaminated','Cracked'];if(p==='Brake Drum')return ['Worn','Cracked','Heat Checked'];if(p==='Air Bag')return ['Leaking','Broken','Weather Checked','Rubbing','Damaged'];if(p==='Height Control Valve')return ['Leaking','Failed','Out of Adjustment','Damaged'];if(p==='Air Lines / Fittings')return ['Leaking','Cracked','Rubbed Through','Loose'];if(p==='Shock Absorber')return ['Leaking','Broken','Loose','Worn'];if(p==='Alignment')return ['Out of Specification','Tire Wear','Trailer Pulling','Axle Shifted'];if(p==='Bogey')return ['Broken','Cracked','Bent','Worn','Corroded','Non-Serviceable'];if(['Torque Arm','Suspension Bushings','Hanger / Bracket','Crossmember','Axle','Leaf Spring (Rare)','Dump Valve'].includes(p))return ['Broken','Cracked','Worn','Loose','Bent','Leaking','Non-Serviceable'];if(['Single Light Repair','Install New Light','Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'].includes(p))return ['Bad Bulb / LED','Corrosion','Broken Wire','Loose Connection','Damaged Connector','No Power','Poor Ground','Intermittent','Water Intrusion','Non-Serviceable'];if(['ABS Light On','ABS Light Does Not Work','Fault Code Present','Sensor / Tone Ring','Wiring / Power','ABS Modulator Valve'].includes(p))return ['Light Stays On','Light Does Not Work','Fault Code Present','Broken','Corroded','Open Circuit','Short Circuit','Leaking','Non-Serviceable'];if(['Slider Box Rebuild','Complete Slider Box Replacement','Slider Pins / Release','Other Slider Repair'].includes(p))return ['Damaged','Bent','Cracked','Seized','Non-Serviceable'];if(['Roadside Leg','Curbside Leg','Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','Cross Tube','K-Brace','Drive Shaft','Bushings','Pins / Roll Pins','Complete Landing Gear Assembly'].includes(p))return ['Hard to Crank','Bent','Broken','Will Not Raise','Will Not Lower','Seized','Internal Failure','Weld Cracked','Excessive Play'];return ['Broken','Worn','Failed','Other']}
+function conditionStep(){return `<div class="eyebrow">SECTION 4 OF 8</div><h2>Select Condition</h2><div class="list">${conditionOptions().map(x=>`<div class="row ${state.draft.condition===x?'selected':''}" onclick="setVal('condition','${x}')"><span>${x}</span><span>›</span></div>`).join('')}</div><div class="field" style="margin-top:14px"><label>Notes / details</label><textarea onchange="setVal('notes',this.value,false)" placeholder="Optional details">${state.draft.notes||''}</textarea></div>${footer(true,'Select Repair','nextStep()',!state.draft.condition)}`}
+function repairOptions(){const p=state.draft.package;if(['Wheel Seal','Brake Rotor','Brake Caliper','Brake Pads','Brake Shoes','Brake Drum','Hub Assembly','Air Bag','Height Control Valve','Shock Absorber'].includes(p))return ['Replace'];if(p==='Air Lines / Fittings')return ['Repair','Replace'];if(p==='Alignment')return ['Inspect','Adjust','Align'];if(p==='Bogey')return ['Repair','Replace','Weld','Inspect'];if(['Torque Arm','Suspension Bushings','Hanger / Bracket','Crossmember','Axle','Leaf Spring (Rare)','Dump Valve'].includes(p))return ['Repair','Replace','Inspect'];if(['Single Light Repair','Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'].includes(p))return ['Diagnose','Repair','Replace'];if(p==='Install New Light')return ['Install'];if(['ABS Light On','ABS Light Does Not Work','Fault Code Present','Sensor / Tone Ring','Wiring / Power','ABS Modulator Valve'].includes(p))return ['Diagnose','Repair','Replace','Inspect'];if(['Slider Box Rebuild'].includes(p))return ['Rebuild'];if(p==='Complete Slider Box Replacement')return ['Replace'];if(['Roadside Leg','Curbside Leg','Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','Cross Tube','K-Brace','Drive Shaft','Bushings','Pins / Roll Pins','Complete Landing Gear Assembly'].includes(p))return ['Replace','Repair','Adjust','Lubricate','Weld','Inspect'];if(p==='Hub Cap')return ['Tighten','Replace','Reseal','Inspect'];return ['Repair','Replace','Inspect']}
+function repairStep(){return `<div class="eyebrow">SECTION 5 OF 8</div><h2>Select Repair</h2><div class="list">${repairOptions().map(x=>`<div class="row ${state.draft.repair===x?'selected':''}" onclick="setVal('repair','${x}')"><span>${x}</span><span>›</span></div>`).join('')}</div>${footer(true,'Components Used','nextStep()',!state.draft.repair)}`}
+function partsData(){const d=state.draft;let required=[],inspect=[];if(d.package==='Hub Cap'){required=d.repair==='Replace'?['Hub Cap','Hub Cap Gasket']:['Hub Cap Gasket'];inspect=['Fill Plug','Hub Vent']}if(d.package==='Wheel Seal'){required=['Wheel Seal','Hub Cap Gasket'];inspect=['Spindle Nut','Hub Assembly']}if(d.package==='Hub Assembly'){required=['Preloaded Hub Assembly'];inspect=['Spindle','Tone Ring']}if(d.package==='Brake Rotor'){required=['Brake Rotor','Rotor Mounting Bolts','Wheel Seal','Hub Cap Gasket'];inspect=['Brake Pads','Caliper']}if(d.package==='Brake Caliper'){required=['Brake Caliper','Caliper Mounting Bolts','Wheel Seal','Hub Cap Gasket'];inspect=['Brake Pads','Rotor']}if(d.package==='Brake Pads'){required=['Brake Pad Set'];inspect=['Rotor','Caliper']}if(d.package==='Brake Shoes'){required=['Brake Shoe Set'];inspect=['Brake Drum','Hardware']}if(d.package==='Air Bag'){required=['Air Bag','Air Bag Mounting Kit','Air Fitting'];inspect=['Air Line','Upper Mount','Lower Mount']}if(d.package==='Height Control Valve'){required=['Height Control Valve'];inspect=['Linkage Rod','Air Fittings','Air Lines']}if(d.package==='Air Lines / Fittings'){required=[d.repair==='Replace'?'Air Line / Fitting':'Repair Material'];inspect=['Adjacent Air Line','Protective Loom']}if(d.package==='Shock Absorber'){required=['Shock Absorber'];inspect=['Upper Mount','Lower Mount','Mounting Hardware']}if(d.package==='Alignment'){required=[];inspect=['Axle Position','Torque Arms','Suspension Bushings','Tires / Wheels']}if(d.package==='Bogey'){required=d.repair==='Replace'?['Bogey Assembly']:['Bogey Repair Materials'];inspect=['Slider Pins','Bushings','Crossmembers','Slider Rails','Mounting Hardware']}if(d.package==='Dump Valve'){required=['Dump Valve'];inspect=['Air Lines','Air Fittings','Electrical Solenoid','Pin Pull Bag Operation']}if(d.package==='Single Light Repair'){required=['Light / Bulb as Needed'];inspect=['Harness / Pigtail','Connector','Mounting Screws']}if(d.package==='Install New Light'){required=['Light','Wire Harness / Pigtail','Harness Connector','Mounting Screws'];inspect=['Primary Wire','Split Loom','Grommet']}if(['Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'].includes(d.package)){required=['Diagnostic / Wiring Repair Materials'];inspect=['Lights','Harness','Connectors','Grounds']}if(d.package==='Fault Code Present'){required=[];inspect=['ABS Sensor','Tone Ring','Wiring','ABS Valve']}if(d.package==='Sensor / Tone Ring'){required=[];inspect=['ABS Sensor','Tone Ring','Sensor Holder','Wiring']}if(d.package==='ABS Modulator Valve'){required=['ABS Modulator Valve'];inspect=['Air Lines','Air Fittings','Electrical Connector','Mounting Hardware']}if(d.package==='Slider Box Rebuild'){required=['Slider Box Repair Materials'];inspect=['Slider Pins','Bushings','Springs','Air Cylinder','Cross Shaft','Slider Rails']}if(d.package==='Complete Slider Box Replacement'){required=['Complete Slider Box'];inspect=['Crossmembers','Slider Rails','Frame','Alignment']}if(['Roadside Leg','Curbside Leg'].includes(d.package)){required=d.repair==='Replace'?[d.package]:[];inspect=['Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','K-Brace']}if(d.package==='Cross Shaft'){required=d.repair==='Replace'?['Cross Shaft']:[];inspect=['Roadside Leg','Curbside Leg','Drive Shaft','Pins / Roll Pins']}if(d.package==='Crank Handle'){required=d.repair==='Replace'?['Crank Handle']:[];inspect=['Crank Holder','Mounting Hardware','Drive Shaft']}if(d.package==='Sand Shoe / Foot Plate'){required=d.repair==='Replace'?['Sand Shoe / Foot Plate']:[];inspect=['Leg Tube','Pins / Roll Pins','Weld Area']}if(['Leg Brace','Mounting Brackets','Cross Tube','K-Brace'].includes(d.package)){required=d.repair==='Replace'?[d.package]:[];inspect=['Weld Area','Mounting Hardware','Roadside Leg','Curbside Leg']}if(d.package==='Drive Shaft'){required=d.repair==='Replace'?['Drive Shaft']:[];inspect=['Cross Shaft','Bushings','Pins / Roll Pins']}if(d.package==='Bushings'){required=d.repair==='Replace'?['Landing Gear Bushings']:[];inspect=['Drive Shaft','Cross Shaft','Pins / Roll Pins']}if(d.package==='Pins / Roll Pins'){required=d.repair==='Replace'?['Pins / Roll Pins']:[];inspect=['Cross Shaft','Drive Shaft','Crank Handle']}if(d.package==='Complete Landing Gear Assembly'){required=d.repair==='Replace'?['Complete Landing Gear Assembly']:[];inspect=['Mounting Brackets','Cross Shaft','Crank Handle','Leg Braces','K-Brace']}return {required,inspect}}
+function partsStep(){const pd=partsData();const lighting=state.draft.system==='Lighting';const absFault=state.draft.package==='Fault Code Present';return `<div class="eyebrow">SECTION 6 OF 8</div><h2>Components Used</h2><p class="muted">Verify standard parts. Add inspection items only when used.</p>${absFault?`<div class="section-title">ABS SYSTEM TYPE</div><div class="option-grid">${['WABCO','Haldex','Bendix'].map(x=>`<div class="option ${state.draft.absBrand===x?'selected':''}" onclick="setVal('absBrand','${x}')"><h3>${x}</h3></div>`).join('')}</div><div class="field"><label>Fault Code</label><input value="${state.draft.faultCode||''}" ${state.draft.faultUnavailable?'disabled':''} onchange="setVal('faultCode',this.value,false)"><label style="margin-top:8px"><input type="checkbox" ${state.draft.faultUnavailable?'checked':''} onchange="setVal('faultUnavailable',this.checked)"> Not Available</label></div>`:''}<div class="section-title">STANDARD PARTS</div>${pd.required.length?pd.required.map(x=>`<div class="checkrow"><span>${x}</span><input type="checkbox" checked onchange="togglePart('${x}',this.checked)"></div>`).join(''):'<p class="muted">No automatic part required for diagnosis.</p>'}${(pd.required.includes('Wheel Seal')||state.draft.package==='Hub Cap')?`<div class="section-title">LUBRICANT</div><div class="option-grid"><div class="option ${state.draft.lubricant==='80W-90'?'selected':''}" onclick="setVal('lubricant','80W-90')"><h3>80W-90</h3></div><div class="option ${state.draft.lubricant==='EBL Grease'?'selected':''}" onclick="setVal('lubricant','EBL Grease')"><h3>EBL Grease</h3></div></div>`:''}<div class="section-title">INSPECT & ADD IF NEEDED</div>${pd.inspect.map(x=>`<div class="checkrow"><span>${x}</span><input type="checkbox" ${state.draft.parts[x]?'checked':''} onchange="togglePart('${x}',this.checked)"></div>`).join('')}${lighting?commonLightingSupplies():`<div class="section-title">ZIP TIES</div><div class="grid cols-2"><div class="field"><label>Large</label><select onchange="setVal('zipLarge',this.value,false)">${zipOptions()}</select></div><div class="field"><label>Small</label><select onchange="setVal('zipSmall',this.value,false)">${zipOptions()}</select></div></div>`}${repairScopeEditor()}${additionalPartsEditor()}${footer(true,isEstimateMode()?'Review Estimate':'Repair Verification','nextStep()',((pd.required.includes('Wheel Seal')||state.draft.package==='Hub Cap')&&!state.draft.lubricant)||(absFault&&!state.draft.absBrand))}`}
+function commonLightingSupplies(){return `<div class="section-title">COMMON SHOP SUPPLIES</div><div class="supply-grid">${[['Butt Connectors','butt'],['Zip Ties','zip'],['Heat Shrink','heat'],['Ring Terminals','ring']].map(([label,key])=>`<div class="supply-box"><h4>${label}</h4><div class="grid cols-2"><div class="field"><label>Small</label><select onchange="setVal('${key}Small',this.value,false)">${zipOptions()}</select></div><div class="field"><label>Large</label><select onchange="setVal('${key}Large',this.value,false)">${zipOptions()}</select></div></div></div>`).join('')}<div class="supply-box"><h4>Primary Wire</h4><select onchange="setVal('wireGauge',this.value,false)"><option>None</option><option>16 Gauge</option><option>14 Gauge</option><option>12 Gauge</option></select></div><div class="supply-box"><h4>Split Loom</h4><select onchange="setVal('loomSize',this.value,false)"><option>None</option><option>1/4 inch</option><option>3/8 inch</option><option>1/2 inch</option></select></div></div>`}
+function zipOptions(){return [0,1,2,3,4,5,10,15,20].map(x=>`<option>${x}</option>`).join('')}
+function verificationItems(){const p=state.draft.package;let a=[];if(p==='Hub Cap')a=['Hub cap installed and secured','Hub cap gasket replaced','Fill plug installed','Hub vent clear','Lubricant level correct','No leaks'];if(p==='Wheel Seal')a=['Wheel seal installed correctly','Bearing adjustment completed','Brakes adjusted','Hub rotates freely','Lubricant level correct','No leaks'];if(p==='Hub Assembly')a=['Preloaded hub installed','Hub rotates freely','Lubricant added','Spindle inspected','Tone ring verified','Wheel torque completed','No leaks'];if(p==='Brake Rotor')a=['New rotor installed','New rotor mounting bolts installed','Blue Loctite applied','Rotor bolts torqued','Wheel seal replaced','Hub cap gasket replaced','Brakes adjusted','No leaks'];if(p==='Brake Caliper')a=['New caliper installed','New caliper mounting bolts installed','Blue Loctite applied','Caliper bolts torqued','Brake operation verified','No leaks'];if(p==='Brake Pads'||p==='Brake Shoes')a=['New set installed','Related hardware inspected','Brake operation verified'];if(p==='Air Bag')a=['Air bag installed correctly','Mounting hardware secured','Air fitting verified','No air leaks','Suspension raises and lowers correctly'];if(p==='Height Control Valve')a=['Valve installed correctly','No air leaks','Linkage secured','Ride height known','Ride height set from axle center to top of air bag','Suspension operation verified'];if(p==='Air Lines / Fittings')a=['Repair secured','No air leaks','Line routed away from rubbing','Suspension operation verified'];if(p==='Shock Absorber')a=['Shock installed correctly','Upper and lower mounts secured','No interference','Suspension operation verified'];if(p==='Alignment')a=['Alignment measurements recorded','Axles adjusted to specification','Fasteners secured','Tracking verified'];if(p==='Bogey')a=['Bogey structure repaired or replaced','Mounting hardware secured','Welds inspected','Alignment verified','Suspension operation verified'];if(p==='Dump Valve')a=['Dump valve operates correctly','Pin pull bag operation verified','Suspension inflates correctly','No air leaks'];if(['Single Light Repair','Install New Light','Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'].includes(p))a=['All affected lights operate','Mounting secure','Wiring and grounds verified','Wiring protected','No exposed wiring'];if(['ABS Light On','ABS Light Does Not Work','Fault Code Present','Sensor / Tone Ring','Wiring / Power','ABS Modulator Valve'].includes(p))a=['ABS light operation verified','Fault documented or marked Not Available','Sensor / tone ring inspected','Wiring secured','No active fault remains'];if(p==='Slider Box Rebuild')a=['Slider box structure repaired','Pins engage and release','Air cylinder operation verified','Welds inspected','Slider moves correctly'];if(p==='Complete Slider Box Replacement')a=['Replacement box installed','Box weld completed','Welds inspected','Slider pins engage','Alignment verified'];if(['Roadside Leg','Curbside Leg','Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','Cross Tube','K-Brace','Drive Shaft','Bushings','Pins / Roll Pins','Complete Landing Gear Assembly'].includes(p))a=['Landing gear raises smoothly','Landing gear lowers smoothly','Roadside and curbside legs remain synchronized','Crank operates and stores correctly','Mounting and braces are secure','Two-speed operation verified when equipped'];return a}
+function verifyStep(){
+ const items=verificationItems();
+ if(!state.draft.verificationNotes)state.draft.verificationNotes={};
+ const incomplete=items.some(x=>!['pass','fail','na'].includes(normalizeVerify(state.draft.verification[x])));
+ const failedWithoutNote=items.some(x=>normalizeVerify(state.draft.verification[x])==='fail'&&!(state.draft.verificationNotes[x]||'').trim());
+ return `<div class="eyebrow">SECTION 7 OF 8</div><h2>Repair Verification</h2><p class="muted">Select Pass, Fail, or N/A for every item. Failed items require a note.</p><div class="verifyhead"><span>Verification Item</span><span style="text-align:center">Pass</span><span style="text-align:center">Fail</span><span style="text-align:center">N/A</span></div>${items.map((x,i)=>{const v=normalizeVerify(state.draft.verification[x]);const key='verify_'+i;return `<div class="verifyrow"><div class="verifyline"><span>${x}</span><label class="verifychoice"><input type="radio" name="${key}" value="pass" ${v==='pass'?'checked':''} onchange="setVerify('${escapeAttr(x)}','pass')"></label><label class="verifychoice"><input type="radio" name="${key}" value="fail" ${v==='fail'?'checked':''} onchange="setVerify('${escapeAttr(x)}','fail')"></label><label class="verifychoice"><input type="radio" name="${key}" value="na" ${v==='na'?'checked':''} onchange="setVerify('${escapeAttr(x)}','na')"></label></div>${v==='fail'?`<div class="failnote"><label class="required">Failure note required</label><textarea placeholder="Briefly explain why this item failed" oninput="setVerifyNote('${escapeAttr(x)}',this.value)">${state.draft.verificationNotes[x]||''}</textarea></div>`:''}</div>`}).join('')}<div class="notice">All items must have a response before continuing. N/A is acceptable when the verification does not apply to this repair.</div>${footer(true,'Review & Finish','nextStep()',incomplete||failedWithoutNote)}`
+}
+function normalizeVerify(v){if(v===true)return 'pass';if(v===false||v==null)return '';return v}
+function escapeAttr(x){return String(x).replace(/'/g,"\\'")}
+function additionalPartsEditor(){
+ const items=state.draft.additionalParts||[];
+ const editor=state.draft.showAdditionalPart?`<div class="card" style="margin-top:12px;background:#f8fbff"><div class="field"><label>Part description</label><input id="additionalPartName" placeholder="Example: Air fitting, bracket, harness" autocomplete="off"></div><div class="field"><label>Quantity</label><input id="additionalPartQty" type="number" min="1" step="1" value="1" inputmode="numeric"></div><div class="toolbar"><button type="button" class="btn" onclick="cancelAdditionalPart()">Cancel</button><button type="button" class="btn primary" onclick="addAdditionalPart()">Add Part</button></div></div>`:'';
+ const list=items.length?`<div class="section-title">ADDITIONAL PARTS ADDED</div>${items.map((x,i)=>`<div class="checkrow"><span>${escapeHtml(x.name)} <b>× ${Number(x.qty)||1}</b></span><button type="button" class="btn" onclick="removeAdditionalPart(${i})">Remove</button></div>`).join('')}`:'';
+ return `${list}<button type="button" class="btn" style="margin-top:12px;width:100%" onclick="openAdditionalPart()">+ Add Additional Part</button>${editor}`;
+}
+function openAdditionalPart(){state.draft.showAdditionalPart=true;save()}
+function cancelAdditionalPart(){state.draft.showAdditionalPart=false;save()}
+function addAdditionalPart(){
+ const name=(document.getElementById('additionalPartName')?.value||'').trim();
+ const qty=Math.max(1,Number(document.getElementById('additionalPartQty')?.value)||1);
+ if(!name)return alert('Enter a part description.');
+ if(!state.draft.additionalParts)state.draft.additionalParts=[];
+ state.draft.additionalParts.push({name,qty});
+ state.draft.showAdditionalPart=false;
+ save();
+}
+function removeAdditionalPart(i){
+ if(!state.draft.additionalParts)return;
+ state.draft.additionalParts.splice(i,1);
+ save();
+}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function repairScopeEditor(){
+ const p=state.draft.package;
+ if(!['Hub Cap','Air Bag'].includes(p))return '';
+ const current=state.draft.repairScope||'Single';
+ let options=[];
+ if(p==='Hub Cap')options=[['Single','Single hub cap',1],['Front Axle','Front axle – 2 hub caps',2],['Rear Axle','Rear axle – 2 hub caps',2],['All 4','All 4 hub caps',4],['All 6','All 6 hub caps',6],['Custom','Custom quantity',Number(state.draft.scopeQty)||1]];
+ if(p==='Air Bag')options=[['Single','Single air bag',1],['Front Axle','Front axle air bags – 2',2],['Rear Axle','Rear axle air bags – 2',2],['All Suspension Bags','All suspension air bags – 4',4],['Custom','Custom quantity',Number(state.draft.scopeQty)||1]];
+ const custom=current==='Custom'?`<div class="field" style="margin-top:10px"><label>Custom quantity</label><input type="number" min="1" step="1" value="${Number(state.draft.scopeQty)||1}" onchange="setScopeQty(this.value)"></div>`:'';
+ return `<div class="section-title">REPAIR SCOPE</div><div class="option-grid">${options.map(([value,label,qty])=>`<div class="option ${current===value?'selected':''}" onclick="setRepairScope('${value}',${qty})"><h3>${label}</h3></div>`).join('')}</div>${custom}<div class="notice"><b>Quantity applied:</b> ${scopeQuantity(state.draft)}. Labor and automatic parts will be multiplied by this quantity.</div>`;
+}
+function setRepairScope(scope,qty){state.draft.repairScope=scope;state.draft.scopeQty=Math.max(1,Number(qty)||1);save()}
+function setScopeQty(qty){state.draft.scopeQty=Math.max(1,Number(qty)||1);save()}
+function scopeQuantity(r){if(!['Hub Cap','Air Bag'].includes(r.package))return 1;return Math.max(1,Number(r.scopeQty)||1)}
+function scopeLabel(r){const q=scopeQuantity(r);return r.repairScope&&r.repairScope!=='Single'?`${r.repairScope} (${q})`:`Single (${q})`}
+function finishStep(){const techSelect=state.user.role==='manager'?`<div class="field" style="margin-top:14px"><label>Tech responsible for this repair <span class="required">!</span></label><select onchange="setVal('techNo',this.value,false)"><option value="">Select Tech #</option>${TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}" ${state.draft.techNo===t.id?'selected':''}>Tech ${t.id} – ${t.name}</option>`).join('')}</select><small class="muted">Internal only. This Tech # will not appear in the Karmak Cause or Correction.</small></div>`:'';return `<div class="eyebrow">${isEstimateMode()?'SECTION 7 OF 7':'SECTION 8 OF 8'}</div><h2>Review & Finish</h2>${summary()}${state.draft.package==='Install New Light'?`<div class="field"><label>Number of lights installed</label><input type="number" min="1" value="${state.draft.lightCount||1}" onchange="setVal('lightCount',this.value,false)"></div>`:''}${state.draft.package==='Complete Slider Box Replacement'&&state.user.role==='manager'?`<div class="field"><label>Additional box weld hours</label><input type="number" step="0.5" min="0" value="${state.draft.weldHours||0}" onchange="setVal('weldHours',this.value,false)"><small class="muted">Base replacement labor is 24.0 hours plus box weld.</small></div>`:''}${techSelect}${state.user.role==='manager'?`<div class="notice" style="margin-top:14px"><b>Component labor:</b> ${state.draft.package?laborHours(state.draft).toFixed(1):'0.0'} hr &nbsp; · &nbsp; <b>Saved estimate total:</b> ${(state.job?.repairs||[]).reduce((s,r)=>s+laborHours(r),0).toFixed(1)} hr</div>`:''}<div class="footer-actions"><button class="btn" onclick="prevStep()">← Back</button><div class="toolbar" style="flex-wrap:wrap;justify-content:flex-end"><button class="btn" onclick="saveDraftOnly()">Save Draft</button>${state.draft.jobType==='Estimate'||state.user.role==='manager'?`<button class="btn primary" ${state.user.role==='manager'&&!state.draft.techNo?'disabled':''} onclick="addComponentToEstimate()">+ Add Component to Estimate</button>`:''}<button class="btn warn" ${state.user.role==='manager'&&!state.draft.techNo?'disabled':''} onclick="finishJob('estimate')">Finish Estimate</button><button class="btn success" ${state.user.role==='manager'&&!state.draft.techNo?'disabled':''} onclick="finishJob('repair')">Finish Repair</button></div></div>`}
+function summary(){const d=state.draft;return `<div class="summaryline"><span>Location</span><b>${d.location||'—'}</b></div><div class="summaryline"><span>System</span><b>${d.system||'—'}</b></div>${d.brakeType?`<div class="summaryline"><span>Brake Type</span><b>${d.brakeType}</b></div>`:''}${d.suspensionGroup?`<div class="summaryline"><span>Suspension Menu</span><b>${d.suspensionGroup}</b></div>`:''}<div class="summaryline"><span>Component</span><b>${d.package||'—'}</b></div>${['Hub Cap','Air Bag'].includes(d.package)?`<div class="summaryline"><span>Repair Scope</span><b>${scopeLabel(d)}</b></div>`:''}<div class="summaryline"><span>Condition</span><b>${d.condition||'—'}</b></div><div class="summaryline"><span>Repair</span><b>${d.repair||'—'}</b></div>`}
+function setVal(k,v,rer=true){if(k==='package'&&state.draft.package!==v){state.draft.repairScope='Single';state.draft.scopeQty=1}state.draft[k]=v;if(rer)save();else localStorage.setItem('jk_proto_state',JSON.stringify(state))}
+function togglePart(x,v){state.draft.parts[x]=v;save()}
+function setVerify(x,v){state.draft.verification[x]=v;if(v!=='fail'&&state.draft.verificationNotes)delete state.draft.verificationNotes[x];save()}
+function setVerifyNote(x,v){if(!state.draft.verificationNotes)state.draft.verificationNotes={};state.draft.verificationNotes[x]=v;localStorage.setItem('jk_proto_state',JSON.stringify(state));const items=verificationItems();const ready=!items.some(i=>!['pass','fail','na'].includes(normalizeVerify(state.draft.verification[i])))&&!items.some(i=>normalizeVerify(state.draft.verification[i])==='fail'&&!(state.draft.verificationNotes[i]||'').trim());const b=document.querySelector('.footer-actions .btn.primary');if(b)b.disabled=!ready}
+function nextStep(){if(isEstimateMode()&&state.step===6){state.step=8}else{state.step=Math.min(8,state.step+1)}save()}
+function prevStep(){if(isEstimateMode()&&state.step===8){state.step=6}else{state.step=Math.max(1,state.step-1)}save()}
+function addAnother(){
+  if(!state.job)return alert('Open or create an estimate first.');
+  const keepType=state.draft.jobType||state.job.stage||'Estimate';
+  const keepTech=state.draft.techNo||state.job.owner||'';
+  const hasStarted=Boolean(state.draft.location||state.draft.system||state.draft.package||state.draft.condition||state.draft.repair);
+  if(hasStarted){
+    const missing=[];
+    if(!state.draft.location)missing.push('location');
+    if(!state.draft.system)missing.push('system');
+    if(!state.draft.package)missing.push('component');
+    if(!state.draft.condition)missing.push('condition');
+    if(!state.draft.repair)missing.push('repair action');
+    if(missing.length)return alert('Finish the current component before adding another. Missing: '+missing.join(', ')+'.');
+    commitRepair();
+  }
+  resetDraft();
+  state.draft.jobType=keepType;
+  state.draft.techNo=state.user.role==='manager'?keepTech:state.user.id;
+  state.step=2;
+  state.screen='workflow';
+  save();
+}
+function addComponentToEstimate(){if(!state.draft.package)return alert('Select a component before adding it to the estimate.');if(state.user.role==='manager'&&!state.draft.techNo)return alert('Select the Tech # responsible for this component.');commitRepair();const keepTech=state.draft.techNo||state.job?.owner||'';resetDraft();state.draft.jobType='Estimate';state.draft.techNo=keepTech;state.job.stage='Estimate';state.job.status='Estimate In Progress';saveJobs(jobs().map(j=>j.id===state.job.id?state.job:j));state.step=2;save()}
+function removeEstimateComponent(i){if(!state.job?.repairs?.[i])return;if(!confirm('Remove this component from the estimate?'))return;state.job.repairs.splice(i,1);saveJobs(jobs().map(j=>j.id===state.job.id?state.job:j));save()}
+function foundSeparateIssue(){if(state.draft.package){state.draft.separateIssue=true;commitRepair()}const jt=state.draft.jobType||state.job.stage||'Estimate';resetDraft();state.draft.jobType='Estimate';state.draft.separateIssue=true;state.job.status='Waiting Manager Review';state.step=2;save()}
+function commitRepair(){const repair=JSON.parse(JSON.stringify(state.draft));repair.techNo=state.user.role==='manager'?(state.draft.techNo||state.job.owner||''):state.user.id;repair.enteredBy=state.user.id;repair.completedAt=new Date().toISOString();state.job.repairs.push(repair);let arr=jobs();arr=arr.map(j=>j.id===state.job.id?state.job:j);saveJobs(arr)}
+function saveDraftOnly(){if(state.draft.package)commitRepair();state.job.status='Estimate In Progress';let arr=jobs().map(j=>j.id===state.job.id?state.job:j);saveJobs(arr);state.screen='dashboard';save()}
+function finishJob(type){if(state.draft.package)commitRepair();state.job.stage=type==='estimate'?'Estimate':'Repair';state.job.status=type==='estimate'?'Waiting Approval':'Completed';if(type!=='estimate')recordCompletedLearning(state.job);let arr=jobs().map(j=>j.id===state.job.id?state.job:j);saveJobs(arr);state.screen=state.user?.role==='manager'?'manager':'dashboard';save()}
+function fallbackLaborHours(r){if(r.package==='Wheel Seal')return r.brakeType==='Disc'?3:2;if(r.package==='Brake Rotor')return 1.5;if(r.package==='Hub Cap')return .5*scopeQuantity(r);if(r.package==='Brake Caliper')return 1.5;if(r.package==='Brake Pads')return 1.5;if(r.package==='Hub Assembly')return 3;if(r.package==='Air Bag')return 1.1*scopeQuantity(r);if(r.package==='Height Control Valve')return 1.5;if(r.package==='Air Lines / Fittings')return 1;if(r.package==='Shock Absorber')return 1;if(r.package==='Alignment')return 1.5;if(r.package==='Bogey')return r.repair==='Replace'?24:12;if(r.package==='Dump Valve')return 1.5;if(r.package==='Install New Light')return .75*(Number(r.lightCount)||1);if(r.package==='Multiple Lights Out'||r.package==='Entire Circuit Inoperative'||r.package==='Trailer Harness / Main Wiring')return 3;if(r.package==='Slider Box Rebuild')return 18;if(r.package==='Complete Slider Box Replacement')return 24+(Number(r.weldHours)||0);return 1}
+function laborHours(r){if(Number(r.estimateUsed)>0)return Number(r.estimateUsed);const s=srtHours(r);if(Number(s)>0)return s*scopeQuantity(r);return fallbackLaborHours(r)}
+function causeText(repairs){return repairs.map(r=>`${(r.location||'location').toLowerCase()} ${(r.package||'repair').toLowerCase()} ${(r.condition||'issue').toLowerCase()}.`).join(' ')}
+function correctionText(repairs){return repairs.map(r=>{if(r.package==='Brake Rotor')return `Replaced ${r.location.toLowerCase()} brake rotor, installed new mounting bolts with blue Loctite, completed wheel-end service, and verified brake operation.`;if(r.package==='Hub Cap')return `${r.repair}d ${scopeQuantity(r)} hub cap${scopeQuantity(r)>1?'s':''} (${scopeLabel(r)}), installed matching gasket${scopeQuantity(r)>1?'s':''}, verified hub vents and lubricant level, and checked for leaks.`;if(r.package==='Wheel Seal')return `Replaced ${r.location.toLowerCase()} wheel seal and hub cap gasket, adjusted bearings and brakes, added ${r.lubricant||'lubricant'}, and verified no leaks.`;if(r.package==='Air Bag')return `Replaced ${scopeQuantity(r)} air bag${scopeQuantity(r)>1?'s':''} (${scopeLabel(r)}), installed mounting kit${scopeQuantity(r)>1?'s':''} and air fitting${scopeQuantity(r)>1?'s':''}, and verified no air leaks and proper suspension operation.`;return `${r.repair}d ${r.location.toLowerCase()} ${r.package.toLowerCase()} and verified proper operation.`}).join(' ')}
+function industryHours(r){const copy={...r,estimateUsed:null};return laborHours(copy)}
+function laborKey(r){return [r.system,r.brakeType||'',r.package,r.repair].join('|')}
+function laborHistory(){return JSON.parse(localStorage.getItem('jk_labor_history')||'{}')}
+function jkAverage(r){const vals=laborHistory()[laborKey(r)]||[];return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:industryHours(r)}
+function laborSamples(r){return (laborHistory()[laborKey(r)]||[]).length}
+function saveActualHours(i){const input=document.getElementById('actual-'+i);const v=Number(input.value);if(!v||v<=0)return alert('Enter the Karmak hours used.');const j=state.job||jobs()[0];const reps=j.repairs.length?j.repairs:[];const r=reps[i];if(!r)return alert('Save a real repair before recording labor history.');const h=laborHistory(),k=laborKey(r);h[k]=h[k]||[];h[k].push(v);localStorage.setItem('jk_labor_history',JSON.stringify(h));r.actualKarmakHours=v;let arr=jobs().map(x=>x.id===j.id?j:x);saveJobs(arr);render()}
+function setEstimateUsed(i,v){const j=state.job||jobs()[0];if(!j.repairs[i])return;const n=Number(v);j.repairs[i].estimateUsed=n>0?n:null;saveJobs(jobs().map(x=>x.id===j.id?j:x));render()}
+function consolidatedParts(reps){const counts={};reps.forEach(r=>{partsDataFor(r).filter(Boolean).forEach(p=>counts[p]=(counts[p]||0)+1);(r.additionalParts||[]).forEach(x=>{const name=(x.name||'').trim();if(name)counts[name]=(counts[name]||0)+(Number(x.qty)||1)})});return Object.entries(counts).sort((a,b)=>a[0].localeCompare(b[0]))}
+
+function promptConvertEstimate(){
+ const j=state.job||jobs()[0];
+ if(!j||j.stage!=='Estimate'){alert('This job is not currently an estimate.');return}
+ document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="convertmodal"><div class="pinbox"><h3>Convert Estimate to Repair Order</h3><p>This is a two-step conversion. Review the estimate, then enter your own 3-digit code to confirm.</p><div class="notice"><b>${j.id}</b> · ${j.trailer} · ${j.repairs.length} component(s)</div><div class="field"><label>Your 3-digit code</label><input id="convertpin" maxlength="3" inputmode="numeric" autocomplete="one-time-code" placeholder="3-digit code"></div><div class="toolbar"><button class="btn" onclick="document.getElementById('convertmodal').remove()">Cancel</button><button class="btn success" onclick="confirmConvertEstimate()">Convert to RO</button></div></div></div>`);
+ setTimeout(()=>document.getElementById('convertpin')?.focus(),0)
+}
+function confirmConvertEstimate(){
+ const pin=document.getElementById('convertpin')?.value||'';
+ const allowed=TECHS.find(t=>t.id===state.user?.id&&t.pin===pin);
+ if(!allowed){alert('Code does not match the logged-in user.');return}
+ const j=state.job||jobs()[0];
+ j.originalEstimate={convertedAt:new Date().toISOString(),convertedBy:state.user.id,repairs:JSON.parse(JSON.stringify(j.repairs)),stage:j.stage,status:j.status};
+ j.stage='Repair';j.status='Ready to Repair';j.convertedBy=state.user.id;j.convertedAt=new Date().toISOString();
+ saveJobs(jobs().map(x=>x.id===j.id?j:x));state.job=j;
+ document.getElementById('convertmodal')?.remove();save();
+ alert('Estimate converted to Repair Order. Verification will be required as repairs are completed.');
+}
+function openTechCommons(){const wrap=document.createElement('div');wrap.className='pinmodal';wrap.id='commonsModal';wrap.innerHTML=`<div class="pinbox" style="width:min(720px,94vw);max-height:88vh;overflow:auto"><div class="toolbar" style="justify-content:space-between"><div><h2 style="margin:0">Tech Commons</h2><small class="muted">Quick shop tools without leaving the repair.</small></div><button class="btn" onclick="document.getElementById('commonsModal').remove()">Close</button></div><div class="tech-commons-grid" style="margin-top:16px"><button class="commons-card" onclick="showCommonsDetail('process')"><strong>📚 Process Library</strong><span>Torque, ride height, bearing, brake and wiring standards.</span></button><button class="commons-card" onclick="showCommonsDetail('supplies')"><strong>🔩 Common Supplies</strong><span>Butt connectors, zip ties, heat shrink, wire and air fittings.</span></button><button class="commons-card" onclick="showCommonsDetail('photos')"><strong>📷 Photo Center</strong><span>Before, after, damage, VIN and customer-concern photos.</span></button><button class="commons-card" onclick="showCommonsDetail('notes')"><strong>📝 Internal Notes</strong><span>Add notes that stay internal and feed the Shop Learning Engine.</span></button></div><div id="commonsDetail" style="margin-top:14px"></div></div>`;document.body.appendChild(wrap)}
+function showCommonsDetail(type){const el=document.getElementById('commonsDetail');if(!el)return;if(type==='process')el.innerHTML=`<div class="card"><h3>JK Process Standards</h3><div class="list"><div class="row"><span>Ride height</span><b>Center of axle to top of air bag</b></div><div class="row"><span>Rotor mounting bolts</span><b>New bolts + Blue Loctite</b></div><div class="row"><span>Caliper mounting bolts</span><b>New bolts + Blue Loctite</b></div><div class="row"><span>Disc brake wheel end</span><b>Wheel seal, hub-cap gasket, 80W-90 or EBL</b></div><div class="row"><span>Landing gear grease</span><b>Technician choice</b></div></div></div>`;if(type==='supplies')el.innerHTML=`<div class="card"><h3>Common Shop Supplies</h3><div class="supply-grid"><div class="supply-box"><h4>Butt Connectors</h4>Small / Large</div><div class="supply-box"><h4>Zip Ties</h4>Small / Large</div><div class="supply-box"><h4>Heat Shrink</h4>Small / Large</div><div class="supply-box"><h4>Primary Wire</h4>12 ga / 14 ga / 16 ga</div><div class="supply-box"><h4>Air Fittings</h4>Straight / 45° / 90° / Tee / Union</div><div class="supply-box"><h4>Wheel End</h4>Hub-cap gasket / 80W-90 / EBL</div></div></div>`;if(type==='photos')el.innerHTML=`<div class="card"><h3>Photo Center</h3><button class="btn primary" onclick="document.getElementById('commonsModal').remove();createFromPhoto()">Take or Upload Photo</button></div>`;if(type==='notes')el.innerHTML=`<div class="card"><h3>Internal Repair Note</h3><textarea id="commonsNote" style="width:100%;min-height:100px" placeholder="Describe a missing component, unusual failure, part used, or process improvement.">${state.draft.notes||''}</textarea><button class="btn primary" style="margin-top:10px" onclick="state.draft.notes=document.getElementById('commonsNote').value;save();document.getElementById('commonsModal')?.remove()">Save Note</button></div>`}
+function managerView(){
+ if(state.user?.role!=='manager'){
+   state.screen='dashboard';
+   setTimeout(()=>alert('Manager authorization is required to view labor times, SRT information, rates, and totals.'),0);
+   return dashboard();
+ }
+ const j=state.job||jobs()[0];const reps=j.repairs.length?j.repairs:[{location:'Right Rear',system:'Brakes',brakeType:'Disc',package:'Brake Rotor',condition:'Worn',repair:'Replace',lubricant:'80W-90',parts:{},techNo:'394'},{location:'Left Front',system:'Wheel End',package:'Hub Cap',condition:'Cracked',repair:'Replace',lubricant:'80W-90',parts:{},techNo:'8'}];const hrs=reps.reduce((s,r)=>s+laborHours(r),0);const rate=119,labor=hrs*rate,supplies=labor*.13,epa=6,total=labor+supplies+epa;const cause=causeText(reps),correction=correctionText(reps);const parts=consolidatedParts(reps);return `<div class="manager-grid"><div><div class="card"><h2>Estimate Review</h2><table class="table"><thead><tr><th>#</th><th>Location</th><th>System / Repair</th><th>Tech #</th><th>Description</th><th>Hours Used</th><th></th></tr></thead><tbody>${reps.map((r,i)=>`<tr><td>${i+1}</td><td>${r.location}</td><td><b>${r.system}${r.brakeType?' – '+r.brakeType:''}</b><br>${r.package} ${r.repair}${['Hub Cap','Air Bag'].includes(r.package)?`<br><small>Scope: ${scopeLabel(r)}</small>`:''}</td><td><span class="techstamp">${r.techNo||'—'}</span></td><td>${r.condition}; ${r.repair.toLowerCase()} ${r.package.toLowerCase()}.</td><td><b>${laborHours(r).toFixed(1)} hr</b></td><td>${j.repairs.length?`<button class="btn danger" onclick="removeEstimateComponent(${i})">Remove</button>`:''}</td></tr>`).join('')}</tbody></table><div class="toolbar" style="margin-top:10px;flex-wrap:wrap"><button class="btn primary" onclick="managerAddRepair()">+ Add Component to Estimate</button><button class="btn" onclick="managerNewEstimate()">Create New Estimate</button><button class="btn" onclick="createFromPhoto()">📷 Create from Photo</button><button class="btn" onclick="openROPhotos()">📷 RO Photos</button></div></div><div class="card copybox"><div class="toolbar" style="justify-content:space-between"><h3>CAUSE <small>(Copy to Karmak)</small></h3><button class="btn" onclick="copyText('cause')">Copy</button></div><textarea id="cause">${cause}</textarea></div><div class="card copybox"><div class="toolbar" style="justify-content:space-between"><h3>CORRECTION <small>(Copy to Karmak)</small></h3><button class="btn" onclick="copyText('correction')">Copy</button></div><textarea id="correction">${correction}</textarea></div></div><div class="grid"><div class="card"><h3>Labor Intelligence <small>(Manager Only)</small></h3><div class="manager-only-note">Industry line, JK average, estimate used, and actual Karmak hours never appear on technician screens.</div><div class="notice"><b>LABOR RATE: $119.00 / HR</b><div style="margin-top:10px"><label><b>SRT time basis:</b></label> <select onchange="setSrtMode(this.value)"><option value="average" ${srtMode()==='average'?'selected':''}>Average</option><option value="goal" ${srtMode()==='goal'?'selected':''}>Goal</option></select></div></div>${reps.map((r,i)=>{const samples=laborSamples(r),avg=jkAverage(r),conf=samples<10?'Learning':samples<25?'Developing':samples<50?'Established':'High Confidence';const se=srtEntryFor(r),si=srtIndexFor(r);return `<div class="labor-intel"><div class="li-row"><span><b>${r.package}</b><br><small>${r.location}</small></span><span></span></div><div class="li-row"><span>SRT matched line<br><small>${se?se.description:'No automatic match'}</small></span><b>${se?`${se.goal??'—'} goal<br>${se.average??'—'} avg`:'—'}</b></div><div class="li-row"><label>SRT override</label><select onchange="setSrtOverride(${i},this.value)"><option value="">Automatic match</option>${SRT_LIBRARY.map((x,n)=>`<option value="${n}" ${si===n?'selected':''}>${x.description} — G ${x.goal??'—'} / A ${x.average??'—'}</option>`).join('')}</select></div><div class="li-row"><span>Time generated from SRT</span><b>${srtHours(r)!=null?srtHours(r).toFixed(2)+' hr':'Fallback'}</b></div><div class="li-row"><span>Industry line</span><b>${industryHours(r).toFixed(1)} hr</b></div><div class="li-row"><span>JK average<br><span class="confidence">${conf} · ${samples} example(s)</span></span><b>${avg.toFixed(1)} hr</b></div><div class="li-row"><label for="used-${i}">Estimate used</label><input id="used-${i}" type="number" step="0.25" min="0" value="${laborHours(r)}" onchange="setEstimateUsed(${i},this.value)"></div>${j.repairs.length?`<div class="li-row"><label for="actual-${i}">Actual Karmak hours</label><span><input id="actual-${i}" type="number" step="0.25" min="0" value="${r.actualKarmakHours||''}"><button class="btn" style="margin-top:6px;width:100%" onclick="saveActualHours(${i})">Add to JK Average</button></span></div>`:''}</div>`}).join('')}<div class="summaryline"><span>Estimated Total Labor Hours</span><b>${hrs.toFixed(1)}</b></div><div class="summaryline"><span>Estimated Labor Amount</span><b>$${labor.toFixed(2)}</b></div></div><div class="card"><h3>Automated Parts Pull List <small>(No Part Numbers or Pricing)</small></h3><ul class="parts-pull">${parts.map(([p,q])=>`<li><span>${p}</span><b>${q}</b></li>`).join('')}</ul></div><div class="card"><h3>Shop Learning – Note Suggestions</h3><p class="muted">Repeated completed-repair notes are collected here. Approving one adds it as a shortcut button.</p>${Object.entries(noteLearning()).filter(([k,v])=>v.count>=2&&!ignoredSuggestions().includes(k)).sort((a,b)=>b[1].count-a[1].count).slice(0,8).map(([k,v])=>`<div class="learning-card"><div class="toolbar" style="justify-content:space-between"><b>${v.label}</b><span class="count">${v.count} notes</span></div><small>${Object.keys(v.techs||{}).length} technician(s)</small><div class="toolbar" style="margin-top:8px"><button class="btn primary" onclick='approveSuggestion(${JSON.stringify(k)})'>Approve as Button</button><button class="btn" onclick='ignoreSuggestion(${JSON.stringify(k)})'>Ignore</button></div></div>`).join('')||'<div class="muted">No repeated note suggestions yet. Complete repairs with notes to begin learning.</div>'}</div><div class="card"><h3>Standards Applied</h3><div>✓ Cross-system required parts</div><div>✓ Tech # retained internally</div><div>✓ Karmak Cause and Correction kept clean</div></div></div></div><div class="pricebar"><div class="pricebox">Labor Hours<strong>${hrs.toFixed(1)}</strong></div><div class="pricebox">Labor Amount<strong>$${labor.toFixed(2)}</strong></div><div class="pricebox">Shop Supplies 13%<strong>$${supplies.toFixed(2)}</strong></div><div class="pricebox">EPA Fee<strong>$6.00</strong></div><div class="pricebox" style="background:#062b5c;color:white">Estimate Total<strong>$${total.toFixed(2)}</strong></div></div><div class="footer-actions"><button class="btn" onclick="go('dashboard')">Save as Draft</button><div class="toolbar"><button class="btn primary" onclick="promptConvertEstimate()">Convert Estimate to RO</button><button class="btn success">Approve Estimate & Send to Customer →</button></div></div>`}
+function partsDataFor(r){if(r.package==='Brake Rotor')return ['Brake Rotor','Rotor Mounting Bolts','Wheel Seal','Hub Cap Gasket',r.lubricant||'80W-90 or EBL'];if(r.package==='Hub Cap'){const q=scopeQuantity(r);return Array(q).fill('Hub Cap').concat(Array(q).fill('Hub Cap Gasket'),[r.lubricant||'80W-90 or EBL']);}if(r.package==='Wheel Seal')return ['Wheel Seal','Hub Cap Gasket',r.lubricant||'80W-90 or EBL'];if(r.package==='Brake Caliper')return ['Brake Caliper','Caliper Mounting Bolts','Blue Loctite','Wheel Seal','Hub Cap Gasket',r.lubricant||'80W-90 or EBL'];if(r.package==='Air Bag'){const q=scopeQuantity(r);return Array(q).fill('Air Bag').concat(Array(q).fill('Air Bag Mounting Kit'),Array(q).fill('Air Fitting'));}if(r.package==='Height Control Valve')return ['Height Control Valve'];if(r.package==='Air Lines / Fittings')return ['Air Line / Fitting'];if(r.package==='Shock Absorber')return ['Shock Absorber'];if(r.package==='Alignment')return ['Alignment Service'];if(r.package==='Bogey')return r.repair==='Replace'?['Bogey Assembly','Mounting Hardware']:['Bogey Repair Materials'];if(r.package==='Dump Valve')return ['Dump Valve'];if(r.package==='Install New Light')return ['Light','Wire Harness / Pigtail','Harness Connector','Mounting Screws'];if(['Multiple Lights Out','Entire Circuit Inoperative','Intermittent Lighting','Trailer Harness / Main Wiring'].includes(r.package))return ['Wiring Repair Materials','Butt Connectors','Zip Ties','Heat Shrink'];if(r.package==='Slider Box Rebuild')return ['Slider Box Repair Materials'];if(r.package==='Complete Slider Box Replacement')return ['Complete Slider Box','Box Weld'];if(['Roadside Leg','Curbside Leg','Cross Shaft','Crank Handle','Sand Shoe / Foot Plate','Leg Brace','Mounting Brackets','Cross Tube','K-Brace','Drive Shaft','Bushings','Pins / Roll Pins','Complete Landing Gear Assembly'].includes(r.package))return [r.package];return [r.package]}
+function copyText(id){const el=document.getElementById(id);el.select();navigator.clipboard.writeText(el.value);alert(id.toUpperCase()+' copied')}
+load();
+</script>
+</body>
+</html>
