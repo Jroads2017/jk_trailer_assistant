@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#061a34" />
-<title>JK Trailer Assistant Alpha 1.9.1 - SRT Removed |  – Tablet Alpha 1.9.1</title>
+<title>JK Trailer Assistant Alpha 1.9.2 - SRT Removed |  – Tablet Alpha 1.9.2</title>
 <style>
 :root{--navy:#061a34;--blue:#0b57d0;--light:#f5f8fc;--line:#d7e0ec;--green:#148a2f;--orange:#ff7a00;--red:#c62828;--text:#132033;--muted:#65758b}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#eef3f8}button,input,select,textarea{font:inherit}
@@ -86,6 +86,13 @@ body{font-size:18px}.app{grid-template-columns:210px minmax(0,1fr)}.sidebar{padd
 .ro-photo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ro-photo-card img{height:165px}
 }
 html,body,#root,.app,.main{max-width:100%;overflow-x:hidden}img,canvas,video{max-width:100%;height:auto}.table{max-width:100%}
+
+
+.btn.add-another{background:#0b57d0;color:#fff;border-color:#0b57d0}
+@media (min-width:700px) and (max-width:1400px){
+  .footer-actions .toolbar{flex-wrap:wrap}
+  .footer-actions .toolbar .btn{flex:1 1 210px}
+}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -308,7 +315,7 @@ function recordCompletedLearning(job){const u=usageData(),n=noteLearning();job.r
 function approveSuggestion(key){const n=noteLearning(),item=n[key];if(!item)return;const arr=customButtons();if(!arr.includes(item.label))arr.push(item.label);localStorage.setItem('jk_custom_buttons',JSON.stringify(arr));render()}
 function ignoreSuggestion(key){const arr=ignoredSuggestions();if(!arr.includes(key))arr.push(key);localStorage.setItem('jk_ignored_suggestions',JSON.stringify(arr));render()}
 function resetDraft(){state.draft={jobType:(state.job?.stage||null),location:null,system:null,brakeType:null,suspensionType:null,suspensionGroup:null,package:null,condition:null,repair:null,parts:{},lubricant:null,verification:{},verificationNotes:{},additionalParts:[],showAdditionalPart:false,repairScope:'Single',scopeQty:1,notes:'',techNo:(state.user?.role==='manager'?'':state.user?.id||'')};state.step=1}
-function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.9.1</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
+function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.9.2</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
 function render(){const root=document.getElementById('root');if(!state.user){root.innerHTML=loginView();return} if(state.screen==='dashboard')root.innerHTML=appShell(dashboard(),'Dashboard');else if(state.screen==='jobs')root.innerHTML=appShell(jobList(),'Open Jobs');else if(state.screen==='workflow')root.innerHTML=appShell(workflow(),'Repair Documentation');else if(state.screen==='manager')root.innerHTML=appShell(managerView(),'Manager View – Estimate');}
 function loginView(){return `<div class="loginwrap"><div class="login"><h1>JK Trailer Assistant</h1><p class="muted">Employee login · Optimized for 11–12.4 inch tablets in portrait or landscape.</p><div class="field"><label>Employee</label><select id="techsel"><option value="">Select technician</option>${TECHS.map(t=>`<option value="${t.id}">#${t.id} – ${t.name}</option>`).join('')}</select></div><div class="field"><label>3-digit code</label><input id="pin" maxlength="3" inputmode="numeric" /></div><button class="btn primary" onclick="login()">Sign In</button><p class="muted" style="margin-top:14px;font-size:12px">Prototype PINs: Manager Jesse 114, George 371, Alex 172, Allen 410, Max 924, Damien 710, Chaz 507, Jalen 351</p></div></div>`}
 function login(){const id=document.getElementById('techsel').value;const pin=document.getElementById('pin').value;const t=TECHS.find(x=>x.id===id&&x.pin===pin);if(!t)return alert('Incorrect employee or code');state.user=t;state.screen=t.role==='manager'?'manager':'dashboard';if(t.role==='manager'&&!state.job)state.job=jobs()[0];save()}
@@ -787,7 +794,7 @@ function setRepairScope(scope,qty){state.draft.repairScope=scope;state.draft.sco
 function setScopeQty(qty){state.draft.scopeQty=Math.max(1,Number(qty)||1);save()}
 function scopeQuantity(r){if(!['Hub Cap','Air Bag'].includes(r.package))return 1;return Math.max(1,Number(r.scopeQty)||1)}
 function scopeLabel(r){const q=scopeQuantity(r);return r.repairScope&&r.repairScope!=='Single'?`${r.repairScope} (${q})`:`Single (${q})`}
-function finishStep(){const techSelect=state.user.role==='manager'?`<div class="field" style="margin-top:14px"><label>Tech # (optional until repair is started)</label><select onchange="setVal('techNo',this.value,false)"><option value="">Open / Not Started</option>${TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}" ${state.draft.techNo===t.id?'selected':''}>Tech ${t.id} – ${t.name}</option>`).join('')}</select><small class="muted">Internal only. This Tech # will not appear in the Karmak Cause or Correction.</small></div>`:'';return `<div class="eyebrow">${isEstimateMode()?'SECTION 7 OF 7':'SECTION 8 OF 8'}</div><h2>Review & Finish</h2>${summary()}${state.draft.package==='Install New Light'?`<div class="field"><label>Number of lights installed</label><input type="number" min="1" value="${state.draft.lightCount||1}" onchange="setVal('lightCount',this.value,false)"></div>`:''}${state.draft.package==='Complete Slider Box Replacement'&&state.user.role==='manager'?`<div class="field"><label>Additional box weld hours</label><input type="number" step="0.5" min="0" value="${state.draft.weldHours||0}" onchange="setVal('weldHours',this.value,false)"><small class="muted">Base replacement labor is 24.0 hours plus box weld.</small></div>`:''}${techSelect}${state.user.role==='manager'?`<div class="notice" style="margin-top:14px"><b>Component labor:</b> ${state.draft.package?laborHours(state.draft).toFixed(1):'0.0'} hr &nbsp; · &nbsp; <b>Saved estimate total:</b> ${(state.job?.repairs||[]).reduce((s,r)=>s+laborHours(r),0).toFixed(1)} hr</div>`:''}<div class="footer-actions"><button class="btn" onclick="prevStep()">← Back</button><div class="toolbar" style="flex-wrap:wrap;justify-content:flex-end"><button class="btn" onclick="saveDraftOnly()">Save Draft</button>${state.draft.jobType==='Estimate'||state.user.role==='manager'?`<button class="btn primary" onclick="addComponentToEstimate()">+ Add Component to Estimate</button>`:''}<button class="btn warn" onclick="finishJob('estimate')">Finish Estimate</button><button class="btn success" onclick="finishJob('repair')">Finish Repair</button></div></div>`}
+function finishStep(){const techSelect=state.user.role==='manager'?`<div class="field" style="margin-top:14px"><label>Tech # (optional until repair is started)</label><select onchange="setVal('techNo',this.value,false)"><option value="">Open / Not Started</option>${TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}" ${state.draft.techNo===t.id?'selected':''}>Tech ${t.id} – ${t.name}</option>`).join('')}</select><small class="muted">Internal only. This Tech # will not appear in the Karmak Cause or Correction.</small></div>`:'';return `<div class="eyebrow">${isEstimateMode()?'SECTION 7 OF 7':'SECTION 8 OF 8'}</div><h2>Review & Finish</h2><div class="notice"><b>More repairs on this RO?</b> Tap <b>Save Repair & Add Another</b>. The current repair will be saved and the same RO will remain open for the next repair.</div>${summary()}${state.draft.package==='Install New Light'?`<div class="field"><label>Number of lights installed</label><input type="number" min="1" value="${state.draft.lightCount||1}" onchange="setVal('lightCount',this.value,false)"></div>`:''}${state.draft.package==='Complete Slider Box Replacement'&&state.user.role==='manager'?`<div class="field"><label>Additional box weld hours</label><input type="number" step="0.5" min="0" value="${state.draft.weldHours||0}" onchange="setVal('weldHours',this.value,false)"><small class="muted">Base replacement labor is 24.0 hours plus box weld.</small></div>`:''}${techSelect}${state.user.role==='manager'?`<div class="notice" style="margin-top:14px"><b>Component labor:</b> ${state.draft.package?laborHours(state.draft).toFixed(1):'0.0'} hr &nbsp; · &nbsp; <b>Saved estimate total:</b> ${(state.job?.repairs||[]).reduce((s,r)=>s+laborHours(r),0).toFixed(1)} hr</div>`:''}<div class="footer-actions"><button class="btn" onclick="prevStep()">← Back</button><div class="toolbar" style="flex-wrap:wrap;justify-content:flex-end"><button class="btn" onclick="saveDraftOnly()">Save Draft</button><button class="btn add-another" onclick="saveRepairAndAddAnother()">+ Save Repair & Add Another</button>${state.draft.jobType==='Estimate'||state.user.role==='manager'?`<button class="btn" onclick="addComponentToEstimate()">+ Add Component to Estimate</button>`:''}<button class="btn warn" onclick="finishJob('estimate')">Finish Estimate</button><button class="btn success" onclick="finishJob('repair')">Finish Repair</button></div></div>`}
 function summary(){const d=state.draft;return `<div class="summaryline"><span>Location</span><b>${d.location||'—'}</b></div><div class="summaryline"><span>System</span><b>${d.system||'—'}</b></div>${d.brakeType?`<div class="summaryline"><span>Brake Type</span><b>${d.brakeType}</b></div>`:''}${d.suspensionGroup?`<div class="summaryline"><span>Suspension Menu</span><b>${d.suspensionGroup}</b></div>`:''}<div class="summaryline"><span>Component</span><b>${d.package||'—'}</b></div>${['Hub Cap','Air Bag'].includes(d.package)?`<div class="summaryline"><span>Repair Scope</span><b>${scopeLabel(d)}</b></div>`:''}<div class="summaryline"><span>Condition</span><b>${d.condition||'—'}</b></div><div class="summaryline"><span>Repair</span><b>${d.repair||'—'}</b></div>`}
 function setVal(k,v,rer=true){if(k==='package'&&state.draft.package!==v){state.draft.repairScope='Single';state.draft.scopeQty=1}state.draft[k]=v;if(rer)save();else localStorage.setItem('jk_proto_state',JSON.stringify(state))}
 function togglePart(x,v){state.draft.parts[x]=v;save()}
@@ -822,6 +829,40 @@ function removeEstimateComponent(i){if(!state.job?.repairs?.[i])return;if(!confi
 function foundSeparateIssue(){if(state.draft.package){state.draft.separateIssue=true;commitRepair()}const jt=state.draft.jobType||state.job.stage||'Estimate';resetDraft();state.draft.jobType='Estimate';state.draft.separateIssue=true;state.job.status='Waiting Manager Review';state.step=2;save()}
 function commitRepair(){const repair=JSON.parse(JSON.stringify(state.draft));repair.techNo=state.user.role==='manager'?(state.draft.techNo||state.job.owner||''):state.user.id;repair.enteredBy=state.user.id;repair.startedAt=repair.startedAt||new Date().toISOString();repair.status='Complete';repair.completedAt=new Date().toISOString();state.job.repairs.push(repair);let arr=jobs();arr=arr.map(j=>j.id===state.job.id?state.job:j);saveJobs(arr)}
 function saveDraftOnly(){if(state.draft.package)commitRepair();state.job.status='Estimate In Progress';let arr=jobs().map(j=>j.id===state.job.id?state.job:j);saveJobs(arr);state.screen='dashboard';save()}
+
+function saveRepairAndAddAnother(){
+  if(!state.job)return alert('Open a repair order first.');
+  const missing=[];
+  if(!state.draft.location)missing.push('location');
+  if(!state.draft.system)missing.push('system');
+  if(!state.draft.package)missing.push('component');
+  if(!state.draft.condition)missing.push('condition');
+  if(!state.draft.repair)missing.push('repair action');
+  if(missing.length)return alert('Complete the current repair before adding another. Missing: '+missing.join(', ')+'.');
+
+  if(!isEstimateMode()){
+    const items=verificationItems();
+    const incomplete=items.some(x=>!['pass','fail','na'].includes(normalizeVerify(state.draft.verification[x])));
+    const failedWithoutNote=items.some(x=>normalizeVerify(state.draft.verification[x])==='fail'&&!(state.draft.verificationNotes?.[x]||'').trim());
+    if(incomplete)return alert('Complete Pass, Fail, or N/A for every verification item before saving this repair.');
+    if(failedWithoutNote)return alert('Add a note for every failed verification item before saving this repair.');
+  }
+
+  const currentType=state.draft.jobType||state.job.stage||'Repair';
+  commitRepair();
+
+  state.job.stage=currentType;
+  state.job.status=currentType==='Estimate'?'Estimate In Progress':'Repair In Progress';
+  saveJobs(jobs().map(j=>j.id===state.job.id?state.job:j));
+
+  resetDraft();
+  state.draft.jobType=currentType;
+  state.draft.techNo=state.user?.role==='manager'?'':state.user?.id||'';
+  state.step=1;
+  state.screen='workflow';
+  save();
+}
+
 function finishJob(type){if(state.draft.package)commitRepair();state.job.stage=type==='estimate'?'Estimate':'Repair';state.job.status=type==='estimate'?'Waiting Approval':'Completed';if(type!=='estimate')recordCompletedLearning(state.job);let arr=jobs().map(j=>j.id===state.job.id?state.job:j);saveJobs(arr);state.screen=state.user?.role==='manager'?'manager':'dashboard';save()}
 function fallbackLaborHours(r){if(r.package==='Wheel Seal')return r.brakeType==='Disc'?3:2;if(r.package==='Brake Rotor')return 1.5;if(r.package==='Hub Cap')return .5*scopeQuantity(r);if(r.package==='Brake Caliper')return 1.5;if(r.package==='Brake Pads')return 1.5;if(r.package==='Hub Assembly')return 3;if(r.package==='Air Bag')return 1.1*scopeQuantity(r);if(r.package==='Height Control Valve')return 1.5;if(r.package==='Air Lines / Fittings')return 1;if(r.package==='Shock Absorber')return 1;if(r.package==='Alignment')return 1.5;if(r.package==='Bogey')return r.repair==='Replace'?24:12;if(r.package==='Dump Valve')return 1.5;if(r.package==='Install New Light')return .75*(Number(r.lightCount)||1);if(r.package==='Multiple Lights Out'||r.package==='Entire Circuit Inoperative'||r.package==='Trailer Harness / Main Wiring')return 3;if(r.package==='Slider Box Rebuild')return 18;if(r.package==='Complete Slider Box Replacement')return 24+(Number(r.weldHours)||0);return 1}
 function laborHours(r){if(Number(r.estimateUsed)>0)return Number(r.estimateUsed);return fallbackLaborHours(r)}
@@ -868,3 +909,5 @@ load();
 </script>
 </body>
 </html>
+JK_Trailer_Assistant_Alpha_1.9.2_Add_Another_Repair.html
+HTML
