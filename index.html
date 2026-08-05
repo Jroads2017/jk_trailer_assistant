@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JK Trailer Assistant Alpha 1.0 - Adaptive Photo OCR |  – Tablet Alpha 1.0</title>
+<title>JK Trailer Assistant Alpha 1.1 - Field-by-Field Photo OCR |  – Tablet Alpha 1.1</title>
 <style>
 :root{--navy:#061a34;--blue:#0b57d0;--light:#f5f8fc;--line:#d7e0ec;--green:#148a2f;--orange:#ff7a00;--red:#c62828;--text:#132033;--muted:#65758b}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#eef3f8}button,input,select,textarea{font:inherit}
@@ -83,7 +83,7 @@ function recordCompletedLearning(job){const u=usageData(),n=noteLearning();job.r
 function approveSuggestion(key){const n=noteLearning(),item=n[key];if(!item)return;const arr=customButtons();if(!arr.includes(item.label))arr.push(item.label);localStorage.setItem('jk_custom_buttons',JSON.stringify(arr));render()}
 function ignoreSuggestion(key){const arr=ignoredSuggestions();if(!arr.includes(key))arr.push(key);localStorage.setItem('jk_ignored_suggestions',JSON.stringify(arr));render()}
 function resetDraft(){state.draft={jobType:(state.job?.stage||null),location:null,system:null,brakeType:null,suspensionType:null,suspensionGroup:null,package:null,condition:null,repair:null,parts:{},lubricant:null,verification:{},verificationNotes:{},additionalParts:[],showAdditionalPart:false,repairScope:'Single',scopeQty:1,notes:'',techNo:(state.user?.role==='manager'?(state.job?.owner||''):state.user?.id||'')};state.step=1}
-function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button><button onclick="go('manager')">Manager View</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.0</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
+function appShell(content,title='JK Trailer Assistant'){return `<div class="app"><aside class="sidebar"><div class="brand">JK TRAILER<small>ASSISTANT</small></div><div class="nav">${state.user?.role==='manager'?`<button onclick="go('manager')" class="${state.screen==='manager'?'active':''}">Manager View</button><button onclick="managerNewEstimate()">Create Estimate</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="go('jobs')">All Open Jobs</button>`:`<button class="${state.screen==='dashboard'?'active':''}" onclick="go('dashboard')">Dashboard</button><button onclick="newJob()">New Job</button><button onclick="createFromPhoto()">Create from Photo</button><button onclick="openTechCommons()">Tech Commons</button><button onclick="go('jobs')">Search Jobs</button><button onclick="go('jobs')">My Jobs</button><button onclick="go('manager')">Manager View</button>`}</div><div class="techs"><b>TECHNICIANS</b>${TECHS.filter(t=>t.role!=='manager').map(t=>`<div class="techrow"><span class="dot"></span>#${t.id} ${t.name}<br><small>${jobs().filter(j=>j.owner===t.id&&j.status!=='Completed').length} open job(s)</small></div>`).join('')}</div></aside><main class="main"><div class="topbar"><div class="top-context"><h1>${title}</h1><span class="version-badge">Tablet Alpha 1.1</span></div><div class="toolbar"><span class="user">${state.user?`${state.user.role==='manager'?'MANAGER':'TECHNICIAN'}: ${state.user.name} (#${state.user.id})`:''}</span>${state.user?'<button class="btn ghost" style="color:white;border-color:#49627f" onclick="logout()">LOG OUT</button>':''}</div></div>${content}</main></div>`}
 function render(){const root=document.getElementById('root');if(!state.user){root.innerHTML=loginView();return} if(state.screen==='dashboard')root.innerHTML=appShell(dashboard(),'Dashboard');else if(state.screen==='jobs')root.innerHTML=appShell(jobList(),'Open Jobs');else if(state.screen==='workflow')root.innerHTML=appShell(workflow(),'Repair Documentation');else if(state.screen==='manager')root.innerHTML=appShell(managerView(),'Manager View – Estimate');}
 function loginView(){return `<div class="loginwrap"><div class="login"><h1>JK Trailer Assistant</h1><p class="muted">Employee login</p><div class="field"><label>Employee</label><select id="techsel"><option value="">Select technician</option>${TECHS.map(t=>`<option value="${t.id}">#${t.id} – ${t.name}</option>`).join('')}</select></div><div class="field"><label>3-digit code</label><input id="pin" maxlength="3" inputmode="numeric" /></div><button class="btn primary" onclick="login()">Sign In</button><p class="muted" style="margin-top:14px;font-size:12px">Prototype PINs: Manager Jesse 114, George 371, Alex 172, Allen 410, Max 924, Damien 710, Chaz 507, Jalen 351</p></div></div>`}
 function login(){const id=document.getElementById('techsel').value;const pin=document.getElementById('pin').value;const t=TECHS.find(x=>x.id===id&&x.pin===pin);if(!t)return alert('Incorrect employee or code');state.user=t;state.screen=t.role==='manager'?'manager':'dashboard';if(t.role==='manager'&&!state.job)state.job=jobs()[0];save()}
@@ -95,7 +95,7 @@ function jobList(){return dashboard()}
 function newJob(){const ownerOptions=state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="newOwner"><option value="">Unassigned</option>${TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('')}</select></div>`:'';document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="newJobModal"><div class="pinbox"><h3>Create New Job</h3><div class="create-choice"><button class="btn primary" onclick="showManualJobFields()">Manual Entry</button><button class="btn" onclick="document.getElementById('newJobModal').remove();createFromPhoto()">📷 Create from Photo</button></div><div id="manualJobFields" class="hidden"><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="newRO"></div><div class="field"><label>Trailer Number <span class="required">!</span></label><input id="newTrailer"></div><div class="field"><label>Trailer Owner / Company <span class="required">!</span></label><input id="newCustomer"></div>${ownerOptions}<div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('newJobModal').remove()">Cancel</button><button class="btn primary" onclick="createManualJob()">Create Job</button></div></div><div id="newJobInitialActions" class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('newJobModal').remove()">Cancel</button></div></div></div>`)}
 function showManualJobFields(){document.getElementById('manualJobFields').classList.remove('hidden');document.getElementById('newJobInitialActions').classList.add('hidden')}
 function createManualJob(){const ro=document.getElementById('newRO').value.trim(),trailer=document.getElementById('newTrailer').value.trim(),customer=document.getElementById('newCustomer').value.trim(),owner=state.user.role==='manager'?(document.getElementById('newOwner').value||''):state.user.id;if(!ro||!trailer||!customer)return alert('Repair order, trailer number, and company are required.');if(jobs().some(j=>j.id===ro))return alert('That repair order already exists.');const j={id:ro,trailer,customer,status:'Estimate In Progress',stage:'Estimate',owner,createdBy:state.user.id,source:'Manual Entry',repairs:[]};const arr=jobs();arr.push(j);saveJobs(arr);document.getElementById('newJobModal').remove();state.job=j;state.screen='workflow';resetDraft();save()}
-function createFromPhoto(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="photoModal"><div class="pinbox" style="width:min(720px,96vw);max-height:96vh;overflow:auto"><span class="photo-badge">CREATE FROM KARMAK PHOTO</span><h3 style="margin-top:0">Take or upload a clear repair-order photo</h3><p class="muted">The app reads the document in your browser. Review every field before creating the estimate or repair.</p><div class="photo-drop"><div class="photo-actions"><label class="btn primary" for="jobPhoto">📷 Take or Upload Photo</label><button type="button" class="btn" onclick="useIncludedTestPhoto()">Use Included Test Photo</button><input id="jobPhoto" type="file" accept="image/*" capture="environment" class="hidden"></div><img id="jobPhotoPreview" class="photo-preview hidden" alt="Repair order photo preview"><div id="photoFileName" class="muted" style="margin-top:8px"></div><div class="photo-help">Best results: fill the screen with the page, avoid shadows, and hold the tablet directly above the document.</div></div><button id="readPhotoBtn" class="btn primary" style="width:100%" disabled onclick="readPhotoDetails()">Read Karmak Photo</button><div class="ocr-progress"><span id="ocrBar"></span></div><div id="photoStatus" class="extract-warning">No photo selected.</div><div class="ocr-grid"><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="photoRO" placeholder="RO number"></div><div class="field"><label>Unit / Trailer Number <span class="required">!</span></label><input id="photoTrailer" placeholder="Unit number"></div><div class="field wide"><label>Trailer Owner / Company <span class="required">!</span></label><input id="photoCustomer" placeholder="Customer"></div><div class="field"><label>Year</label><input id="photoYear" placeholder="Year"></div><div class="field"><label>Creation Date</label><input id="photoDate" placeholder="Date"></div><div class="field wide"><label>Make / Model</label><input id="photoMakeModel" placeholder="Make and model"></div><div class="field"><label>Trailer Type</label><input id="photoType" placeholder="Trailer type"></div><div class="field"><label>Created By</label><input id="photoCreatedBy" placeholder="Karmak user"></div><div class="field wide"><label>VIN</label><input id="photoVIN" placeholder="VIN"></div><div class="field wide"><label>Complaint / Work Requested</label><textarea id="photoComplaint" style="width:100%;min-height:92px" placeholder="Complaint text"></textarea></div></div>${state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="photoOwner"><option value="">Unassigned</option>${techOptions}</select></div>`:''}<details style="margin:8px 0"><summary>Show OCR text</summary><div id="ocrRaw" class="ocr-raw">No OCR text yet.</div></details><div class="create-choice"><button class="btn warn" onclick="createPhotoJob('estimate')">Confirm & Create Estimate</button><button class="btn success" onclick="createPhotoJob('repair')">Confirm & Create Repair</button></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('photoModal').remove()">Cancel</button></div></div></div>`);document.getElementById('jobPhoto').addEventListener('change',previewJobPhoto)}
+function createFromPhoto(){const techOptions=TECHS.filter(t=>t.role!=='manager').map(t=>`<option value="${t.id}">Tech ${t.id} – ${t.name}</option>`).join('');document.body.insertAdjacentHTML('beforeend',`<div class="pinmodal" id="photoModal"><div class="pinbox" style="width:min(720px,96vw);max-height:96vh;overflow:auto"><span class="photo-badge">CREATE FROM KARMAK PHOTO</span><h3 style="margin-top:0">Take or upload a clear repair-order photo</h3><p class="muted">The app reads each labeled Karmak field separately. Review every value before creating the estimate or repair.</p><div class="photo-drop"><div class="photo-actions"><label class="btn primary" for="jobPhoto">📷 Take or Upload Photo</label><button type="button" class="btn" onclick="useIncludedTestPhoto()">Use Included Test Photo</button><input id="jobPhoto" type="file" accept="image/*" capture="environment" class="hidden"></div><img id="jobPhotoPreview" class="photo-preview hidden" alt="Repair order photo preview"><div id="photoFileName" class="muted" style="margin-top:8px"></div><div class="photo-help">Field-by-field mode reads Repair Order, Created By, date, customer, unit, year, model, type, VIN, and complaint as separate areas. Fill the screen with the full page and keep all four page corners visible.</div></div><button id="readPhotoBtn" class="btn primary" style="width:100%" disabled onclick="readPhotoDetails()">Read Karmak Photo</button><div class="ocr-progress"><span id="ocrBar"></span></div><div id="photoStatus" class="extract-warning">No photo selected.</div><div class="ocr-grid"><div class="field"><label>Repair Order Number <span class="required">!</span></label><input id="photoRO" placeholder="RO number"></div><div class="field"><label>Unit / Trailer Number <span class="required">!</span></label><input id="photoTrailer" placeholder="Unit number"></div><div class="field wide"><label>Trailer Owner / Company <span class="required">!</span></label><input id="photoCustomer" placeholder="Customer"></div><div class="field"><label>Year</label><input id="photoYear" placeholder="Year"></div><div class="field"><label>Creation Date</label><input id="photoDate" placeholder="Date"></div><div class="field wide"><label>Make / Model</label><input id="photoMakeModel" placeholder="Make and model"></div><div class="field"><label>Trailer Type</label><input id="photoType" placeholder="Trailer type"></div><div class="field"><label>Created By</label><input id="photoCreatedBy" placeholder="Karmak user"></div><div class="field wide"><label>VIN</label><input id="photoVIN" placeholder="VIN"></div><div class="field wide"><label>Complaint / Work Requested</label><textarea id="photoComplaint" style="width:100%;min-height:92px" placeholder="Complaint text"></textarea></div></div>${state.user.role==='manager'?`<div class="field"><label>Primary Technician</label><select id="photoOwner"><option value="">Unassigned</option>${techOptions}</select></div>`:''}<details style="margin:8px 0"><summary>Show OCR text</summary><div id="ocrRaw" class="ocr-raw">No OCR text yet.</div></details><div class="create-choice"><button class="btn warn" onclick="createPhotoJob('estimate')">Confirm & Create Estimate</button><button class="btn success" onclick="createPhotoJob('repair')">Confirm & Create Repair</button></div><div class="toolbar" style="justify-content:flex-end"><button class="btn" onclick="document.getElementById('photoModal').remove()">Cancel</button></div></div></div>`);document.getElementById('jobPhoto').addEventListener('change',previewJobPhoto)}
 let photoTestSource=null;
 function previewJobPhoto(e){const file=e.target.files&&e.target.files[0];if(!file)return;photoTestSource=null;const img=document.getElementById('jobPhotoPreview');img.src=URL.createObjectURL(file);img.classList.remove('hidden');document.getElementById('photoFileName').textContent=file.name;document.getElementById('readPhotoBtn').disabled=false;document.getElementById('photoStatus').className='extract-warning';document.getElementById('photoStatus').textContent='Photo selected. Reading automatically…';document.getElementById('ocrBar').style.width='0%';setTimeout(()=>readPhotoDetails(),150)}
 async function useIncludedTestPhoto(){photoTestSource='karmak-test-photo.jpg';const img=document.getElementById('jobPhotoPreview');img.src=photoTestSource;img.classList.remove('hidden');document.getElementById('photoFileName').textContent='Included test photo: RO 20802';document.getElementById('readPhotoBtn').disabled=false;document.getElementById('photoStatus').className='extract-warning';document.getElementById('photoStatus').textContent='Loading included Karmak test photo…';await readPhotoDetails()}
@@ -210,41 +210,100 @@ function markPhotoConfidence(id,level){
   el.style.borderColor=level==='high'?'#2f9e44':level==='low'?'#f0a202':'#c62828';
   el.title=level==='high'?'OCR value passed format checks':level==='low'?'Please verify this OCR value':'OCR did not find this field';
 }
-async function runOCRVariant(canvas,label,index,total,status,bar){
-  const result=await Tesseract.recognize(canvas,'eng',{
-    workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
-    corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
-    langPath:'https://tessdata.projectnaptha.com/4.0.0',
-    logger:m=>{if(m.status){const local=Math.round((m.progress||0)*100);const pct=Math.round(((index+(m.progress||0))/total)*100);status.textContent=`${label}: ${m.status.replace(/_/g,' ')} ${local}%`;bar.style.width=pct+'%'}}
-  });
-  const raw=result.data.text||'',data=parseKarmakText(raw),rated=scoreKarmakData(data,raw,result.data.confidence);
-  return{label,raw,data,ocrConfidence:result.data.confidence||0,score:rated.score,confidence:rated.confidence};
+function cropCanvasByRatio(source,box){
+  const x=Math.max(0,Math.round(source.width*box.x)),y=Math.max(0,Math.round(source.height*box.y));
+  const w=Math.min(source.width-x,Math.round(source.width*box.w)),h=Math.min(source.height-y,Math.round(source.height*box.h));
+  const out=document.createElement('canvas');out.width=Math.max(1,w);out.height=Math.max(1,h);
+  const ctx=out.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(source,x,y,w,h,0,0,w,h);return out;
+}
+function cleanFieldOCR(raw,label=''){
+  let v=String(raw||'').replace(/\r/g,'\n').replace(/[|]/g,'I').replace(/\n+/g,' ').replace(/\s+/g,' ').trim();
+  if(label)v=v.replace(new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:#-]?','i'),'').trim();
+  return v.replace(/^[:#\-\s]+|[:#\-\s]+$/g,'').trim();
+}
+function digitsOnly(v,min=1,max=20){const m=String(v||'').match(new RegExp('\\d{'+min+','+max+'}'));return m?m[0]:''}
+function fieldParser(name,raw){
+  const v=cleanFieldOCR(raw);
+  if(name==='ro')return digitsOnly(v,4,10);
+  if(name==='unit'){const x=cleanFieldOCR(v,'Unit').match(/[A-Z0-9-]{2,20}/i);return x?x[0]:''}
+  if(name==='year'){const x=v.match(/(?:19|20)\d{2}/);return x?x[0]:''}
+  if(name==='vin'){const all=normalizeVIN(cleanFieldOCR(v,'VIN'));const x=all.match(/[A-HJ-NPR-Z0-9]{17}/);return x?x[0]:all.slice(0,20)}
+  if(name==='date'){const x=v.match(/\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}/);return x?x[0]:''}
+  if(name==='createdBy'){
+    let x=cleanFieldOCR(v,'Created By').replace(/[^A-Za-z0-9._-]/g,'');
+    if(/^(createdby|created)$/i.test(x))return'';
+    return x.slice(0,30);
+  }
+  if(name==='customer')return cleanFieldOCR(cleanFieldOCR(v,'Owning Customer'),'Billing Customer').replace(/\bService\s+Customer\b/i,'').trim();
+  if(name==='makeModel')return cleanFieldOCR(v,'Make / Model').replace(/\bVIN\b.*$/i,'').trim();
+  if(name==='type')return cleanFieldOCR(v,'Type').replace(/\bECM\b.*$/i,'').trim();
+  if(name==='complaint')return cleanFieldOCR(v,'Complaint').replace(/\bCause\s*:.*$/i,'').replace(/\bCorrection\s*:.*$/i,'').trim();
+  return v;
+}
+const KARMAK_FIELD_REGIONS=[
+  {name:'ro',label:'Repair Order',box:{x:.055,y:.018,w:.30,h:.085},target:'photoRO',whitelist:'0123456789'},
+  {name:'date',label:'Creation Date',box:{x:.43,y:.018,w:.23,h:.085},target:'photoDate',whitelist:'0123456789/-'},
+  {name:'createdBy',label:'Created By',box:{x:.68,y:.018,w:.27,h:.085},target:'photoCreatedBy',whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-'},
+  {name:'customer',label:'Owning Customer',box:{x:.055,y:.095,w:.54,h:.12},target:'photoCustomer'},
+  {name:'unit',label:'Unit',box:{x:.055,y:.205,w:.18,h:.105},target:'photoTrailer',whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-'},
+  {name:'year',label:'Year',box:{x:.22,y:.205,w:.13,h:.105},target:'photoYear',whitelist:'0123456789'},
+  {name:'makeModel',label:'Make / Model',box:{x:.32,y:.205,w:.38,h:.105},target:'photoMakeModel'},
+  {name:'type',label:'Type',box:{x:.68,y:.205,w:.27,h:.105},target:'photoType'},
+  {name:'vin',label:'VIN',box:{x:.055,y:.292,w:.50,h:.09},target:'photoVIN',whitelist:'ABCDEFGHJKLMNPRSTUVWXYZ0123456789'},
+  {name:'complaint',label:'Complaint',box:{x:.055,y:.49,w:.89,h:.30},target:'photoComplaint'}
+];
+async function runFieldOCR(canvas,field,index,total,status,bar){
+  const versions=[preprocessVariant(canvas,'shadow'),preprocessVariant(canvas,'threshold')];
+  let best={raw:'',value:'',confidence:0};
+  for(let pass=0;pass<versions.length;pass++){
+    const result=await Tesseract.recognize(versions[pass],'eng',{
+      workerPath:'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+      corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
+      langPath:'https://tessdata.projectnaptha.com/4.0.0',
+      tessedit_pageseg_mode:field.name==='complaint'?'6':'7',
+      ...(field.whitelist?{tessedit_char_whitelist:field.whitelist}:{}),
+      logger:m=>{if(m.status){const fraction=(index+(pass+(m.progress||0))/versions.length)/total;bar.style.width=Math.round(fraction*100)+'%';status.textContent=`Reading ${field.label} (${index+1} of ${total})`;}}
+    });
+    const raw=result.data.text||'',value=fieldParser(field.name,raw),confidence=Number(result.data.confidence)||0;
+    const score=(value?50:0)+confidence+(value.length>2?10:0);
+    if(score>((best.value?50:0)+best.confidence+(best.value.length>2?10:0)))best={raw,value,confidence};
+  }
+  return best;
+}
+function fieldConfidence(name,value){
+  if(name==='ro')return /^\d{4,10}$/.test(value)?'high':value?'low':'missing';
+  if(name==='unit')return /^[A-Z0-9-]{2,20}$/i.test(value)?'high':value?'low':'missing';
+  if(name==='year')return /^(19|20)\d{2}$/.test(value)?'high':value?'low':'missing';
+  if(name==='vin')return normalizeVIN(value).length===17?'high':value?'low':'missing';
+  if(name==='date')return /^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(value)?'high':value?'low':'missing';
+  if(name==='createdBy')return /^[A-Za-z0-9._-]{2,30}$/.test(value)?'high':value?'low':'missing';
+  if(name==='customer')return value.length>=4?'high':value?'low':'missing';
+  if(name==='complaint')return value.length>=10?'high':value?'low':'missing';
+  return value.length>=2?'high':value?'low':'missing';
 }
 async function readPhotoDetails(){
   const input=document.getElementById('jobPhoto'),file=input&&input.files&&input.files[0],source=file||photoTestSource;
   if(!source)return alert('Choose, take, or load the included test photo first.');
   const status=document.getElementById('photoStatus'),bar=document.getElementById('ocrBar'),btn=document.getElementById('readPhotoBtn');
   if(typeof Tesseract==='undefined'){status.className='extract-warning';status.textContent='OCR did not load. Confirm the tablet has internet access, then reload this page.';return}
-  btn.disabled=true;bar.style.width='0%';status.className='extract-warning';status.textContent='Checking lighting and preparing several image versions…';
+  btn.disabled=true;bar.style.width='0%';status.className='extract-warning';status.textContent='Preparing field-by-field Karmak reader…';
   try{
-    const bitmap=await loadPhotoBitmap(source),base=drawScaledBitmap(bitmap,2200),stats=photoStats(base);
-    const variants=[
-      {label:'Balanced lighting',canvas:preprocessVariant(base,'balanced')},
-      {label:'Shadow correction',canvas:preprocessVariant(base,'shadow')},
-      {label:'High contrast',canvas:preprocessVariant(base,'threshold')}
-    ];
-    if(stats.sd<42||stats.mean<115)variants.push({label:'Shadow correction + rotation',canvas:rotateCanvas(preprocessVariant(base,'shadow'),-1.5)});
-    const results=[];
-    for(let i=0;i<variants.length;i++)results.push(await runOCRVariant(variants[i].canvas,variants[i].label,i,variants.length,status,bar));
-    results.sort((a,b)=>b.score-a.score);
-    const data=mergeKarmakData(results),confidence=validateKarmakData(data);
-    setPhotoField('photoRO',data.ro);setPhotoField('photoTrailer',data.unit);setPhotoField('photoCustomer',data.customer);setPhotoField('photoYear',data.year);setPhotoField('photoMakeModel',data.makeModel);setPhotoField('photoType',data.type);setPhotoField('photoVIN',data.vin);setPhotoField('photoDate',data.date);setPhotoField('photoCreatedBy',data.createdBy);setPhotoField('photoComplaint',data.complaint);
-    markPhotoConfidence('photoRO',confidence.ro);markPhotoConfidence('photoTrailer',confidence.unit);markPhotoConfidence('photoCustomer',confidence.customer);markPhotoConfidence('photoYear',confidence.year);markPhotoConfidence('photoVIN',confidence.vin);markPhotoConfidence('photoComplaint',confidence.complaint);
-    document.getElementById('ocrRaw').textContent=results.map(r=>`===== ${r.label} | score ${r.score.toFixed(1)} | OCR ${Math.round(r.ocrConfidence)}% =====\n${r.raw}`).join('\n\n');
-    const key=['ro','unit','customer','vin','complaint'],high=key.filter(k=>confidence[k]==='high').length,found=key.filter(k=>data[k]).length;
-    bar.style.width='100%';status.className=high>=3?'extract-status':'extract-warning';
+    const bitmap=await loadPhotoBitmap(source),base=drawScaledBitmap(bitmap,2400),stats=photoStats(base),results=[];
+    for(let i=0;i<KARMAK_FIELD_REGIONS.length;i++){
+      const field=KARMAK_FIELD_REGIONS[i],crop=cropCanvasByRatio(base,field.box),result=await runFieldOCR(crop,field,i,KARMAK_FIELD_REGIONS.length,status,bar);
+      results.push({field,...result});
+      setPhotoField(field.target,result.value);
+      markPhotoConfidence(field.target,fieldConfidence(field.name,result.value));
+    }
+    const raw=results.map(r=>`===== ${r.field.label} | OCR ${Math.round(r.confidence)}% =====\n${r.raw}\nVALUE: ${r.value||'[not found]'}`).join('\n\n');
+    document.getElementById('ocrRaw').textContent=raw;
+    const required=['ro','unit','customer'],key=['ro','unit','customer','year','vin','createdBy','complaint'];
+    const found=results.filter(r=>key.includes(r.field.name)&&r.value).length;
+    const high=results.filter(r=>key.includes(r.field.name)&&fieldConfidence(r.field.name,r.value)==='high').length;
+    const missingRequired=required.filter(name=>!results.find(r=>r.field.name===name)?.value);
+    bar.style.width='100%';status.className=missingRequired.length?'extract-warning':'extract-status';
     const lighting=stats.mean<105?'dark':stats.lightPct>.20?'bright/glare':stats.sd<34?'low contrast':'acceptable';
-    status.innerHTML=high>=3?`<b>Adaptive photo read complete.</b> ${high} key fields passed validation. Lighting appeared ${lighting}. Green fields passed format checks; orange or red fields must be corrected.`:`<b>Photo read completed, but confirmation is required.</b> Found ${found} key fields and ${high} passed validation. Lighting appeared ${lighting}. Retake the photo or correct orange/red fields before creating the job.`;
+    status.innerHTML=missingRequired.length?`<b>Field-by-field read completed.</b> ${found} fields were found, but ${missingRequired.join(', ')} still require entry. Lighting appeared ${lighting}. Orange/red fields must be checked.`:`<b>Field-by-field read completed.</b> Required fields were found and ${high} fields passed validation. Lighting appeared ${lighting}. Verify Created By, VIN, and complaint before creating the job.`;
   }catch(err){
     console.error(err);status.className='extract-warning';status.innerHTML='<b>OCR failed.</b> Confirm internet access, disable content blocking for this GitHub Pages site, reload, and try again.';document.getElementById('ocrRaw').textContent=String(err&&err.message?err.message:err);
   }finally{btn.disabled=false}
